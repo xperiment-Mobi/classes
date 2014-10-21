@@ -1,0 +1,228 @@
+CHANGE LOG : TRANSFORMMANAGER (AS3)
+----------------------------------------
+1.9669 (2013-01-11):
+	- Fixed issue that could cause a rotated object (that isn't a TextField) not to scale properly when hasSelectableText is true (or scaleMode is SCALE_WIDTH_AND_HEIGHT). 
+1.9668 (2012-09-15):
+	- Fixed FlexTransformManager issue that forced bounds to match the width/height of the FlexTransformManager itself even when the bounds had manually been set to something different. 
+1.9667 (2012-08-01): 
+	- Added a "manager" property getter to TransformItem for convenience.
+	- Updated ASDocs 
+1.9665 (2012-07-19):
+	- Added conditional logic that avoids a very rare error that could occur on a TransformItem whose height or width is 0 and whose scaleMode is SCALE_WIDTH_AND_HEIGHT
+1.9664 (2012-07-12):
+	- Fixed issue that could cause incorrect movement of an object that is selected after another one had been selected and the DELETE key was pressed while the mouse was pressed (down) and allowDelete was true (very rare)
+1.9663 (2012-05-15):
+	- Fixed issue that prevented the selectionX and selectionY setters from working properly.
+1.9662 (2012-05-03):
+	- Added "underHandles" parameter to the addSelectionBoxElement() method that allows you to specify if you want the element to be stacked over (the default) or under the scale/rotation handles
+1.9661 (2012-05-02):
+	- Made any elements added through addSelectionBoxElement() sit on top of the handles in the stacking order (previously they were beneath the handles). This allows for your custom elements to take precedence in terms of MouseEvents. Of course if you'd like to allow clicks to go "through" your object, just set its mouseEnabled property to false.
+1.966 (2012-03-27):
+	- disabled the default behavior that forced the TransformItem's target to fit within the bounds when the bounds were changed because it was counterintuitive for some situations. You can call the TransformItem's fitInsideBounds() method any time to manually force it within bounds.
+	- Altered FlexTransformManager so that it respects null bounds (previously it virtually always imposed bounds). 
+1.965 (2012-01-23):
+	- Worked around a bug in Adobe's Flex framework that could cause TextFields in Flex not to impose bounds correctly
+	- Fixed error that could occur if "hasSelectableText" was set to true and the scaleMode was set to SCALE_WIDTH_AND_HEIGHT after initially being set to other values.
+1.964:
+	- Fixed problem that could cause items in Flex to transform incorrectly when the transformations exceed the bounds and scaleMode is WIDTH_AND_HEIGHT.
+1.963:
+	- Fixed problem that prevented removeSelectionBoxElement() from working properly.
+1.962:
+	- Worked around Flex bug that could cause the selection box to be invisible if the parent of your target object is not a UIComponent but you are working in a Flex environment and don't set "flexMode" to false. 
+1.961:
+	- Minor improvement to the depth handling routines to improve Flex compatibility. 
+1.96 (2011-10-20):
+	- Added "manualBoundsOffset" property to TransformItem to help work around bugs in the Flex framework which cause objects to incorrectly report bounds and/or width/height. See the ASDocs for details. It is very unlikely that you'd need to use this property - it only helps with single-selections when the selection box isn't drawn correctly due to the bugs in Adobe's Flex framework. For example, a Panel in Flex won't correctly report its width/height after being rotated by changing its transform.matrix and it also incorrectly reports its bounds with getBounds() because there's a shadow included (but not in the width/height reporting). 
+	- Fixed issue with FlexTransformManager that could cause odd behavior if the width or height was set to percentage values (well, percentWidth and percentHeight). 
+1.955 (2011-10-12):
+	- Fixed Crop and FlexCrop so that they respond correctly when their associated TransformManager's depth-management methods are used (for adjusting the stacking order).
+1.955 (2011-10-05):
+	- The Crop and FlexCrop tools now delete both the crop and the target object when the DELETE key is pressed
+1.955 (2011-09-12):
+	- Added "flexMode" special property that can be passed in via the vars parameter to force a TransformManager instance to act like it is in a Flex environment (or not). Like var manager:TransformManager = new TransformManager({flexMode:false});
+1.954 (2011-08-11): 
+	- Fixed issue that could cause new bounds not to be applied properly if they were set on the TransformManager inside a TransformEvent.SELECT event handler. 
+1.953 (2011-08-01): 
+	- Improved reliability of DOUBLE_CLICK event dispatching so that it has a 3-pixel tolerance
+	- Added Crop and FlexCrop example classes that can easily add cropping capabilities (these are alpha releases that may have API changes and are primarily intended to demonstrate what's possible and serve as a jumping-off point for your own implementation that you might want to function differently).
+1.952 (2011-07-14):
+	- Fixed problem that could cause scaleY to incorrectly report as negative in certain scenarios.
+1.95 (2011-07-13):
+	- Added addSelectionBoxElement() and removeSelectionBoxElement() methods to TransformManager so that you can attach custom DisplayObjects to the selection box. For example, maybe you'd want to add your own "delete" button to the selection box.
+	- Fixed problem that could cause scaleY to incorrectly report as negative in certain scenarios (further fixed in 1.951).
+1.947 (2011-06-19):
+	- Fixed issue that could cause selectItems() to not deselect certain previously selected items properly. 
+1.946 (2011-06-09):
+	- Fixed issue that could cause individual TransformItems not to honor their bounds if they used smaller bounds than their TransformManager.
+	- Fixed issue that could cause constrainScale to act as though it is true when it should be false (only happened when the TransformManager had constrainScale set to true but an individual TransformItem's constrainScale was set to false)
+1.945 (2011-04-19):
+	- Changed the behavior of TransformItem so that it honors the origin when changing the scaleX/scaleY/width/height/rotation properties. Previously, it would always use a center registration point. Also, when you set a custom origin with the TransformItem not selected, it will revert to that after it is deselected (when it is selected, the TranformManager must manage the origin). 
+	- Worked around a Flash inconsistency that caused TextFields with a scaleX or scaleY other than 1 to not scale properly when the scaleMode of the TransformItem was SCALE_WIDTH_AND_HEIGHT. 
+1.944 (2011-02-16):
+	- Changed the behavior of the "constrainScale" property so that instead of always forcing the constrained scale to use the original ratio of the unscaled object, it retains the proportions of the targetObject(s) as they were when the constrainScale property was set to true. This makes things more flexible. If you prefer the old behavior, you can simply set the targetObject's scaleX and scaleY to the same thing before you set constrainScale to true. 
+1.943 (2011-01-30):
+	- Fixed issue introduced in 1.941 that could cause an error to be thrown if a Spark component was used inside a FlexTransformManager.
+1.941 (2011-01-29):
+	- Added static getters for moveCursor, scaleCursor, and rotationCursor
+	- Fixed error that could be thrown by FlexTransformManager when its destroy() method was called and it had a parent that was a Spark component.
+1.94 (2011-01-20):
+	- Enhanced custom cursor management significantly by adding the following static methods: customizeMoveCursor(), customizeScaleCursor(), and customizeRotationCursor(). The new methods allow you to not only define custom Shape objects for each cursor, but also control whether or not the Mouse is hidden when the custom cursors are shown and define an x- and y-offset value as well as control whether or not the scale/rotation cursors automatically rotate based on their position on the selection.
+	- Removed the public scaleCursor, moveCursor, and rotationCursor properties in favor of the new methods mentioned above which provide a much greater level of customization. 
+	- Made the move cursor slightly smaller and decreased the gap in the scale cursor by 1 pixel.
+1.932:
+	- Added lineThickness property to TransformManager and FlexTransformManager
+1.931:
+	- Added extra information in the XML exporting/importing for TransformItems: lockPosition, lockScale, lockRotation, constrainScale, minWidth, maxWidth, minHeight, and maxHeight.
+1.93:
+	- Resolved compatibility issue with Flex 4's new Spark components (Adobe decided to force the use of addElement()/removeElement()/setElementIndex() instead of remaining consistent with addChild()/removeChild()/setChildIndex()) 
+1.922:
+	- Fixed issue that could cause the cursor not to be replaced properly if an object was selected and destroy() was called on the TransformManager instance. 
+1.921:
+	- Worked around a Flex issue that could cause an Image (or other object) to initially render incorrectly when their width or height properties are 0.
+1.92:
+	- Added minWidth, maxWidth, minHeight, and maxHeight properties to TransformItem
+	- Fixed problem that could cause strange scaling results when constrainScale is set to true on a TransformItem after having set the max/min scale/width/height.
+	- Fixed incorrect reporting of a TransformItem's "rotation" property when the targetObject's scaleX or scaleY was negative.
+	- Improved the way TransformManager handles objects with negative scaleX/scaleY values
+1.915:
+	- TransformManager now dispatches START_INTERACTIVE_MOVE events when the arrowKeysMove is true and one of the arrow keys is pressed.
+	- Fixed issue that could cause a selected TransformItem to dispatch a FINISH_INTERACTIVE_ROTATION event instead of a FINISH_INTERACTIVE_MOVE or FINISH_INTERACTIVE_SCALE event (the TransformManager still dispatched the correct event - it was only the TransformItem that didn't in some situations).
+1.914:
+	- Fixed issue that could cause TransformManager not to deselect properly when it is used in an swf that is subloaded and the subloaded swf's coordinates are offset from 0,0.
+1.912:
+	- Fixed issue in Flex that could cause the selection not to render correctly on certain types of objects when selected immediately after being created.
+1.911:
+	- Fixed issue in Flex that threw an error when adding an object and immediately selecting it with a method like selectItem()
+	- Updated FlexTransformManager to recognize some of the spark components from Flex 4 as being text-related and automatically applying the SCALE_WIDTH_AND_HEIGHT scaleMode.
+1.91:
+	- Fixed issue that would cause a START interactive move/scale/rotate event to be dispatched but not a FINISH one when the mouse wasn't moved at all. Now the START/FINISH events only get dispatched when an interactive move/scale/rotate actually changes values.
+1.9:
+	- Added dispatching of START_INTERACTIVE_MOVE, START_INTERACTIVE_SCALE, and START_INTERACTIVE_ROTATE events from TransformManager
+1.891:
+	- Prevented the cursor from being stuck in the "move" state if an object was deleted while being dragged.
+1.89:
+	- Added SEIZE_CURSOR and RELEASE_CURSOR event dispatching from TransformManager.
+	- Added isShowingCustomCursor property to TransformManager
+1.888:
+	- Added fitInsideBounds() method to TransformItem
+	- Enforced bounds when TransformItem instances are created.
+1.887:
+	- Fixed Flex-related problem that could cause certain types of objects not to draw the bounds of selections properly.
+1.886:
+	- Fixed applyFullXML() and applyItemXML() so that TextFields get their width/height set properly.
+1.885:
+	- Fixed applyFullXML() and applyItemXML() so that if an item is already being managed by the TransformManager, it automatically calls update() on the TransformItem to ensure the position/rotation/scale data is updated.
+1.884:
+	- Altered FlexTransformManager so that bounds could be set before the object was added to the stage.
+1.883:
+	- Fixed potential problem that could occur in rare circumstances in Flex 4 regarding an error thrown when clicking before the TransformManager had been fully instantiated.
+1.882:
+	- Fixed issue with the way Flex instantiates children in FlexTransformManager which previously prevented selectedTargetObjects from being set initially. 
+1.881:
+	- Fixed bug that could cause an error if exportSettingsXML() was used when no bounds were defined.
+1.88:
+	- Added XML exporting/importing capabilities like exportFullXML() and applyFullXML()
+1.874:
+	- Fixed problem that could arise if the root's x/y coordinates are offset.
+1.873:
+	- Corrected documentation which incorrectly indicated that TranformManager dispatched SELECT events (it dispatches SELECTION_CHANGE events whereas TransformItem dispatches SELECT events)
+	- Improved rendering refresh rate using updateAfterEvent()
+1.871:
+	- Fixed issue that could cause Keyboard events not to be received properly after calling destroy() on a TransformManager instance.
+1.87:
+	- Fixed bug that could cause odd scaling behavior in certain circumstances
+	- Optimized the matrix scaling code for better performance
+1.862:
+	- Fixed a potential problem with deleting a selected object between the MOUSE_DOWN and MOUSE_UP selection events.
+1.861:
+	- Added a check to make sure the targetObject is in the display list before allowing it to be deleted to avoid runtime errors if it isn't.
+	- Updated the event metadata in FlexTransformManager
+1.86:
+	- Fixed bug in destroy() method
+1.85:
+	- Fixed bug that could cause keyboard features (multi-select, delete, and arrows) to be lost on AIR pop-up windows after the 2nd launch
+1.84:
+	- Fixed bug that could cause lockScale not to prevent the scale cursor from appearing on rollOver of the handles.
+1.83:
+	- Fixed a bug that caused odd behavior when rotating multiple-item selections through code (not interactively), like myManager.rotateSelection(). 
+1.82:
+	- Added logic to the code that prevents the arrow keys from moving the selection if/when the stage.focus is a TextField (otherwise the text cursor and the selection would both move)
+1.81:
+	- Added targetCoordinateSpace parameter to getSelectionBounds() and getSelectionBoundsWithHandles()
+1.8:
+	- Fixed several bugs related to cursor management
+1.79:
+	- Fixed bug that could cause highlighted text in a selected TextField to be deleted if another object was selected and then the DELETE or BACKSPACE key was pressed.
+1.78:
+	- Fixed bug that could cause a TransformItem to violate its scale constraints when the mouse is dragged far enough in the opposite direction
+	- Fixed bug that could cause an item to scale too much in a very particular scenario.
+1.77:
+	- Changed package name from "gs" to "com.greensock" in order to comply with industry standards
+	- Fixed bug in moveSelectionDepthUp() and moveSelectionDepthDown()
+1.76:
+	- Fixed bug that could cause minScaleX/maxScaleX/minScaleY/maxScaleY to be ignored in a very specific scenario.
+1.75:
+	- If an item is selected that "hasSelectableText", pressing the arrow keys won't move the item even if arrowKeysMove is true.
+1.74:
+	- Added DOUBLE_CLICK event dispatching from TransformManager (when the user double-clicks on the selected item(s))
+	- Prevented MOVE events from being dispatched if movement on both axis is 0. 
+1.73:
+	- Added "hideCenterHandle" property
+	- Fixed bug that could cause problems when an item is the same width/height as the bounds and the lockScale and lockPosition properties are true
+1.72:
+	- Fixed bug that could cause incorrect scaling when an item was rotated exactly at 90 degrees or negative 90 degrees.
+1.71:
+	- Fixed bug that could cause the selection to adjust the wrong way vertically when the origin is outside the bounds
+	- Prevented a redraw of the selection box/handles if/when only the selection box/handles are outside the bounds and the user clicked on a rotation handle
+1.7:
+	- Changed the way TransformManager and TransformItem dispatch events. Added FINISH_INTERACTIVE_MOVE, FINISH_INTERACTIVE_SCALE, and FINISH_INTERACTIVE_ROTATE events that work the way the old MOVE/SCALE/ROTATE events worked. Now the MOVE/SCALE/ROTATE events are dispatched continuously while the actions are being performed (when the mouse moves)
+1.68:
+	- Fixed error that could occur when there are multiple TransformManager instances and the user clicks from one to the other.
+1.67:
+	- Worked around a Flex bug that caused problems with transforming text-related objects immediately after adding them to TransformManager
+1.66:
+	- Fixed bug that could cause problems if the targetObject wasn't on the stage when its TransformItem was being instantiated.
+1.65:
+	- Fixed some minor issues related to deleting items with hasSelectableText=true.
+	- When an item with hasSelectableText=true is part of a multi-selection, it can be deleted. If it is the only item selected, it cannot (this is intuitive because the user would likely want the DELETE key to affect the text, not delete the whole object)
+1.64:	
+	- Fixed bug in FlexTransformManager that could cause an ignoredObject to not be ignored.
+1.63:
+	- Prevented a situation where in a multi-window AIR app, the cursors could be missing on new windows
+1.6:
+	- Added a moveCursor that indicates when selected items are moveable.
+1.56:
+	- Added public getUnrotatedSelectionWidth() and getUnrotatedSelectionHeight() methods
+1.55:
+	- Added isSelected() method
+1.54:
+	- Added arrowKeysMove getter/setter
+1.5:
+	- Made the edges draggable (there is a 10-pixel wide area around the border that users can drag). This is particularly helpful with TextFields/TextAreas.
+	- Eliminated the need for the TransformItemTF class. TransformItem now handles TextFields too (see the "hasSelectableText" and "scaleMode" additions below).
+	- Added "hasSelectableText" property which sets the scaleMode to SCALE_WIDTH_AND_HEIGHT, and prevents dragging of the object unless clicking on the edges/border or center handle, and allows the delete key to be pressed without deleting the object itself.
+	- Added "scaleMode" property which can be set to either TransformManager.SCALE_NORMAL (the default), or TransformManager.SCALE_WIDTH_AND_HEIGHT which is useful for text-related objects and/or components. Note: when the scaleMode is set to SCALE_WIDTH_AND_HEIGHT, you cannot flip the object backwards in either direction, nor can you scale it as part of a multi-selection.
+	- Added scaleMode and hasSelectableText parameters to the addItem() and addItems() methods of TransformManager
+	- Altered FlexTransformManager so that TextAreas, TextInputs, UITextFields, Labels, and RichTextEditors are automatically scaled using width/height instead of scaleX/scaleY in order to retain the size of the text.
+	- Altered FlexTransformManager so that the focusThickness of selected components is set to zero (otherwise, it can interfere with the handles slightly)
+	- Worked around a bug in the Flex framework that inaccurately reported width/height on some components intermittently, causing the selection box to be drawn incorrectly sometimes.
+1.49:
+	- Fixed bug that could cause it to get stuck in multi-select mode if the users holds down SHIFT, then clicks on another window, releases SHIFT, and clicks back on this window.
+1.48:
+	- Made changes in order to accommodate a scenario where the targetObject is deleted immediately upon selection (in a TransformEvent.SELECT listener) - previously a 1009 error would be thrown.
+1.47:
+	- Fixed bug that could occassionally cause movement of certain components to appear to "jitter" when hitting the bounds
+1.46:
+	- Fixed bug that could cause exceptions when selecting an object object that fills the entire width or height of the bounds you defined.
+1.45:
+	- Fixed bug that could occassionally cause items to be allowed to scale past the right-most bounds edge.
+1.43:
+	- Fixed bug that could occassionally cause incorrect scaling when an item is positioned exactly on top of the bottom right corner of the boundary and scaled with the upper left corner handle
+	- Fixed bug that could occassionally cause the stretching handles (on the top, bottom, left and right) to not function if the object was positioned directly on top of a boundary/edge.
+1.42:
+	- Added width and height getters/setters to TransformItem and fixed minor bug in TransformItem's scale() method
+1.41:
+	- Fixed slight offset that can occur between the handle and the mouse when scaling
+	- Fixed SHIFT-DRAG behavior that sometimes didn't honor the origin when skipping from x- to y- movement
+	- Fixed boundary constraint behavior when interactively scaling so that it doesn't force the proportions to correlate with the mouse that's beyond the boundaries.
+	- Added scaleX, scaleY, rotation, x, y, and alpha getters/setters to TransformItem. scaleX, scaleY, and rotation always use the center of the TransformItem as the registration point.
