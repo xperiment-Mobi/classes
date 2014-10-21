@@ -64,26 +64,12 @@ package com.xperiment.make.xpt_interface.Bind
 			
 			//trace(BindScript.script.TRIAL[0].addButton[0].toXMLString());
 			
-			updateRunnerScript(bindId);
+			UpdateRunnerScript.DO(bindId);
 			
 			BindScript.updated(['Bind_delStim.deletePartMultiStim']);
 		}
 		
-		private static function updateRunnerScript(bindId:String):void
-		{
-			var xml:XML = BindScript.getStimScript(bindId);
-			var bindLabel:String = BindScript.bindLabel;
-			
-			for each(var stim:XML in runner.trialProtocolList..*.(name()!="TRIAL")){	
-				if(stim.@[bindLabel].toXMLString() == bindId){
-					
-					for each(var attrib:XML in xml.attributes()){
-						stim.@[attrib.name()] = attrib.toXMLString();
-					}
-					break;
-				}
-			}
-		}	
+		
 		
 		private static function deleteStimRunnerScript(bindId:String):void
 		{

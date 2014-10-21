@@ -7,25 +7,36 @@ package com.xperiment.make.OnScreenBoss
 	
 	import flash.events.MouseEvent;
 	import flash.external.ExternalInterface;
+	import flash.utils.getTimer;
 
 	public class OnScreenBossMaker extends OnScreenBoss
 	{
 		public static var isStill:Boolean = true;
 		public static var instance:OnScreenBossMaker;
-		private static var JS_boss:Boolean = false;
+
 		
 		private var currentTime:int;
 		private var stim:uberSprite;
 		
+		private static var updateJSEvery:int=100;
+		private static var prevJSUpdate:int = 0;
+		private static var curTime:int = 0;
 		
 		public static function currentTime_toJS(t:int):void{
-			if(JS_boss==false){
-				if(ExternalInterface.available)	ExternalInterface.call('timelineHelper.setTime',t);
+			if(ExternalInterface.available){
+				curTime = getTimer()
+				if(prevJSUpdate + updateJSEvery <= curTime){
+					prevJSUpdate  = curTime;
+					ExternalInterface.call('timelineHelper.setTime',t);
+				}
+				
+				
+				
 			}
 		}
 		
 		public static function currentTime_fromJS(t:int):void{
-			JS_boss=true;
+		
 			instance.GOTO(t);
 		}
 		
@@ -33,7 +44,7 @@ package com.xperiment.make.OnScreenBoss
 			if(instance){
 				var command:String  = info.command;
 				var extra:String	= info.extra;
-				JS_boss=true;
+			
 				if(command=='play') { instance.PLAY(); return; }
 				if(command=='pause'){ instance.PAUSE(); return; }
 				if(command=='reset'){ instance.RESET(); return; }
@@ -95,7 +106,7 @@ package com.xperiment.make.OnScreenBoss
 		
 
 		public function check(time:int):void{
-			if(currentTime_toJS)currentTime_toJS(time);
+			currentTime_toJS(time);
 			
 			__objsOnScreen.splice(0);
 		

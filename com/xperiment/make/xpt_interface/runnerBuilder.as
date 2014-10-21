@@ -7,6 +7,7 @@ package com.xperiment.make.xpt_interface
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
 	import com.xperiment.make.xpt_interface.Bind.Bind_delStim;
 	import com.xperiment.make.xpt_interface.Bind.Bind_processChanges;
+	import com.xperiment.make.xpt_interface.Bind.UpdateRunnerScript;
 	import com.xperiment.make.xpt_interface.Cards.Cards;
 	import com.xperiment.make.xpt_interface.trialDecorators.CommandHelper;
 	import com.xperiment.make.xpt_interface.trialDecorators.TrialDecorator;
@@ -46,6 +47,7 @@ package com.xperiment.make.xpt_interface
 			Timeline.setup(this,Communicator.pass,BindScript.depthOrderChanged, Bind_processChanges.timingChanged );
 			StimBehav.setup(this, BindScript.addStimulus);
 			Bind_delStim.setup(this);
+			UpdateRunnerScript.setup(this);
 			PropertyInspector.setup(BindScript.getStimScript,Communicator.pass);
 			PlayHelper.setup(this);
 			
@@ -118,9 +120,9 @@ package com.xperiment.make.xpt_interface
 				//var arr:Array = ['a','b'];
 				//arr=codeRecycleFunctions.arrayShuffle(arr);
 				//Timeline.timeChange({peg:'noPeg0',start:0,end:200});
-				//OnScreenBossMaker.fromJS({command:"play"});
-				StimBehav.addStimulus("Button");
-				Bind_delStim.stim([]);
+				OnScreenBossMaker.fromJS({command:"play"});
+				//StimBehav.addStimulus("Button");
+				//Bind_delStim.stim([]);
 				//[{"group":"text","info":"a","start":0,"end":"forever"},{"group":"text","info":"a","start":0,"end":"forever"},{"group":"button","info":"noPeg0","start":0,"end":"forever"}]
 				//Timeline.depthChange(['noPeg','a','a']);
 				//restartTrial()
