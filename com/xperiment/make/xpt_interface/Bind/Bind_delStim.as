@@ -36,7 +36,7 @@ package com.xperiment.make.xpt_interface.Bind
 		private static function deleteSolitaryStim(bind_id:String):void
 		{
 			BindScript.deleteX(bind_id);
-			UpdateRunnerScript.deleteStimRunnerScript(bind_id,runner);
+			deleteStimRunnerScript(bind_id);
 			BindScript.updated(['Bind_delStim.deleteStim']);
 		}
 		
@@ -64,14 +64,26 @@ package com.xperiment.make.xpt_interface.Bind
 			
 			//trace(BindScript.script.TRIAL[0].addButton[0].toXMLString());
 			
-			UpdateRunnerScript.DO(bindId,runner);
+			UpdateRunnerScript.DO(bindId);
 			
 			BindScript.updated(['Bind_delStim.deletePartMultiStim']);
 		}
 		
-	
 		
-
+		
+		private static function deleteStimRunnerScript(bindId:String):void
+		{
+			var xml:XML = BindScript.getStimScript(bindId);
+			var bindLabel:String = BindScript.bindLabel;
+			
+			for each(var stim:XML in runner.trialProtocolList..*.(name()!="TRIAL")){	
+				if(stim.@[bindLabel].toXMLString() == bindId){
+					
+					delete stim.parent().children()[stim.childIndex()];
+					break;
+				}
+			}
+		}	
 		
 		
 		public static function getDefaultsForAllProps(stim:object_baseClass):Object

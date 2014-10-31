@@ -7,6 +7,7 @@ package com.xperiment.make.xpt_interface
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
 	import com.xperiment.make.xpt_interface.Bind.Bind_delStim;
 	import com.xperiment.make.xpt_interface.Bind.Bind_processChanges;
+	import com.xperiment.make.xpt_interface.Bind.UpdateRunnerScript;
 	import com.xperiment.make.xpt_interface.Cards.Cards;
 	import com.xperiment.make.xpt_interface.trialDecorators.CommandHelper;
 	import com.xperiment.make.xpt_interface.trialDecorators.TrialDecorator;
@@ -46,7 +47,12 @@ package com.xperiment.make.xpt_interface
 			Timeline.setup(this,Communicator.pass,BindScript.depthOrderChanged, Bind_processChanges.timingChanged );
 			StimBehav.setup(this, BindScript.addStimulus);
 			Bind_delStim.setup(this);
+<<<<<<< HEAD
 			PropertyInspector.setup(BindScript.getStimScript,Communicator.pass,this);
+=======
+			UpdateRunnerScript.setup(this);
+			PropertyInspector.setup(BindScript.getStimScript,Communicator.pass);
+>>>>>>> origin/master
 			PlayHelper.setup(this);
 			
 			//Coder.setup(this);
@@ -119,10 +125,15 @@ package com.xperiment.make.xpt_interface
 				//var arr:Array = ['a','b'];
 				//arr=codeRecycleFunctions.arrayShuffle(arr);
 				//Timeline.timeChange({peg:'noPeg0',start:0,end:200});
+<<<<<<< HEAD
 				//OnScreenBossMaker.fromJS({command:"play"});
 				//newScript(trialProtocolList.toString())
 				PropertyInspector.propEdit({group:'noPeg0---noPeg1---noPeg2---noPeg3---noPeg4---noPeg5---noPeg6---noPeg7---noPeg8---noPeg9 — text',name:'width',value:'100%'});
 				//StimBehav.addLoadableStimuli(["new.png"]);
+=======
+				OnScreenBossMaker.fromJS({command:"play"});
+				//StimBehav.addStimulus("Button");
+>>>>>>> origin/master
 				//Bind_delStim.stim([]);
 				//[{"group":"text","info":"a","start":0,"end":"forever"},{"group":"text","info":"a","start":0,"end":"forever"},{"group":"button","info":"noPeg0","start":0,"end":"forever"}]
 				//Timeline.depthChange(['noPeg','a','a']);

@@ -1,36 +1,28 @@
 package com.xperiment.make.xpt_interface.Bind
 {
-	import com.xperiment.runner.runner;
+	import com.xperiment.make.xpt_interface.runnerBuilder;
 
 	public class UpdateRunnerScript
 	{
-		public static function DO(bindId:String,r:runner):void
+		
+		private static var runner:runnerBuilder;
+		
+		public static function setup(r:runnerBuilder):void
 		{
-			var xml:XML = BindScript.getStimScript(bindId);
-
-			var bindLabel:String = BindScript.bindLabel;
-
-			for each(var stim:XML in r.trialProtocolList..*.(name()!="TRIAL")){	
-				trace(stim.toXMLString())
-				if(stim.@[bindLabel].toXMLString() == bindId){
-					
-					for each(var attrib:XML in xml.attributes()){
-						stim.@[attrib.name()] = attrib.toXMLString();
-					}
-					break;
-				}
-			}
+			runner=r;
 		}
 		
-		public static function deleteStimRunnerScript(bindId:String,r:runner):void
+		public static function DO(bindId:String):void
 		{
 			var xml:XML = BindScript.getStimScript(bindId);
 			var bindLabel:String = BindScript.bindLabel;
 			
-			for each(var stim:XML in r.trialProtocolList..*.(name()!="TRIAL")){	
+			for each(var stim:XML in runner.trialProtocolList..*.(name()!="TRIAL")){	
 				if(stim.@[bindLabel].toXMLString() == bindId){
-					
-					delete stim.parent().children()[stim.childIndex()];
+					//trace(stim.toXMLString());
+					for each(var attrib:XML in xml.attributes()){
+						stim.@[attrib.name()] = attrib.toXMLString();
+					}
 					break;
 				}
 			}

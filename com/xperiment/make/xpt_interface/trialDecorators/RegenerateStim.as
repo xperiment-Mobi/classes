@@ -24,7 +24,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			stim.kill();
 			stim.pic = new uberSprite;
 			stim.setVariables(XMLList(xml));
-			
+
 			//stim.setVariables(XMLList(xml));
 			
 			//stim.kill();

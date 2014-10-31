@@ -7,6 +7,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 	import com.xperiment.uberSprite;
 	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
+	import com.xperiment.make.xpt_interface.Bind.UpdateRunnerScript;
 	import com.xperiment.make.xpt_interface.trialDecorators.Helpers.GetSetPos;
 	import com.xperiment.stimuli.object_baseClass;
 	import com.xperiment.trial.Trial;
@@ -209,6 +210,8 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			if(newVal){
 				updateF([stim],{y:newVal});
 			}
+			
+			UpdateRunnerScript.DO(stim.getVar(BindScript.bindLabel));
 		}
 		
 		public static function sortX(stim:object_baseClass, x:Number, origVal:String):String
