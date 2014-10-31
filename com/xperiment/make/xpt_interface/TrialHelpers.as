@@ -9,7 +9,7 @@ package com.xperiment.make.xpt_interface
 		private static function run(r:runnerBuilder,i:int):void{
 			r.runningTrial.generalCleanUp();
 			r.runningTrial=r.trialList[i];
-			r.runTrial();
+			r.runningExptNow_II(true);
 		}
 		
 		public static function goto_TrialNumber(data:*,r:runnerBuilder):void

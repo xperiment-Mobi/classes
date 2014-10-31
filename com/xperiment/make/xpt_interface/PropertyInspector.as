@@ -1,7 +1,10 @@
 package com.xperiment.make.xpt_interface
 {
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
+	import com.xperiment.make.xpt_interface.Bind.UpdateRunnerScript;
 	import com.xperiment.stimuli.object_baseClass;
+	
+	import flash.utils.Dictionary;
 	
 	public class PropertyInspector
 	{
@@ -13,24 +16,30 @@ package com.xperiment.make.xpt_interface
 		private static var runningTrial:TrialBuilder;
 		private static var bindLabel:String;
 		private static var ODD_PEG_DIVIDE:String = ' — ';
+		private static var lookup_peg:Dictionary;
+		private static var runner:runnerBuilder;
 		
-		public static function setup(g:Function,j:Function):void
+		public static function setup(g:Function,j:Function,r:runnerBuilder):void
 		{
 			getTrial=g;
 			toJS = j;
+			runner = r;
 			bindLabel = BindScript.bindLabel;
 		}
 		
 		public static function newTrial(r:TrialBuilder):void
 		{
+			
+			trace(111)
 			runningTrial=r;
+			lookup_peg = new Dictionary;
 			var b:String = (runningTrial as TrialBuilder).bind_id;
 
 			currentTrialXML = getTrial(b);
 
 			var rows:Array = [];
 			var stim:XML;
-			var stimObj:Object;
+
 			var name:String;
 			for(var i:int=0;i<currentTrialXML.children().length();i++){
 				
@@ -38,7 +47,6 @@ package com.xperiment.make.xpt_interface
 				name = sortName(stim.name().toString());
 				
 				if(name!=""){
-					stimObj = {};
 					appendAttribs(rows,stim,name,stim.name().toString());	
 				}
 				
@@ -51,6 +59,8 @@ package com.xperiment.make.xpt_interface
 			toJS('propertyInspector',combined);
 			
 		}
+		
+		
 		
 		private static function appendAttribs(rows:Array, stim:XML, group:String, detailedName:String):void
 		{
@@ -68,6 +78,9 @@ package com.xperiment.make.xpt_interface
 			}
 			
 			group = peg+ ODD_PEG_DIVIDE+group;
+			
+			lookup_peg[group] = bind_id;
+			//trace(group,bind_id)
 			
 			for each(var a:XML in stim.@*) 
 			{
@@ -109,11 +122,15 @@ package com.xperiment.make.xpt_interface
 		}
 		
 		public static function propEdit(data:Object):void{
-			var bind_id:String = data.bind_id;
-			if(bind_id!=""){
-				var prop:String = data.prop;
-				var val:String = data.val;
+			
+			var prop:String = data.name;
+			var val:String  = data.value;
+			
+			if(lookup_peg.hasOwnProperty(data.group)){
+				var bind_id:String = lookup_peg[data.group];
 				BindScript.updateAttrib(bind_id,prop,val,null,-1,['PropertyInspector']);
+				
+				UpdateRunnerScript.DO(bind_id,runner);
 			}
 		}
 	}

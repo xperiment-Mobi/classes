@@ -27,6 +27,7 @@
 		private var _deviceUUID:String;
 		private var initial:Boolean = true;
 		//private var uniqueTrialNames:Array = [];
+		private var preserve:Boolean = false;
 
 		
 		public function get ongoingExperimentResults():XMLList
@@ -35,12 +36,14 @@
 		}
 
 		public function kill():void{
-			_finalResults=null;
-			_ongoingExperimentResults=null;
-			_storedVars=null;
-			//uniqueTrialNames=null;
-			Results._instance =null;
-			Results._instance=new Results(new PrivateResults());
+			if(preserve==false){
+				_finalResults=null;
+				_ongoingExperimentResults=null;
+				_storedVars=null;
+				//uniqueTrialNames=null;
+				Results._instance =null;
+				Results._instance=new Results(new PrivateResults());
+			}
 		}
 		
 		public function checkDataExists():Boolean{
@@ -178,6 +181,7 @@
 				if(res!=null)_ongoingExperimentResults+=res;
 				//test(res);
 			}
+			//trace(222,_ongoingExperimentResults)
 		}
 		
 	
@@ -374,11 +378,17 @@
 		
 		public function composeXMLResults():XML
 		{
-			trace(_ongoingExperimentResults);
+			//trace(_ongoingExperimentResults);
 			if(trickleToCloudBool)trickleToCloud(null,true);
 			if(trickleToServerBool)trickleToServer(null,true);
 			return composeXMLInfo().appendChild(_ongoingExperimentResults);
 		}		
+		
+		public function preserveOverExpts(p:Boolean):void
+		{
+			preserve = p;
+			
+		}
 	}
 	
 }

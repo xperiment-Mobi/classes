@@ -11,6 +11,7 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavDragToShiftingArea;
 	import com.xperiment.behaviour.behavFinishStudy;
 	import com.xperiment.behaviour.behavFullScreen;
+	import com.xperiment.behaviour.behavGotoCond;
 	import com.xperiment.behaviour.behavGotoTrial;
 	import com.xperiment.behaviour.behavGradientFill;
 	import com.xperiment.behaviour.behavHide;
@@ -41,8 +42,6 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavTrialOrder;
 	import com.xperiment.stimuli.addBarGraph;
 	import com.xperiment.stimuli.addButton;
-	import com.xperiment.stimuli.addCode;
-	import com.xperiment.stimuli.addColourArray;
 	import com.xperiment.stimuli.addComboBox;
 	import com.xperiment.stimuli.addInputTextBox;
 	import com.xperiment.stimuli.addJPG;
@@ -152,7 +151,7 @@ package com.xperiment.stimuli
 			//stimuli['3d'] = add3D;
 			stimuli['live'] = addLive;
 			stimuli['trialcounter'] = addTrialCounter;
-			
+			stimuli['motionpatch'] = addMotionPath	;
 			
 			//stimuli['draw'] = behavDraw;
 			//stimuli['colourselector'] = behavColourSelector;
@@ -202,7 +201,7 @@ package com.xperiment.stimuli
 			stimuli['scroll'] = behavScroll;
 			stimuli['assignrank'] = behavAssignRank;
 			stimuli['schedule'] = behavScheduleStuff;
-			
+			stimuli['gotocond'] = behavGotoCond;
 			
 			
 		

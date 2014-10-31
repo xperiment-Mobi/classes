@@ -32,7 +32,7 @@ package com.xperiment.make.xpt_interface
 
 <TRIAL TYPE="Trial" trialName="DoExpt" hideResults="true" block="1" order="fixed" trials="1">
 	
-	<addText howMany="10" x="10%---20%---etc---" y="20%---25%---etc---" width="5%" height="5" text="123" vertical="bottom" ttimeStart="0" timeStart="0---200---etc---" timeEnd="200---400---etc---" />		
+	<addText howMany="10" x="10%---20%---etc---" y="20%---25%---etc---" width="5%" height="5" text="123" vertical="bottom" ttimeStart="0" timeStart="0---200---300---400" timeEnd="600" />		
 	
 	<addButton width="140" howMany="2" sstartID="next" height="40" text="I consent" resultFileName="continue" timeEnd="forever" x="50%---60%---70%"  y="90%"/>
 

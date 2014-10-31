@@ -24,6 +24,7 @@ package com.xperiment.runner {
 	import com.xperiment.runner.ComputeNextTrial.NextTrialBoss;
 	import com.xperiment.runner.utils.CheckTurk;
 	import com.xperiment.runner.utils.ListTools;
+	import com.xperiment.script.BetweenSJs;
 	import com.xperiment.script.ProcessScript;
 	import com.xperiment.trial.Trial;
 	import com.xperiment.trialOrder.trialOrderFunctions;
@@ -40,7 +41,7 @@ package com.xperiment.runner {
 	public class runner extends Sprite {
 		
 		//- PUBLIC & INTERNAL VARIABLES ---------------------------------------------------------------------------
-		public var trialList:Vector.<Trial>;
+		public var trialList:Vector.<Trial> = new Vector.<Trial>;;
 		
 
 		public var trialProtocolList:XML;
@@ -66,6 +67,7 @@ package com.xperiment.runner {
 /*		public function maker():void{
 		
 		}*/
+		private var orig_script:XML;
 		
 		protected function initComms():void{
 			Communicator.commandF = commandF;
@@ -117,7 +119,6 @@ package com.xperiment.runner {
 			DeviceQuery.init();
 			
 			killed=false;
-			trialList=new Vector.<Trial>;
 			Style.embedFonts=false;
 			Trial.theStage=theStage;
 			setNeedsDoing();
@@ -161,35 +162,30 @@ package com.xperiment.runner {
 	
 		public function giveScript(scr:XML,remote_url:String=null):void {
 			startStudyQuery('processScript');
+			trialList = new Vector.<Trial>;
+			orig_script = scr.copy();
 
-			//trialProtocolList=scr;
-			//if(XptMemory.sessionAlreadyExisted==false){
-				var processScript:ProcessScript = giveProcessScript();
-				//theStage.addChild(processScript);
-				
-				processScript.addEventListener(Event.COMPLETE, function(e:Event):void{
-					e.target.removeEventListener(e.type,arguments.callee);
-					//theStage.removeChild(processScript);
-					trialProtocolList=processScript.script;
-					//XptMemory.script(trialProtocolList);
-					processScript=null;
-					doAfterScript();
-					
-				},false,0,false); //MUST be false, 0, false;
-				
-			processScript.process(scr);
-			/*}
-			else{
-				trialProtocolList=XptMemory.getScript();
-				doAfterScript();
-			}*/
 			
+			var processScript:ProcessScript = giveProcessScript();
+			
+			processScript.addEventListener(Event.COMPLETE, function(e:Event):void{
+				e.target.removeEventListener(e.type,arguments.callee);
+				//trace(123,processScript.script)
+				trialProtocolList=processScript.script;
+				//trace(trialProtocolList)
+
+				processScript=null;
+				doAfterScript();
+				
+			},false,0,false); 
+			
+			processScript.process(scr);
 			
 			
 			function doAfterScript():void{
 
 				ExptWideSpecs.setup(trialProtocolList);
-
+				//trace(trialProtocolList)
 				ExptWideSpecs.URLVariables(theStage.loaderInfo.parameters,theStage.loaderInfo.url);
 				if(remote_url)ExptWideSpecs.remote_url(remote_url);
 
@@ -289,6 +285,7 @@ package com.xperiment.runner {
 				case GlobalFunctionsEvent.SAVE_DATA:
 					saveDataProcedure();
 					break;
+				
 				case GlobalFunctionsEvent.RESTART_STUDY:
 					theStage.dispatchEvent(new GlobalFunctionsEvent(GlobalFunctionsEvent.FINISH_STUDY,ExptWideSpecs.IS("restart")));
 					break;
@@ -323,12 +320,26 @@ package com.xperiment.runner {
 					nextTrial(new GotoTrialEvent(GotoTrialEvent.GOTO_TRIAL,tempTrial));
 					break;
 				case GlobalFunctionsEvent.MTURK_SUBMIT:
-					Communicator.commandF("submit_mturk_external_question",null);
+					submitMTurk();
 					//throw new Error("legacy");
 					break;
 				case GlobalFunctionsEvent.QUIT:
 				case GlobalFunctionsEvent.FINISH_STUDY:					
 					askedToQuit();
+					break;
+				case GlobalFunctionsEvent.GOTO_COND:
+					runningTrial.compileOutputForTrial();
+					runningTrial.generalCleanUp();
+					extractTrialData(runningTrial);
+					exptResults.preserveOverExpts(true);
+					runningTrial = null;
+					var newScript:XML = BetweenSJs.forceCond(orig_script,e.values);	
+					askedToQuit();
+					trialList = new Vector.<Trial>;
+					preloader.kill(); preloader = null;
+					setNeedsDoing();
+	
+					giveScript(newScript);
 					break;
 				case GlobalFunctionsEvent.PROBLEM:
 					kill();
@@ -338,6 +349,12 @@ package com.xperiment.runner {
 					throw new Error("unrecognised global command:"+e.command);
 			}
 		}
+		
+		protected function submitMTurk():void
+		{
+			Communicator.commandF("submit_mturk_external_question",null);
+		}		
+		
 			
 		
 /*		public function givePreloader():void{
@@ -372,7 +389,7 @@ package com.xperiment.runner {
 			
 			runningTrial=__nextTrialBoss.firstTrial();
 
-			runningExptNow_II();
+			runningExptNow_II(true);
 		}
 		
 		private function genTrialOrder(genTrials:Boolean):void
@@ -389,8 +406,9 @@ package com.xperiment.runner {
 			tempTrial.setup(info);
 			trialList.push(tempTrial);
 		}
-		
-		public function runningExptNow_II():void{
+		 
+		//nb restart other stuff used for Maker
+		public function runningExptNow_II(restartOtherStuff:Boolean):void{
 			if(CheckTurk.DO(trialProtocolList,theStage))commenceWithTrial();//starts the trial sequence 
 		}
 		
@@ -427,13 +445,12 @@ package com.xperiment.runner {
 			else{	
 
 				runningTrial.prepare(__nextTrialBoss.currentTrial,trialProtocolList.TRIAL[runningTrial.TRIAL_ID]);	
+				//trace(11,__nextTrialBoss.currentTrial)
 			}
 		}
 
-		
-		public function nextTrial(e:GotoTrialEvent):void {
+		private function extractTrialData(t:Trial):void{
 			var trialData:XML;
-
 			//no point saving data if the trial has not been run
 			if(runningTrial.runTrial == true && isBuilder==false){
 				trialData=runningTrial.giveTrialData();	
@@ -442,6 +459,11 @@ package com.xperiment.runner {
 			}
 			
 			if(P2PgiveF)	P2PgiveF(trialData,__nextTrialBoss.currentTrial);
+		}
+		
+		public function nextTrial(e:GotoTrialEvent):void {
+			
+			extractTrialData(runningTrial);
 			
 			runningTrial=__nextTrialBoss.getTrial(e.action,runningTrial);
 	
@@ -487,7 +509,7 @@ package com.xperiment.runner {
 		public function saveDataProcedure():void{
 			
 			if(ExptWideSpecs.IS("assignment_id")!=""){
-				Communicator.pass("submit_mturk_external_question",null);
+				submitMTurk();
 			}
 			
 			if(P2PgiveF)P2PgiveF(exptResults.composeXMLInfo(),null);
@@ -511,6 +533,7 @@ package com.xperiment.runner {
 		public function kill():void
 		{
 			preloader.kill();
+			trialList = null;
 			if(runningTrial)destroy();
 			//if(trialDataBar && theStage.contains(trialDataBar))theStage.removeChild(trialDataBar);
 			if(exptResults)exptResults.kill();

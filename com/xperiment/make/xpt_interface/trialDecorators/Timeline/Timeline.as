@@ -50,6 +50,7 @@ package com.xperiment.make.xpt_interface.trialDecorators.Timeline
 				stimuli_info.push(stim);
 				
 			}
+			
 			toJS('timelineItems',stimuli_info);
 		}
 		

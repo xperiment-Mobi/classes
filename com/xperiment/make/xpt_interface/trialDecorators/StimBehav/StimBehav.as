@@ -3,29 +3,53 @@ package com.xperiment.make.xpt_interface.trialDecorators.StimBehav
 	import com.xperiment.make.xpt_interface.TrialBuilder;
 	import com.xperiment.make.xpt_interface.runnerBuilder;
 
+
 	public class StimBehav
 	{
 		private static var runner:runnerBuilder;
 		private static var addStim:Function;
+	
 		
 		public static function setup(r:runnerBuilder, a:Function):void
 		{
 			runner=r;
 			addStim=a;			
+
 		}
 		
-		public static function addLoadableStimuli(stims:Array):void
+		/*public static function addLoadableStimuli(stims:Array):void
 		{
-			// TODO Auto Generated method stub
+			function IS(nam:String,what:String):Boolean{
+				return nam.indexOf(what)!=-1;
+			}
 			
-		}
+			var type:String;
+			for each(var stim:String in stims){
+				type='';
+				if(	        IS(stim,"jpg" ) )	type="jpg";
+				else if(	IS(stim,"png" ) )	type="jpg";
+				else if(	IS(stim,"mp3" ) )	type="sound";
+				else if(	IS(stim,"flv" ) )	type="video";
+				
+				if(type!=''){
+
+					addStimulus(	type,{filename:stim}	)
+				}
+			}
+			
+		}*/
 		
-		public static function addStimulus(type:String,params:Object=null):void
+		public static function addStimulus(type:String,params:Object=null,update:Boolean=true):void
 		{
-			type = type.charAt(0).toUpperCase()+type.substr(1);
+	
 			var stim:XML = <{type} />;
-			addStim((runner.runningTrial as TrialBuilder).bind_id,stim);	
+			for(var key:String in params){
+				stim.@[key] = params[key];
+			}
+			
 			(runner.runningTrial as TrialBuilder).xml.prependChild(stim.copy());
+			addStim((runner.runningTrial as TrialBuilder).bind_id,stim,update);	
+			
 		}
 /*		
 		public static function addStimToBind(stim:uberSprite):void
@@ -39,18 +63,22 @@ package com.xperiment.make.xpt_interface.trialDecorators.StimBehav
 		
 	
 		
-		private static function addLoadableStimuli(filenames:Array):void
+		public static function addLoadableStimuli(filenames:Array):void
 		{
 			
 			var type:String;
 			var stimType:String;
-			var filesToLoad:Array=[];
+			var filename:String;
 			var arr:Array;
-			for each(var filename:String in filenames){
+			
+			for (var i:int=0;i<filenames.length;i++){
+				filename = filenames[i];
 				arr=filename.split(".");
 				type = arr[arr.length-1].toLowerCase();
+
 				if(["jpg","jpeg","png"].indexOf(type)!=-1){
 					stimType="jpg";
+
 				}
 				else if(["mp3"].indexOf(type)!=-1){
 					stimType="mp3";
@@ -61,17 +89,10 @@ package com.xperiment.make.xpt_interface.trialDecorators.StimBehav
 				else{
 					throw new Error("was passed unknown filetype from JS "+filename);
 				}
-				filesToLoad.push(filename);
+	
+				runner.preloader.appendToQueueAndLoad([filename]);
+				addStimulus(stimType,{filename:filename},i==filenames.length-1);
 			}
-			
-			
-			if(filesToLoad.length>0){
-				runner.preloader.appendToQueueAndLoad(filesToLoad);
-				for each(filename in filesToLoad){
-					addStimulus(stimType,{filename:filename});
-				}
-			}
-			
 			
 			
 		}		

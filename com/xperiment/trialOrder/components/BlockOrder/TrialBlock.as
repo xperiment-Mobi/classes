@@ -96,6 +96,7 @@ package com.xperiment.trialOrder.components.BlockOrder
 
 			//have to get myTrials as SetForced manipulates the trialsArray
 			var myTrials:Array = setTrials(trial.@trials.toString(),counter);
+			//trace(myTrials,22)
 			if(trials.length>0){
 				setBlock(trial.@block.toString());
 				__setNames(trial.@trialName.toString());

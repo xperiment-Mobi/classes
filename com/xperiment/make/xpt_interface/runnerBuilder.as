@@ -46,7 +46,7 @@ package com.xperiment.make.xpt_interface
 			Timeline.setup(this,Communicator.pass,BindScript.depthOrderChanged, Bind_processChanges.timingChanged );
 			StimBehav.setup(this, BindScript.addStimulus);
 			Bind_delStim.setup(this);
-			PropertyInspector.setup(BindScript.getStimScript,Communicator.pass);
+			PropertyInspector.setup(BindScript.getStimScript,Communicator.pass,this);
 			PlayHelper.setup(this);
 			
 			//Coder.setup(this);
@@ -81,7 +81,7 @@ package com.xperiment.make.xpt_interface
 		public function resize():void{			
 			setDimensions();
 			theStage.align='';
-			restartTrial();
+			restartTrial(false);
 		}
 		
 		override protected function setDimensions():void{
@@ -100,8 +100,9 @@ package com.xperiment.make.xpt_interface
 		
 		private function hhhh():void
 		{
+			
 			var s:Sprite = new Sprite;
-			s.graphics.beginFill(0xffffff,.4);
+			s.graphics.beginFill(Math.random()*0xffffff,.4);
 			s.graphics.drawRect(0,0,100,100);
 			theStage.addChild(s);
 
@@ -119,8 +120,10 @@ package com.xperiment.make.xpt_interface
 				//arr=codeRecycleFunctions.arrayShuffle(arr);
 				//Timeline.timeChange({peg:'noPeg0',start:0,end:200});
 				//OnScreenBossMaker.fromJS({command:"play"});
-				StimBehav.addStimulus("Button");
-				Bind_delStim.stim([]);
+				//newScript(trialProtocolList.toString())
+				PropertyInspector.propEdit({group:'noPeg0---noPeg1---noPeg2---noPeg3---noPeg4---noPeg5---noPeg6---noPeg7---noPeg8---noPeg9 — text',name:'width',value:'100%'});
+				//StimBehav.addLoadableStimuli(["new.png"]);
+				//Bind_delStim.stim([]);
 				//[{"group":"text","info":"a","start":0,"end":"forever"},{"group":"text","info":"a","start":0,"end":"forever"},{"group":"button","info":"noPeg0","start":0,"end":"forever"}]
 				//Timeline.depthChange(['noPeg','a','a']);
 				//restartTrial()
@@ -165,18 +168,20 @@ package com.xperiment.make.xpt_interface
 		}
 	
 	
-		public function runTrial():void{
+/*		public function runTrial():void{
 			//trace(runningTrial.pic,122)
-			runningExptNow_II();
-		}
+				();
+		}*/
 		
-		override public function runningExptNow_II():void{
+		override public function runningExptNow_II(restartOtherStuff:Boolean):void{
 			//runningTrial.ITI=0;
 			//Cards.generateInstructions();
 			commenceWithTrial();
-			PropertyInspector.newTrial(runningTrial as TrialBuilder);
-			Timeline.update(runningTrial);
-			posScaleChanger();
+			if(restartOtherStuff){
+				PropertyInspector.newTrial(runningTrial as TrialBuilder);
+				Timeline.update(runningTrial);
+				posScaleChanger();
+			}
 			//ZYY
 
 			//Timeline.update(runningTrial);
@@ -235,6 +240,10 @@ package com.xperiment.make.xpt_interface
 		override protected function scaleMode():void{
 			//theStage.scaleMode=StageScaleMode.NO_SCALE;
 		}
+		
+		override protected function submitMTurk():void
+		{
+		}	
 
 		
 		override protected function commandF(what:String, data:* =null):void{
@@ -253,11 +262,11 @@ package com.xperiment.make.xpt_interface
 		}
 		
 		*/
-		public function restartTrial():void{
+		public function restartTrial(restartOtherStuff:Boolean):void{
 			//trialProtocolList = BindScript.script;
 			runningTrial.generalCleanUp();
 			runningTrial.ITI=0;
-			runTrial();							
+			runningExptNow_II(restartOtherStuff);							
 		}
 		
 

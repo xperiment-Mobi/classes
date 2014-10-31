@@ -26,7 +26,7 @@ package com.xperiment.make.xpt_interface
 		
 		private function initElements():void
 		{
-			elements['PropertyInspector'] 				= ['setScriptEditor'];
+			elements['PropertyInspector'] 				= ['setScriptEditor','restartTrial'];
 			elements['BindScript.addStimulus'] 			= ['setScriptEditor','restartTrial'];
 			elements['BindScript.deleteTrial']	 		= ['setScriptEditor'];
 			elements['BindScript.deleteTrials'] 		= ['setScriptEditor'];
@@ -47,7 +47,7 @@ package com.xperiment.make.xpt_interface
 		{
 			//requirements.push( {'syncRunnerScript_BindScript': 	function():void{runner.syncRunnerScript_BindScript();}} );
 			requirements.push( {'setScriptEditor': 		function():void{Communicator.pass('setScript',BindScript.cleanScript())}} );
-			requirements.push( {'restartTrial': 		function():void{runner.restartTrial()}} );
+			requirements.push( {'restartTrial': 		function():void{runner.restartTrial(false)}} );
 			requirements.push( {'resetPropertyApp': 	function():void{PropertyInspector.newTrial(runner.runningTrial as TrialBuilder);}} );
 			requirements.push( {'setTimeline__Trial': 	function():void{Timeline.update(runner.runningTrial);}} );
 			requirements.push( {'pos_scale_editor__Trial': 	function():void{runner.posScaleChanger();}} );

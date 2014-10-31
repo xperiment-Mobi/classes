@@ -12,20 +12,23 @@ package com.xperiment.make.OnScreenBoss
 	{
 		public static var isStill:Boolean = true;
 		public static var instance:OnScreenBossMaker;
-		private static var JS_boss:Boolean = false;
+		//private static var JS_boss:Boolean = false;
 		
 		private var currentTime:int;
 		private var stim:uberSprite;
 		
 		
 		public static function currentTime_toJS(t:int):void{
-			if(JS_boss==false){
-				if(ExternalInterface.available)	ExternalInterface.call('timelineHelper.setTime',t);
-			}
+			//if(JS_boss==false){
+			if(ExternalInterface.available)	ExternalInterface.call('timelineHelper.setTime',t);
+			
+			//}
 		}
 		
+
+		
 		public static function currentTime_fromJS(t:int):void{
-			JS_boss=true;
+			//JS_boss=true;
 			instance.GOTO(t);
 		}
 		
@@ -33,7 +36,7 @@ package com.xperiment.make.OnScreenBoss
 			if(instance){
 				var command:String  = info.command;
 				var extra:String	= info.extra;
-				JS_boss=true;
+				//JS_boss=true;
 				if(command=='play') { instance.PLAY(); return; }
 				if(command=='pause'){ instance.PAUSE(); return; }
 				if(command=='reset'){ instance.RESET(); return; }
@@ -132,7 +135,7 @@ package com.xperiment.make.OnScreenBoss
 
 		public function PLAY():void
 		{
-			(_mainTimer as TrueTimerBuilder).reStart();
+			_mainTimer .reStart();
 		}
 		
 		public function PAUSE():void

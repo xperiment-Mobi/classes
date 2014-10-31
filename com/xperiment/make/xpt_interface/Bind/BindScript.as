@@ -139,7 +139,7 @@ package com.xperiment.make.xpt_interface.Bind
 			return false;
 		}
 		
-		public static function addStimulus(parentID:String, xml:XML):void{
+		public static function addStimulus(parentID:String, xml:XML, doUpdate:Boolean=true):void{
 			var parent:XML = tagDictionary[parentID];
 			
 			var bind_id:String = TRIAL+"_"+counter.toString();
@@ -149,8 +149,10 @@ package com.xperiment.make.xpt_interface.Bind
 			tagDictionary[bind_id] = xml;
 			
 			parent.prependChild(xml);
-			
-			updated(['BindScript.addStimulus']);
+
+			if(doUpdate) {
+				updated(['BindScript.addStimulus']);
+			}
 		}
 		
 

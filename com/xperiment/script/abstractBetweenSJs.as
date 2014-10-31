@@ -11,10 +11,13 @@ package com.xperiment.script
 		//unit tested in test_RandCond
 		public function forceConditionF(forceCondition:String):void
 		{
+
 			var found:Boolean = false;
 			for (var i:int=0; i< script.children().length(); i++){
 				if(script.children()[i].name().toString()==forceCondition){
+					
 					script = MeldConditions.DO(script,i);
+					
 					this.dispatchEvent(new Event(Event.COMPLETE));
 					found = true;
 					break;
@@ -26,13 +29,13 @@ package com.xperiment.script
 		public function sortOutMultiExperiment(parentScript:XML,urlParam_Cond:String):void{
 			this.script=parentScript;
 			
-			
+			//trace(11111,parentScript)
 			if(script.hasOwnProperty('MULTISETUP')){
 			
 				var multisetup:XMLList=script.MULTISETUP;
 				var forceCondition:String=urlParam_Cond;
 
-				if(forceCondition=='' && multisetup.hasOwnProperty('@forceCondition')){					
+				if(forceCondition=="" && multisetup.hasOwnProperty('@forceCondition')){	
 					forceCondition=script.MULTISETUP.@forceCondition;
 				}
 				

@@ -36,6 +36,7 @@
 		public static var preserveQueue:Boolean = false;
 		
 		public function kill():void{
+	
 			if(queue && preserveQueue==false){
 				queue.cancel()
 				queue.empty(true,true);
@@ -163,7 +164,6 @@
 		public function PreloadStimuli(script:XML,theStage:Stage,kill:Function=null):void{
 			this.theStage=theStage;
 			this.killXperimentF=kill;
-			
 			if(script!=null){
 				localDirectory=codeRecycleFunctions.fixLocalDir(ExptWideSpecs.IS('stimuliFolder'));
 				if(ExptWideSpecs.IS('forceStimuliReload') == true) 	forceReload=true;

@@ -25,15 +25,11 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		
 		public static function command(what:String, data:* =null):Boolean
 		{
-			
-
-			if(what=='propEdit'){
-				PropertyInspector.propEdit(data);
-				return true;
-			}
-			
-			
+				
 			switch(what){
+				case 'propEdit':
+					PropertyInspector.propEdit(data);
+					return true;
 				case 'cards_orderChanged':
 					Cards.change(data as Array);
 					return true;
@@ -55,7 +51,6 @@ package com.xperiment.make.xpt_interface.trialDecorators
 					break;
 				case 'loadableStim':
 					StimBehav.addLoadableStimuli(data as Array);
-					
 					break;
 				case 'stimBehav':
 					StimBehav.addStimulus(data as String);
@@ -78,7 +73,6 @@ package com.xperiment.make.xpt_interface.trialDecorators
 					}	
 					break;
 				case 'editMode':
-					r.editMode = data;
 					r.pos_scale.setMode(data);
 					break;
 				case 'timeChange':

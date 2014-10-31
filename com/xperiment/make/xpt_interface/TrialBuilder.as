@@ -10,6 +10,7 @@ package com.xperiment.make.xpt_interface
 	import com.xperiment.stimuli.StimulusFactory;
 	import com.xperiment.stimuli.object_baseClass;
 	import com.xperiment.trial.Trial;
+	import com.xperiment.uberSprite;
 	
 	public class TrialBuilder extends Trial
 	{
@@ -97,9 +98,17 @@ package com.xperiment.make.xpt_interface
 		override public function getOnScreenBoss():OnScreenBoss{
 			return new OnScreenBossMaker;
 		}
-			
+	
+/*		override public function sortoutTiming(startStr:String, endStr:String,duration:String,peg:String,stim:uberSprite):void{
+			if(endStr.indexOf('etc')!=-1){
+				
+			}
+			super.sortoutTiming(startStr,startStr,duration,peg,stim);
+		}*/
+		
 	}
 }
+
 
 class UniqueNewStim{
 	private var uniqueNewStimID:Array = [];
@@ -118,5 +127,7 @@ class UniqueNewStim{
 	private function gen():String{
 		return int(Math.random()*100000).toString();
 	}
+	
+
 	
 }

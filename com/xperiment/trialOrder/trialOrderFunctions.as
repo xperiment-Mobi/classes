@@ -7,8 +7,8 @@
 		
 		//static var blockSize:uint;
 		//static var numBlocks:uint;
-		private static var randFirstOrder:String;
-		private static var randSecondOrder:String;		
+		//private static var randFirstOrder:String;
+		//private static var randSecondOrder:String;		
 		
 		
 		public static function computeOrder(trialProtocolList:XML,composeTrial:Function):Array{
@@ -20,12 +20,12 @@
 			var counter:int=0;
 			var trialBlock:TrialBlock;
 			var trials:Array;
-			
+			//trace(Math.random(),33)
 			for (var i:uint=0; i<trialProtocolList.TRIAL.length(); i++) { //for each block of trials
 				trialBlock=new TrialBlock;
 				
 				trialBlock.setup(trialProtocolList.TRIAL[i],counter,i,composeTrial)
-			
+				//trace(i,trialProtocolList.TRIAL[i])
 				if(trialBlock.numTrials>0){	//ignore trials that say zero trials
 					orderBlocksBoss.giveBlock(trialBlock); 
 					counter=trialBlock.getMaxTrial()+1;
