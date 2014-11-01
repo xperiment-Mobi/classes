@@ -11,6 +11,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 	import com.xperiment.make.xpt_interface.runnerBuilder;
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
 	import com.xperiment.make.xpt_interface.Bind.Bind_delStim;
+	import com.xperiment.make.xpt_interface.Bind.MultiTrialCorrection;
 	import com.xperiment.make.xpt_interface.Cards.Cards;
 	import com.xperiment.make.xpt_interface.ClipboardETC.ClipboardETC;
 	import com.xperiment.make.xpt_interface.trialDecorators.Helpers.EditText;
@@ -75,6 +76,10 @@ package com.xperiment.make.xpt_interface.trialDecorators
 				case 'editMode':
 					r.pos_scale.setMode(data);
 					break;
+				case 'editModeType':
+					trace(1)
+					MultiTrialCorrection.setMode(data);
+					break;
 				case 'timeChange':
 					trace("received command change");
 					Timeline.timeChange(data);
@@ -121,6 +126,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 				case 'deletePegs':
 					Bind_delStim.delPegs(data as Array, r);
 					break;
+				
 				default:
 					return false;
 					

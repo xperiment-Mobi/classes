@@ -130,7 +130,7 @@ package com.xperiment.make.xpt_interface
 				var bind_id:String = lookup_peg[data.group];
 				BindScript.updateAttrib(bind_id,prop,val,null,-1,['PropertyInspector']);
 				
-				UpdateRunnerScript.DO(bind_id,runner);
+				UpdateRunnerScript.DO(bind_id);
 			}
 		}
 	}

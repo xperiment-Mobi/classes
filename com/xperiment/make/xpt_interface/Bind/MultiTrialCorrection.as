@@ -4,6 +4,8 @@ package com.xperiment.make.xpt_interface.Bind
 
 	public class MultiTrialCorrection
 	{
+		public static var overStims:Boolean  = false;
+		public static var overTrials:Boolean = true;
 		
 
 		
@@ -44,7 +46,7 @@ package com.xperiment.make.xpt_interface.Bind
 
 		    if(val==oldVal)	return val;
 			if(!multiSpecs) return val;
-			
+			if(overTrials && overStims) return val;
 
 			if(attrib=="howMany"){
 				return processHowMany(val, oldVal, multiSpecs);
@@ -53,63 +55,28 @@ package com.xperiment.make.xpt_interface.Bind
 			//-split up
 			var trialSplit:Array = oldVal.split(";");
 			var defaultStr:String;
-			var addBack:Boolean = false;
+			
 			
 			for(var i:int=trialSplit.length-1; i>=0; i--){
 				trialSplit[i] = trialSplit[i].split("---");
 			}
 
-			//trace(123,trialSplit.length,multiSpecs.numTrials)
-			//---core
+			
+		
 			if(trialSplit.length<multiSpecs.numTrials){
 				defaultStr = getDefault(attrib,multiSpecs);
 				__duplicateUp(trialSplit, multiSpecs.numTrials,defaultStr);
 			}
 			
-			
-			var isolatedTrial:Array;
-			if(trialSplit[multiSpecs.trialNum] is Array){
-				if(val) isolatedTrial= trialSplit[multiSpecs.trialNum];
-				
-				else{
-					isolatedTrial=[];
-					for(i=0;i<trialSplit[multiSpecs.trialNum].length;i++){
-						isolatedTrial.push(trialSplit[multiSpecs.trialNum][i]);
-					}
-					addBack=true;
+			if(overTrials){
+				for(i = trialSplit.length-1;i>=0;i--){
+					sortTrialChange(trialSplit, i, multiSpecs, val, defaultStr, attrib);
 				}
+			}
 
-			}
-			else {
-				
-				isolatedTrial = [trialSplit[multiSpecs.trialNum]];
-				addBack = true;
-			}
+			else sortTrialChange(trialSplit, multiSpecs.trialNum, multiSpecs, val, defaultStr, attrib);
+		
 			
-			//trace(3333,trialSplit)
-			
-			//if(Number(val.substr(0,val.length-1))>50)trace(13,val,isolatedTrial)
-			//trace(isolatedTrial.length,multiSpecs.itemNum+1)
-			//trace(2292,isolatedTrial.length,multiSpecs.itemNum+1)
-			if(isolatedTrial.length<multiSpecs.numItems){
-				//trace(444,getDefault(attrib,multiSpecs))	
-				defaultStr ||= getDefault(attrib,multiSpecs);
-
-				__duplicateUp(isolatedTrial, multiSpecs.numItems,defaultStr);
-			}
-			//trace(trialSplit,33333)
-			if(val)	isolatedTrial[multiSpecs.itemNum] = val;
-			else{
-				isolatedTrial.splice(multiSpecs.itemNum,1);
-
-			}
-			//trace(trialSplit,33333)
-			CrunchUp.DO(isolatedTrial);
-
-			//trace(trialSplit,33333)
-			if(addBack) trialSplit[multiSpecs.trialNum] = isolatedTrial;
-			//trace(trialSplit,444)
-			//---recombine
 			for(i=trialSplit.length-1; i>=0; i--){
 				if(trialSplit[i] is Array){
 					trialSplit[i] = CrunchUp.DO(trialSplit[i]);
@@ -117,9 +84,7 @@ package com.xperiment.make.xpt_interface.Bind
 					trialSplit[i] = trialSplit[i].join("---");
 				}
 				else CrunchUp.DO([trialSplit[i]]);
-				
-				//trace(1111,trialSplit[i]);
-//				/trialSplit[i] = trialSplit[i].join("---");
+			
 			}
 
 			trialSplit = CrunchUp.DO(trialSplit);
@@ -129,6 +94,55 @@ package com.xperiment.make.xpt_interface.Bind
 			return val;
 		}
 		
+		private static function sortTrialChange(trialSplit:Array, trialNum:int, multiSpecs:Object, val:String, defaultStr:String, attrib:String):void
+		{
+			if(overStims){
+				trialSplit[trialNum] = val;
+				return;
+			}
+			
+			var isolatedTrial:Array;
+			var addBack:Boolean = false;
+			
+			
+			if(trialSplit[trialNum] is Array){
+				if(val) isolatedTrial= trialSplit[trialNum];
+					
+				else{
+					isolatedTrial=[];
+					for(var i:int=0;i<trialSplit[trialNum].length;i++){
+						isolatedTrial.push(trialSplit[trialNum][i]);
+					}
+					addBack=true;
+				}
+				
+			}
+			else {
+				
+				isolatedTrial = [trialSplit[trialNum]];
+				addBack = true;
+			}
+			
+
+			if(isolatedTrial.length<multiSpecs.numItems){
+			
+				defaultStr ||= getDefault(attrib,multiSpecs);
+				
+				__duplicateUp(isolatedTrial, multiSpecs.numItems,defaultStr);
+			}
+
+			if(val)	isolatedTrial[multiSpecs.itemNum] = val;
+			else{
+				isolatedTrial.splice(multiSpecs.itemNum,1);
+				
+			}
+
+			CrunchUp.DO(isolatedTrial);
+
+			if(addBack) trialSplit[trialNum] = isolatedTrial;
+		}
+		
+
 
 		
 		private static function getDefault(attrib:String, multiSpecs:Object):String
@@ -158,5 +172,17 @@ package com.xperiment.make.xpt_interface.Bind
 			return isolatedTrial;
 		}
 		
+		public static function setMode(data:Object):void
+		{
+			if('overStims'==data.button){
+				overStims=data.state;
+			}
+			else if('overTrials'==data.button){
+				overTrials= data.state;
+			}
+			else{
+				throw new Error();
+			}
+		}
 	}
 }

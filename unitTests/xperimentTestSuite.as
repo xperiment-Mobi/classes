@@ -20,7 +20,6 @@ package unitTests
 			core.addListener(fin);
 			
 			//core.run(test_EventPassPegToAction);
-			//core.run(test_logic)
 			//core.run(test_logicActions)
 			//core.run(test_exptWideVars)
 			//core.run(test_ActionMaths)
@@ -30,7 +29,8 @@ package unitTests
 			//core.run(test_trialOrderFunctions);
 			//test_FlattenXML
 			
-			core.run(test_ActionFactory,test_giveTrialPeg,test_accessStimProps,test_logic,test_trialOrderFunctions,test_behavBoss,test_ActionDict,test_BehavBossHelper,
+			//reinstate asap test_logic (not included whilst on laptop building Builder stuff
+			core.run(test_ActionFactory,test_giveTrialPeg,test_accessStimProps,test_trialOrderFunctions,test_behavBoss,test_ActionDict,test_BehavBossHelper,
 				test_ActionMaths,test_logicActions,test_exptWideVars,test_exptWideSpecs,test_RandCond,test_CodeRecycleFunctions,test_RequiredActions,
 				test_Communicator,test_cloudLocationUpdater,test_Trial_cleanTitle, test_TrialHelper,test_ProcessScript,
 				test_ShuffleFs,test_GetData,test_ObjectBaseClass,test_trialOrder,test_xptMemory, 

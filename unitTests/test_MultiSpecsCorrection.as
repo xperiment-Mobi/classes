@@ -6,28 +6,20 @@ package unitTests
 
 	public class test_MultiSpecsCorrection
 	{
-
-		
-		
 		
 		[Test]
 		public function test1() : void 
 		{		
-
 			Assert.assertTrue(MultiTrialCorrection.__duplicateUp([1,2,3],4,'1')[3]==1);
 			Assert.assertTrue(MultiTrialCorrection.__duplicateUp([1,2,3],5,'2')[4]==2);
 			Assert.assertTrue(MultiTrialCorrection.__duplicateUp([1,2,3],6,'3')[5]==3);	
-			
-			
 		}
 		
 		
 		
 		[Test]
 		public function test2() : void 
-		{		
-
-				
+		{			
 			Assert.assertTrue('x'==MultiTrialCorrection.sortMultiSpecs("x","h",{trialNum:0,itemNum:0,numItems:1,numTrials:1,defaults:{}}));
 			Assert.assertTrue('x---0'==MultiTrialCorrection.sortMultiSpecs("x","h---0",{trialNum:0,itemNum:0,numItems:1,numTrials:1,defaults:{}}));		
 			Assert.assertTrue('h---x'==MultiTrialCorrection.sortMultiSpecs("x","h---0",{trialNum:0,itemNum:1,numItems:1,numTrials:1,defaults:{}}));		
@@ -77,6 +69,33 @@ package unitTests
 			//trace(111,MultiTrialCorrection.sortMultiSpecs(null,"x---y---q",{trialNum:1,itemNum:1,numItems:2,numTrials:3,defaults:{}}));
 			//trace("-a-------------------");
 		}
+		
+		//testing where overTrials 
+		[Test]
+		public function test5() : void 
+		{
+			MultiTrialCorrection.overTrials = true;
+			//trace(MultiTrialCorrection.sortMultiSpecs('x',"y---x;y",{trialNum:0,itemNum:0,numItems:2,numTrials:2,defaults:{}}))
+			Assert.assertTrue('x---y'==MultiTrialCorrection.sortMultiSpecs('x',"x---y",{trialNum:0,itemNum:0,numItems:2,numTrials:1,defaults:{}}));
+			Assert.assertTrue('x---y'==MultiTrialCorrection.sortMultiSpecs('x',"y---y;y",{trialNum:0,itemNum:0,numItems:2,numTrials:2,defaults:{}}));
+			Assert.assertTrue('x;x---y'==MultiTrialCorrection.sortMultiSpecs('x',"y---x;y",{trialNum:0,itemNum:0,numItems:2,numTrials:2,defaults:{}}));
+			Assert.assertTrue('x'==MultiTrialCorrection.sortMultiSpecs('x',"y---x;y---x",{trialNum:0,itemNum:0,numItems:2,numTrials:2,defaults:{}}));
+			MultiTrialCorrection.overTrials = false;
+		}
+		
+		//testing where overStims
+		[Test]
+		public function test6() : void 
+		{
+			MultiTrialCorrection.overStims = true;
+
+			Assert.assertTrue('x'==MultiTrialCorrection.sortMultiSpecs('x',"x---y",{trialNum:0,itemNum:0,numItems:2,numTrials:1,defaults:{}}));
+			Assert.assertTrue('x;b---c'==MultiTrialCorrection.sortMultiSpecs('x',"x---y;b---c",{trialNum:0,itemNum:0,numItems:2,numTrials:1,defaults:{}}));
+			
+			MultiTrialCorrection.overStims = false;
+
+		}
+		
 		
 	}
 }
