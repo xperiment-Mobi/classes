@@ -29,8 +29,7 @@ package com.xperiment.make.xpt_interface
 		
 		public static function newTrial(r:TrialBuilder):void
 		{
-			
-			trace(111)
+
 			runningTrial=r;
 			lookup_peg = new Dictionary;
 			var b:String = (runningTrial as TrialBuilder).bind_id;
@@ -84,7 +83,6 @@ package com.xperiment.make.xpt_interface
 			
 			for each(var a:XML in stim.@*) 
 			{
-				
 				key = a.name().toString();
 				if(key!=bindLabel){
 					if(key!=peg) rows.push({group:group, name:key, value:a.toString(), detailedName:detailedName,bind_id:bind_id});

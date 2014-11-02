@@ -29,11 +29,14 @@ package com.xperiment.make.xpt_interface
 	<computer stimuliFolder="assets" />
 </SETUP>
 
+  <TRIAL TYPE="Trial" hideResults="true" block="1" order="fixed" trials="5" >
+	<addText colour="red" howMany="3" text="abc" x="61.38%" y="29.69%---50%---70%" height="28.4%" width="20.1%"  horizontal="right---middle---middle"/>
+  </TRIAL>
 
 <TRIAL TYPE="Trial" trialName="DoExpt" hideResults="true" block="1" order="fixed" trials="1">
 	
 	<addText howMany="10" x="10%---20%---etc---" y="20%---25%---etc---" width="5%" height="5" text="123" vertical="bottom" ttimeStart="0" timeStart="0---200---300---400" timeEnd="600" />		
-	
+	<addJPG filename="new.png" />
 	<addButton width="140" howMany="2" sstartID="next" height="40" text="I consent" resultFileName="continue" timeEnd="forever" x="50%---60%---70%"  y="90%"/>
 
 

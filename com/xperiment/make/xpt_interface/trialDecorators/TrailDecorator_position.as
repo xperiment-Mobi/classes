@@ -5,16 +5,15 @@ package com.xperiment.make.xpt_interface.trialDecorators
 	import com.greensock.transform.TransformManager;
 	import com.xperiment.codeRecycleFunctions;
 	import com.xperiment.uberSprite;
-	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
 	import com.xperiment.make.xpt_interface.Bind.UpdateRunnerScript;
 	import com.xperiment.make.xpt_interface.trialDecorators.Helpers.GetSetPos;
 	import com.xperiment.stimuli.object_baseClass;
 	import com.xperiment.trial.Trial;
-	
 	import flash.display.Shape;
 	import flash.display.Stage;
 	import flash.events.MouseEvent;
+	import flash.filters.GlowFilter;
 	import flash.geom.Point;
 
 
@@ -37,6 +36,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		private var verToCentre:Number=0
 		private var xMod:int;
 		private var yMod:int;
+		private var filter:GlowFilter;
 		
 		public function set_yPerStepSizes(y:Number,update:Boolean=true):void
 		{
@@ -54,7 +54,8 @@ package com.xperiment.make.xpt_interface.trialDecorators
 
 		public function kill():void
 		{
-			if(manager.hasEventListener(MouseEvent.MOUSE_DOWN))manager.removeEventListener(MouseEvent.MOUSE_DOWN,startMoveF)
+			listeners(false);
+			theStage.removeEventListener(MouseEvent.MOUSE_DOWN,startMoveF);
 			theStage.removeChild(grid);
 		}
 		
@@ -139,7 +140,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		{
 			this.manager=manager;
 			this.theStage=theStage;
-			
+
 			theStage.addEventListener(MouseEvent.MOUSE_DOWN,startMoveF);
 			set_xPerStepSizes(_xPerStepSizes,false);
 			set_yPerStepSizes(_yPerStepSizes,false);
@@ -155,23 +156,25 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			var currentX:Number=0;
 			var currentY:Number=0;
 			
-			var col:int = 0xFFFFFF - codeRecycleFunctions.getColour(ExptWideSpecs.IS("BGcolour"));
+			var col:int = 0xFFFFFF;
 			
-			
-			
-			grid.graphics.lineStyle(1,col,.6);
+			grid.graphics.lineStyle(2,col,.6);
 
 			while(currentX<Trial.RETURN_STAGE_WIDTH){
 				grid.graphics.moveTo(currentX,0);
 				grid.graphics.lineTo(currentX, Trial.RETURN_STAGE_HEIGHT);
 				currentX+=xSpacing;
 			}
-
+			
 			while(currentY<Trial.RETURN_STAGE_HEIGHT){
 				grid.graphics.moveTo(0,currentY);
 				grid.graphics.lineTo(Trial.RETURN_STAGE_WIDTH,currentY);
 				currentY+=ySpacing;
 			}
+			
+			filter = new GlowFilter(0x000000);
+			grid.filters = [filter];		
+			
 	
 			theStage.addChildAt(grid,0);
 

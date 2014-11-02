@@ -119,7 +119,8 @@ package com.xperiment.make.xpt_interface
 				//Cards.generateInstructions();
 				//StimBehav.addStimulus('lineScale',null);
 				//pos_scale.setMode(true);
-				//pos_scale.fromJS({info:{command:"snap-to-grid"}});
+				pos_scale.fromJS({info:{command:"snap-to-grid"}});
+				
 				//posScaleChanger();
 				//var arr:Array = ['a','b'];
 				//arr=codeRecycleFunctions.arrayShuffle(arr);
@@ -127,10 +128,10 @@ package com.xperiment.make.xpt_interface
 
 				//OnScreenBossMaker.fromJS({command:"play"});
 				//newScript(trialProtocolList.toString())
-				PropertyInspector.propEdit({group:'noPeg0---noPeg1---noPeg2---noPeg3---noPeg4---noPeg5---noPeg6---noPeg7---noPeg8---noPeg9 — text',name:'width',value:'100%'});
+				//PropertyInspector.propEdit({group:'noPeg0---noPeg1---noPeg2---noPeg3---noPeg4---noPeg5---noPeg6---noPeg7---noPeg8---noPeg9 — text',name:'width',value:'100%'});
 				//StimBehav.addLoadableStimuli(["new.png"]);
 
-				OnScreenBossMaker.fromJS({command:"play"});
+				//OnScreenBossMaker.fromJS({command:"play"});
 				//StimBehav.addStimulus("Button");
 
 				//Bind_delStim.stim([]);
@@ -272,8 +273,7 @@ package com.xperiment.make.xpt_interface
 		}
 		
 		*/
-		public function restartTrial(restartOtherStuff:Boolean):void{
-			//trialProtocolList = BindScript.script;
+		public function restartTrial(restartOtherStuff:Boolean=true):void{
 			runningTrial.generalCleanUp();
 			runningTrial.ITI=0;
 			runningExptNow_II(restartOtherStuff);							

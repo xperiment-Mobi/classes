@@ -19,12 +19,12 @@ package com.xperiment.make.xpt_interface.Bind
 			
 			for each(var stim:XML in runner.trialProtocolList..*.(name()!="TRIAL")){	
 				if(stim.@[bindLabel].toXMLString() == bindId){
-					//trace(stim.toXMLString());
 					for each(var attrib:XML in xml.attributes()){
 						stim.@[attrib.name()] = attrib.toXMLString();
 					}
 					break;
 				}
+
 			}
 		}	
 	}

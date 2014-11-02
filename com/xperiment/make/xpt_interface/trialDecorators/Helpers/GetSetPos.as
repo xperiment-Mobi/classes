@@ -73,7 +73,8 @@ package com.xperiment.make.xpt_interface.trialDecorators.Helpers
 				if(stim.OnScreenElements[what]!=val){
 					stim.OnScreenElements[what]=val;
 					stim.setPosPercent();
-					needsUpdating.push({what:manager.getItem(stim),changed:what});
+					if(what=='vertical')	needsUpdating.push({what:stim,changed:{'vertical':val}});
+					else					needsUpdating.push({what:stim,changed:{'horizontal':val}});
 				}
 			}
 			

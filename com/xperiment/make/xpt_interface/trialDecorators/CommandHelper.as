@@ -77,7 +77,6 @@ package com.xperiment.make.xpt_interface.trialDecorators
 					r.pos_scale.setMode(data);
 					break;
 				case 'editModeType':
-					trace(1)
 					MultiTrialCorrection.setMode(data);
 					break;
 				case 'timeChange':

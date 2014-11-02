@@ -367,6 +367,8 @@
 					//colours defined here http://www.htmlgoodies.com/tutorials/colors/article.php/3478961/So-You-Want-A-Basic-Color-Code-Huh.htm
 			}
 			
+			if(colour.charAt(0)=="#")colour = "0x" + colour.substr(1);
+			
 			if(!isNaN(int(colour))){
 				return int(colour);
 			}

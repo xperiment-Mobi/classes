@@ -39,7 +39,7 @@ package com.xperiment.make.xpt_interface
 			elements['Bind_processChanges.timingChanged']=['setScriptEditor','resetPropertyApp'];
 			elements['Bind_delStim.deletePartMultiStim']= ['restartTrial','setScriptEditor','resetPropertyApp','setTimeline__Trial'];
 			elements['Bind_delStim.deleteStim']			= ['restartTrial','setScriptEditor','resetPropertyApp','setTimeline__Trial'];
-			elements['Trial_Goto'] 						= ['setTimeline__Trial','pos_scale_editor__Trial'];
+			elements['Trial_Goto'] 						= ['setTimeline__Trial','pos_scale_editor__Trial','resetPropertyApp'];
 			
 		}
 		
@@ -85,27 +85,19 @@ package com.xperiment.make.xpt_interface
 		private function generateNeeded():Array
 		{
 			var arr:Array = [];
-			var list:Array;
+			var list:Array;	
 			
-			
-			
-			
-			for(var i:int=0;i<updateFrom.length;i++){
-				
+			for(var i:int=0;i<updateFrom.length;i++){	
 				list = elements[updateFrom[i]];
-
 				for each(var requir:String in list){
 					if(arr.indexOf(requir)==-1)arr.push(requir);
 				}
 			}
-			
-			
+				
 			updateFrom = [];
 			return arr;
 		}
-		
-		
-	
+
 		
 		public function kill():void
 		{
