@@ -10,13 +10,13 @@ package com.xperiment.stimuli
 		//public function Trial_imageCollage(genAttrib:XMLList, specAttrib:XMLList) {
 		override public function setVariables(list:XMLList):void {
 			setVar("string","colour",'orange');
-			setVar("int","randStartDelay",1000);
-			setVar("int","dots",1);
-			setVar("int","velocity",602);	
-			setVar("int","radius",2);
+			setVar("int","dots",100);
+			setVar("int","velocity",100);	
+			setVar("int","radius",5);
 			setVar("number","ratioCoherent",.6);
-			setVar("int","lifeTime",500);
 			setVar("number","angle",0,"","in degrees");
+			setVar("number","minDur",500);
+			setVar("number","maxDur",1000);
 			setVar("string","type","circle","dot|circle","the shape containing the dots");
 	
 			
@@ -36,7 +36,6 @@ package com.xperiment.stimuli
 			pic.scaleY=1;
 			
 			var params:Object = {
-				randStartDelay:getVar("randStartDelay"), 
 				width:_width, 
 				height: _height, 
 				dots: getVar("dots"), 
@@ -45,8 +44,9 @@ package com.xperiment.stimuli
 				radius:getVar("radius"),
 				angle:getVar("angle")/360*2*Math.PI,
 				numCoherent:getVar("ratioCoherent"),
-				lifeTime:getVar("lifeTime"),
 				type:getVar("type"),
+				minDur:getVar("minDur"),
+				maxDur:getVar("maxDur"),
 				globalX:myX,
 				globalY:myY
 			}

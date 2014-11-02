@@ -1,4 +1,6 @@
 ﻿package com.xperiment{
+	import com.xperiment.random.ParkMiller;
+	
 	import flash.display.DisplayObject;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
@@ -13,6 +15,7 @@
 		public static function kill():void{
 			shuffleArrDict = null;
 		}
+		
 		
 		public static function calcArrayAv(arr:Array):Number{
 			var av:Number=0;

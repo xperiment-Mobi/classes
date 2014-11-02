@@ -1,5 +1,7 @@
 package com.xperiment.stimuli.primitives.motionPatch
 {
+	import com.xperiment.random.Rndm;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.utils.getTimer;
@@ -26,6 +28,8 @@ package com.xperiment.stimuli.primitives.motionPatch
 		public function MotionPatch(params:Object){
 			
 			this.params=params;
+			
+			Rndm.init();
 			
 			for each(var param:String in ['radius','type','globalX','globalY']){
 				if(params.hasOwnProperty(param))this[param] = params[param];
@@ -71,7 +75,8 @@ package com.xperiment.stimuli.primitives.motionPatch
 			dotParams.height = params.height - radius*2;
 			dotParams.lifeTime = params.lifeTime;
 			dotParams.colour = params.colour;
-			dotParams.randStartDelay = params.randStartDelay;
+			dotParams.minDur = params.minDur;
+			dotParams.maxDur = params.maxDur;
 			
 			if(params.height<params.width)dotParams.r=params.height*.5;
 			else dotParams.r=params.width*.5;
@@ -130,19 +135,15 @@ package com.xperiment.stimuli.primitives.motionPatch
 		
 		private function updateDots(time:int):void
 		{
-			//this.graphics.clear();
+			this.graphics.clear();
 			for each(var dot:Dot in dots){
 				
 				if(dot.calcNewPos(time))	
 				{
-					//trace(1)
 					if(!patch.hitTestPoint(dot.x+globalX,dot.y+globalY,true)){
-						//trace("-----",dot.x,dot.y);
-						//dot.fixPos(time,false);
-						//dot.re_init();
-						
+						dot.fixPos(time);
 					}
-					//trace(dot.x,dot.y)
+
 					this.graphics.beginFill(dot.colour,1);
 					this.graphics.drawCircle(dot.x,dot.y,radius);
 				}

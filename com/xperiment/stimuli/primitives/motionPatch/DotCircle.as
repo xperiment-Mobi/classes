@@ -12,7 +12,7 @@ package com.xperiment.stimuli.primitives.motionPatch
 		private var A:Point;
 		private var B:Point;
 		private var currentLoc:Point;
-		private var tempAng:Number;
+		//private var tempAng:Number;
 		private var p_x:Number;
 		private var p_y:Number;
 
@@ -43,15 +43,29 @@ package com.xperiment.stimuli.primitives.motionPatch
 		{				
 		}
 
+
 		override protected function genPos():void{
 			
-			tempAng = Math.random() * Math.PI*2;
+		/*	tempAng = Math.random() * Math.PI*2;
 			
 			
 			var randDist:Number = Math.random() * r;
 			x = p_x + randDist * Math.cos(tempAng);
 			y = p_y + randDist * Math.sin(tempAng);	
+			*/
+			
+			x=-r+2*r*Math.random();
+			y=-r+2*r*Math.random();
+			
+			while(x*x+y*y > r*r){
+				x=-r+2*r*Math.random();
+				y=-r+2*r*Math.random();
+			}
+			
 
+			x+=p_x
+			y+=p_y;
+			
 			//x=p_x-r;
 			//y=p_y-0;
 			//angle=Math.PI*1.5
@@ -61,10 +75,11 @@ package com.xperiment.stimuli.primitives.motionPatch
 		private var difx:Number;
 		private var dify:Number;
 		
-		override public function fixPos(time:int,rand:Boolean):void
+		override public function fixPos(time:int):void
 		{
-			
-			var ang:Number;
+			resetTiming(time);
+			init();
+			/*var ang:Number;
 			
 			tempAng =  Math.atan(   ( y-p_y ) / ( x-p_x )   )
 				
@@ -99,7 +114,7 @@ package com.xperiment.stimuli.primitives.motionPatch
 			dify-=y;
 			
 			if(difx*difx+dify*dify<100)init();
-			
+			*/
 			
 			//trace(x,y,p_x,p_y)
 			//y=adj+p_y;

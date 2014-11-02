@@ -58,11 +58,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			theStage.removeEventListener(MouseEvent.MOUSE_DOWN,startMoveF);
 			theStage.removeChild(grid);
 		}
-		
 
-		
-
-		
 		protected function startMoveF(e:MouseEvent):void
 		{
 			if(manager.selectedItems.length==1){

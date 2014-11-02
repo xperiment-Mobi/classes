@@ -1,5 +1,8 @@
 package com.xperiment.stimuli.primitives.motionPatch
 {
+
+	import com.xperiment.random.Rndm;
+
 	internal class Dot{
 		
 		public var x:Number, y:Number;
@@ -11,18 +14,17 @@ package com.xperiment.stimuli.primitives.motionPatch
 		
 		private var vel:Number;
 		private var dist:Number;
-		protected var lifeTime:int;
 		protected var endTime:int = int.MIN_VALUE;		
-		private var randStartDelay:int;
 		private var randAngle:Boolean=true;
 		private var prevTime:int;
+		private var minDur:Number;
+		private var maxDur:Number;
 		
 		public function Dot(params:Object){
 			
-			for each(var param:String in ['vel','width','height','lifeTime','colour','randStartDelay']){
+			for each(var param:String in ['vel','width','height','colour','minDur','maxDur']){
 				if(params.hasOwnProperty(param))this[param] = params[param];
 			}
-			randStartDelay *=Math.random();
 		}
 		
 		
@@ -44,16 +46,16 @@ package com.xperiment.stimuli.primitives.motionPatch
 			
 		}
 		
+		protected function resetTiming(time:int):void{
+			prevTime=time;
+			endTime = time+((maxDur-minDur) * Rndm.random()+minDur);
+		}
 		
 		
 		public function calcNewPos(time:int):Boolean{
-			if(randStartDelay>time)	{
-				return false;
-			}
 			
 			if(endTime <= time){
-				prevTime=time;
-				endTime = time+lifeTime;
+				resetTiming(time);
 				init();	
 			}
 			
@@ -82,7 +84,7 @@ package com.xperiment.stimuli.primitives.motionPatch
 		}
 		
 		
-		public function fixPos(time:int,rand:Boolean):void
+		public function fixPos(time:int):void
 		{
 			
 		}
