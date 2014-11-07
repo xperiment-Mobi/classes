@@ -56,7 +56,7 @@ package com.xperiment.stimuli.primitives.motionPatch
 				if(params.height<params.width)r=params.height*.5;
 				else r=params.width*.5;
 				
-				patch.graphics.beginFill(0x003322,.5);
+				patch.graphics.beginFill(0x003322,0);
 				patch.graphics.drawCircle(params.width*.5,params.height*.5,r);
 
 			}

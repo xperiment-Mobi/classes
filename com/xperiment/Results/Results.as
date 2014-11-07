@@ -148,19 +148,20 @@
 		{
 			if(!_instance){
 				_instance=new Results(new PrivateResults());
-				
-				var save:Array=ExptWideSpecs.IS("save").toLowerCase().split(",");
-				_instance.trickleToServerBool = save.indexOf("trickletofile")!=-1;
-				_instance.trickleToCloudBool = 	save.indexOf("trickletocloud")!=-1;
 			}					
 			return _instance;
 		}	
+		
+
 		
 		public function setup():void
 		{
 			_uuid=ExptWideSpecs.getSJuuid();
 			_deviceUUID=ExptWideSpecs.IS("deviceUUID");
 			
+			var save:Array=ExptWideSpecs.IS("save").toLowerCase().split(",");
+			_instance.trickleToServerBool = save.indexOf("trickletofile")!=-1;
+			_instance.trickleToCloudBool = 	save.indexOf("trickletocloud")!=-1;
 			//_ongoingExperimentResults=new XMLList;
 			//_ongoingExperimentResults=getPracticeData().*;		
 		}	

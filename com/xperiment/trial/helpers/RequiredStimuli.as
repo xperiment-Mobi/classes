@@ -11,9 +11,6 @@ package com.xperiment.trial.helpers
 		public function add(tempObj:IStimulus):void
 		{
 			required.push(tempObj);
-			
-			// TODO Auto Generated method stub
-			
 		}
 		
 		public function compute(bind:Function, updateVal:Function):void

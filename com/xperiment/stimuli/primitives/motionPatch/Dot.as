@@ -78,7 +78,6 @@ package com.xperiment.stimuli.primitives.motionPatch
 		}
 		
 		public function setAngle(ang:Number):void{
-			trace(ang)
 			randAngle=false;
 			angle=ang;
 		}

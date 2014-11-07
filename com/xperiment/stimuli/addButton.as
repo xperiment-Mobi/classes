@@ -120,7 +120,7 @@
 			setVar("boolean","enabled",true);
 			setVar("boolean","sticky",false);
 			setVar("string","whichPressed",'');
-			setVar("string","key","",'Prefix c if you want to use an ascii key code, which you can get from http://www.asciitable.com/'); 	// use codes from here: http://www.asciitable.com/  
+			setVar("string","key","",'Prefix c if you want to use an ascii key code, which you can get from http://www.asciitable.com/. Else just enter the key. Or enter ← → ↑ ↓ for cursor keys.'); 	// use codes from here: http://www.asciitable.com/  
 										//or figure out codes by pressing from here http://www.kirupa.com/developer/as3/using_keyboard_as3.htm
 
 			super.setVariables(list);

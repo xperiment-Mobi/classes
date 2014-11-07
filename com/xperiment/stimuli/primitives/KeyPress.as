@@ -2,9 +2,11 @@ package com.xperiment.stimuli.primitives
 {
 
 	import com.xperiment.stimuli.IButton;
+	
 	import flash.display.Stage;
 	import flash.events.KeyboardEvent;
 	import flash.events.MouseEvent;
+	import flash.ui.Keyboard;
 
 
 	public class KeyPress
@@ -22,6 +24,22 @@ package com.xperiment.stimuli.primitives
 			//trace(1121,(buttonParent as object_baseClass).peg,keyStr)
 			if(keyStr.charAt(0).toUpperCase()=="C"){
 				this.key=int(keyStr.substr(1,keyStr.length-1));
+			}
+			else if(['left','right','up','down'].indexOf(keyStr.toLocaleLowerCase())!=-1){
+				switch(keyStr.toLowerCase()){
+					case 'left':
+						key = Keyboard.LEFT;
+						break;
+					case 'right':
+						key = Keyboard.RIGHT;
+						break
+					case 'up':
+						key = Keyboard.UP;
+						break;
+					case 'down':
+						key = Keyboard.DOWN;
+						break;
+				}
 			}
 			else{
 				this.key=keyStr.toUpperCase().charCodeAt(0);

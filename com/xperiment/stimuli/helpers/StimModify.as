@@ -6,7 +6,7 @@ package com.xperiment.stimuli.helpers
 	{
 		
 		private static var splitChar:String = " ";
-		private static var listActions:Array = ['shuffle_somethings','shuffle_something','randomly_swap','pick_ones','prune_somethings','add_somethings','shuffle_somethings_unique','flip_something'];
+		private static var listActions:Array = ['shuffle_somethings','shuffle_something','randomly_swap','pick_ones','prune_somethings','add_somethings','shuffle_somethings_unique','shuffle_somethings_super_unique','flip_something'];
 		
 		
 		public static function sortOutOverExptMods(script:XML):XML{
@@ -96,6 +96,10 @@ package com.xperiment.stimuli.helpers
 			getParams(str,list,'shuffleUnique');
 		}
 		
+		public static function shuffle_somethings_super_unique(str:String, list:XMLList):void
+		{
+			ShuffleSuperUnique.DO(str,list);
+		}
 		
 		public static function prune_somethings(str:String, list:XMLList):void
 		{

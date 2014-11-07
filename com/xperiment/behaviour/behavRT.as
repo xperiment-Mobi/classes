@@ -45,10 +45,8 @@ package com.xperiment.behaviour
 		}
 		
 		override public function storedData():Array {
-	
 			if(!stopTime)stopTime=calcDuration();
 			objectData.push({event:peg,data:stopTime});
-			
 			return objectData;
 		}
 		

@@ -11,7 +11,7 @@ package com.xperiment
 	public class MTurkHelper extends Sprite
 	{
 
-		private const successMessage:String = "We have submitted your HIT to Mechanical Turk. You can verify this returning to your Hit window in MTurk and clicking 'check'. We appreciate your help in this study. Thankyou.";
+		private const successMessage:String = "We have submitted your HIT to Mechanical Turk. You can check if this was successful by returning to your Hit window in MTurk and clicking 'check'. We appreciate your help in this study. Thankyou.";
 		//private const failMessage:String = 'There has been a problem submitting your HIT to mechanical Turk. Please return to MTurk and follow our instructions. Apologies.';
 		private static var instance:MTurkHelper;
 		

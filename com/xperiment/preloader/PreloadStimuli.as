@@ -190,7 +190,8 @@
 						filename=arr[i];
 						if(fileExtension!='' && filename.indexOf(".")==-1)	filename=filename+fileExtension;
 						
-						if(files.indexOf(localDirectory+filename)==-1)		files.push(localDirectory+filename);							
+						if(files.indexOf(localDirectory+filename)==-1)		files.push(localDirectory+filename);
+						trace(localDirectory,filename,111)
 					}
 				}
 			}

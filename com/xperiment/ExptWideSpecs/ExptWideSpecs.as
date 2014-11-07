@@ -234,7 +234,7 @@ package com.xperiment.ExptWideSpecs
 						trace("you've tried to set a global experiment property that unfortunately does not exist:",tempClassReference);
 				}	
 			}
-			
+
 			//trace(myScript,myScript.name().toString());
 			__ExptWideSpecs.info.betweenSJsID=myScript.name().toString();
 			__checkSaveGood()

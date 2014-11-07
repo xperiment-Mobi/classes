@@ -330,11 +330,13 @@ package com.xperiment.runner {
 				case GlobalFunctionsEvent.GOTO_COND:
 					runningTrial.compileOutputForTrial();
 					runningTrial.generalCleanUp();
+					
 					extractTrialData(runningTrial);
 					exptResults.preserveOverExpts(true);
 					runningTrial = null;
 					var newScript:XML = BetweenSJs.forceCond(orig_script,e.values);	
 					askedToQuit();
+					ExptWideSpecs.kill();
 					trialList = new Vector.<Trial>;
 					preloader.kill(); preloader = null;
 					setNeedsDoing();
@@ -352,7 +354,7 @@ package com.xperiment.runner {
 		
 		protected function submitMTurk():void
 		{
-			Communicator.commandF("submit_mturk_external_question",null);
+			Communicator.pass("submit_mturk_external_question",null);
 		}		
 		
 			
@@ -507,7 +509,6 @@ package com.xperiment.runner {
 
 		
 		public function saveDataProcedure():void{
-			
 			if(ExptWideSpecs.IS("assignment_id")!=""){
 				submitMTurk();
 			}

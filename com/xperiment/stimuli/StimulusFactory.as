@@ -1,5 +1,6 @@
 package com.xperiment.stimuli
 {
+	import com.xperiment.behaviour.behavAnd;
 	import com.xperiment.behaviour.behavAssignRank;
 	import com.xperiment.behaviour.behavBackgroundImage;
 	import com.xperiment.behaviour.behavBevel;
@@ -18,6 +19,7 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavLanguage;
 	import com.xperiment.behaviour.behavNextTrial;
 	import com.xperiment.behaviour.behavOpacity;
+	import com.xperiment.behaviour.behavOr;
 	import com.xperiment.behaviour.behavOutline;
 	import com.xperiment.behaviour.behavPause;
 	import com.xperiment.behaviour.behavRT;
@@ -202,14 +204,10 @@ package com.xperiment.stimuli
 			stimuli['assignrank'] = behavAssignRank;
 			stimuli['schedule'] = behavScheduleStuff;
 			stimuli['gotocond'] = behavGotoCond;
-			
-			
-		
-			
-
-			
-			
-			
+			stimuli['and'] = behavAnd;
+			stimuli['or'] = behavOr;
+				
+	
 
 		}
 	}

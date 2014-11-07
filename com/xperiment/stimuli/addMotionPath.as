@@ -15,8 +15,8 @@ package com.xperiment.stimuli
 			setVar("int","radius",5);
 			setVar("number","ratioCoherent",.6);
 			setVar("number","angle",0,"","in degrees");
-			setVar("number","minDur",500);
-			setVar("number","maxDur",1000);
+			setVar("number","minDur",50);
+			setVar("number","maxDur",150);
 			setVar("string","type","circle","dot|circle","the shape containing the dots");
 	
 			
@@ -50,11 +50,9 @@ package com.xperiment.stimuli
 				globalX:myX,
 				globalY:myY
 			}
-				
 		
 			patch = new MotionPatch(params);
-			
-			
+
 			pic.addChild(patch);
 			
 			return pic;

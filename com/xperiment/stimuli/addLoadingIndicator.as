@@ -29,12 +29,14 @@
 		private var isCloud:Boolean;
 		private var cloudHackRunningBytes:int=0;
 		private var cloudHackTotalBytes:int=0;
+		private var showText:Boolean;
 		
 		override public function setVariables(list:XMLList):void {
 			setVar("number","backBarColour",0xFFFFFF);
 			setVar("number","backBarLineColour",0xc5c5c7);
 			setVar("number","backBarLineThickness",6);
 			setVar("number","barColour",0x0738f2);
+			setVar("boolean","showText",false);
 			setVar("number","MBs",0);
 			setVar("string","errorMessage","Unfortunately there has been an error loading the stimuli.  The server may be down, in which case, could you try again later?  If this repeatedly happens, could you let us know by visiting www.xperiment.mobi?  Many apologies for this inconvenience.");
 			super.setVariables(list);
@@ -65,6 +67,8 @@
 
 		override public function RunMe():uberSprite {
 			
+			showText=getVar("showText");
+			
 			if(preloader && preloader.countOfLoadingItems()>0){
 
 				combined= new Sprite;
@@ -82,8 +86,8 @@
 				combined.addChild(myBar);
 				  
 				//combined.visible=false;
-				
-				createInfo('commencing load');
+				if(showText)	createInfo('commencing load');
+				else createInfo('downloading stimuli');
 				
 				super.pic.addChild(combined);
 			}
@@ -154,7 +158,7 @@
 	
 		private function onAllLoaded(bytes:Number):void {
 			if(myBar){
-				updateInfo(getText(bytes) + "in total)");
+				if(showText)updateInfo(getText(bytes) + "in total)");
 				onAllDownloaded();
 			}
 		}
@@ -163,7 +167,7 @@
 			if(isCloud)bytes = fixBytes(bytes);
 			if(myBar){
 				myBar.scaleX=progress;
-				updateInfo(getText(bytes) + " loaded so far)");
+				if(showText)updateInfo(getText(bytes) + " loaded so far)");
 			}
 		}
 	

@@ -393,12 +393,11 @@
 			//}
 			
 			OnScreenElements=new Vector.<object_baseClass>;
-
 		}
 		
+
 		public function prepare(Ord:uint,trial:XML):void {
 			pic ||= new Sprite;
-			
 			Order=Ord;
 			if(trial.hasOwnProperty('@trials'))	numTrials=trial.@trials;
 		
@@ -495,9 +494,9 @@
 			return trialData;
 		}
 		
-		
+
 		public function run():void {
-	
+
 			if(pic){
 			
 				pic.addEventListener(GotoTrialEvent.TRIAL_PING_FROM_OBJECT,gotoTrial,false,0,false);//note false here for weak refs.  NEEDED.  If the SJ is on a trial long enough, the eventlistener will just be cleaned up...
@@ -579,7 +578,10 @@
 			
 			pic.removeEventListener(GotoTrialEvent.TRIAL_PING_FROM_OBJECT,gotoTrial);
 			
-			if(requiredStim)requiredStim.kill();
+			if(requiredStim){
+				requiredStim.kill();
+				requiredStim=null;
+			}
 			
 			if(manageBehaviours){
 				manageBehaviours.kill();

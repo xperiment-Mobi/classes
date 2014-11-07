@@ -1,5 +1,4 @@
 ﻿package com.xperiment{
-	import com.xperiment.random.ParkMiller;
 	
 	import flash.display.DisplayObject;
 	import flash.geom.Matrix;
