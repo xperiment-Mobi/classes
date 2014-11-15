@@ -1,6 +1,6 @@
 package com.xperiment.make.xpt_interface
 {
-	import com.xperiment.make.OnScreenBoss.OnScreenBossMaker;
+
 	import com.xperiment.make.comms.Communicator;
 	import com.xperiment.make.helpers.ResizeHelper;
 	import com.xperiment.make.richSync.RichXML;
@@ -19,7 +19,6 @@ package com.xperiment.make.xpt_interface
 	import com.xperiment.script.ProcessScript;
 	import com.xperiment.script.ProcessScript_builder;
 	import com.xperiment.trial.Trial;
-	
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -45,7 +44,7 @@ package com.xperiment.make.xpt_interface
 			CommandHelper.setup(this);
 			Trial_Goto.setup(this);
 			Timeline.setup(this,Communicator.pass,BindScript.depthOrderChanged, Bind_processChanges.timingChanged );
-			StimBehav.setup(this, BindScript.addStimulus);
+			StimBehav.setup(this);
 			Bind_delStim.setup(this);
 
 			PropertyInspector.setup(BindScript.getStimScript,Communicator.pass,this);
@@ -119,16 +118,28 @@ package com.xperiment.make.xpt_interface
 				//Cards.generateInstructions();
 				//StimBehav.addStimulus('lineScale',null);
 				//pos_scale.setMode(true);
-				pos_scale.fromJS({info:{command:"snap-to-grid"}});
+				//pos_scale.fromJS({info:{command:"snap-to-grid"}});
 				
 				//posScaleChanger();
 				//var arr:Array = ['a','b'];
 				//arr=codeRecycleFunctions.arrayShuffle(arr);
+				
 				//Timeline.timeChange({peg:'noPeg0',start:0,end:200});
+				
 
 				//OnScreenBossMaker.fromJS({command:"play"});
+				
+				
 				//newScript(trialProtocolList.toString())
-				//PropertyInspector.propEdit({group:'noPeg0---noPeg1---noPeg2---noPeg3---noPeg4---noPeg5---noPeg6---noPeg7---noPeg8---noPeg9 — text',name:'width',value:'100%'});
+				
+				//PropertyInspector.propEdit({group:'noPeg0---noPeg1---noPeg2---noPeg3---noPeg4---noPeg5---noPeg6---noPeg7---noPeg8---noPeg9 — text',name:'text',value:'aaaa'});
+				
+				BindScript.updateAttrib('TRIAL_7','text','aaaa',null,-1,['PropertyInspector']);
+				
+				UpdateRunnerScript.DO('TRIAL_7');
+				//trace(trialProtocolList)
+				
+				//trace(trialProtocolList)
 				//StimBehav.addLoadableStimuli(["new.png"]);
 
 				//OnScreenBossMaker.fromJS({command:"play"});
@@ -150,7 +161,8 @@ package com.xperiment.make.xpt_interface
 			s.addEventListener(MouseEvent.CLICK,function(e:Event):void{
 				//pos_scale.setMode(false);
 				//Cards.generateInstructions();
-				Trial_Goto.fromJS({command:'last'});
+				//Trial_Goto.fromJS({command:'last'});
+				restartTrial(true,true);
 			});
 			
 			theStage.addEventListener(KeyboardEvent.KEY_UP,function(e:KeyboardEvent):void{
@@ -184,7 +196,24 @@ package com.xperiment.make.xpt_interface
 				();
 		}*/
 		
-		override public function runningExptNow_II(restartOtherStuff:Boolean):void{
+		//nb restart other stuff used for Maker
+		override public function runningExptNow_II():void{
+			commenceWithTrial();//starts the trial sequence 
+		}
+		
+		
+		override public function commenceWithTrial(params:Object=null):void {
+			super.commenceWithTrial();
+
+			//if(updateOtherStuff){
+			
+				PropertyInspector.newTrial(runningTrial as TrialBuilder);
+				Timeline.update(runningTrial);
+				posScaleChanger();
+			//}
+		}
+		
+		/*override public function runningExptNow_II(restartOtherStuff:Boolean):void{
 			//runningTrial.ITI=0;
 			//Cards.generateInstructions();
 			commenceWithTrial();
@@ -213,7 +242,7 @@ package com.xperiment.make.xpt_interface
 			
 			//TrialEdit.hack()
 		}
-		
+		*/
 		public function posScaleChanger():void
 		{			
 			if(pos_scale){
@@ -252,10 +281,6 @@ package com.xperiment.make.xpt_interface
 			//theStage.scaleMode=StageScaleMode.NO_SCALE;
 		}
 		
-		override protected function submitMTurk():void
-		{
-		}	
-
 		
 		override protected function commandF(what:String, data:* =null):void{
 			//Communicator.pass('info',what+"___"+data.toString());
@@ -273,10 +298,19 @@ package com.xperiment.make.xpt_interface
 		}
 		
 		*/
-		public function restartTrial(restartOtherStuff:Boolean=true):void{
+		public function restartTrial(restartOtherStuff:Boolean=true, keepTimePos:Boolean=true):void{
+			
+			var params:Object;
+			if(keepTimePos){
+				params = {timing: {startTime:runningTrial.CurrentDisplay.getMS()}}	
+					
+			}
+			//trace(111,JSON.stringify(params));
+	
 			runningTrial.generalCleanUp();
-			runningTrial.ITI=0;
-			runningExptNow_II(restartOtherStuff);							
+			runningTrial.ITI=0;	
+			
+			commenceWithTrial(	params	);
 		}
 		
 
@@ -333,7 +367,7 @@ package com.xperiment.make.xpt_interface
 		public function set editMode(ON:Boolean):void
 		{
 			_editMode = ON;
-			OnScreenBossMaker.isStill = ON;
+			//OnScreenBossMaker.isStill = ON;
 		}
 
 	}

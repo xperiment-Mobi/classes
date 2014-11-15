@@ -76,9 +76,6 @@ package com.xperiment.runner {
 		
 		protected function commandF(what:String, data:* =null):void{
 			switch(what){
-				case 'mturk_submit':
-					MTurkHelper.DO(theStage);
-					break;
 				default: 
 					Communicator.pass('as3Error',{command: what,data: data, message: "unrecognised command from js"});
 			}
@@ -123,7 +120,6 @@ package com.xperiment.runner {
 			Trial.theStage=theStage;
 			setNeedsDoing();
 			
-
 		}	
 		
 
@@ -216,7 +212,7 @@ package com.xperiment.runner {
 			if(!trialProtocolList){
 				trialProtocolList=myScript.giveMeData();
 			}
-			runningExptNow();			
+			runningExptNow();	
 		}
 		
 		protected function changeTrialInfo(e:TrialEvent):void
@@ -319,10 +315,10 @@ package com.xperiment.runner {
 					if(e.values == "") tempTrial = GotoTrialEvent.NEXT_TRIAL;
 					nextTrial(new GotoTrialEvent(GotoTrialEvent.GOTO_TRIAL,tempTrial));
 					break;
-				case GlobalFunctionsEvent.MTURK_SUBMIT:
+				/*case GlobalFunctionsEvent.MTURK_SUBMIT:
 					submitMTurk();
 					//throw new Error("legacy");
-					break;
+					break;*/
 				case GlobalFunctionsEvent.QUIT:
 				case GlobalFunctionsEvent.FINISH_STUDY:					
 					askedToQuit();
@@ -352,10 +348,10 @@ package com.xperiment.runner {
 			}
 		}
 		
-		protected function submitMTurk():void
+/*		protected function submitMTurk():void
 		{
 			Communicator.pass("submit_mturk_external_question",null);
-		}		
+		}*/		
 		
 			
 		
@@ -391,7 +387,7 @@ package com.xperiment.runner {
 			
 			runningTrial=__nextTrialBoss.firstTrial();
 
-			runningExptNow_II(true);
+			runningExptNow_II();
 		}
 		
 		private function genTrialOrder(genTrials:Boolean):void
@@ -410,7 +406,7 @@ package com.xperiment.runner {
 		}
 		 
 		//nb restart other stuff used for Maker
-		public function runningExptNow_II(restartOtherStuff:Boolean):void{
+		public function runningExptNow_II():void{
 			if(CheckTurk.DO(trialProtocolList,theStage))commenceWithTrial();//starts the trial sequence 
 		}
 		
@@ -428,7 +424,7 @@ package com.xperiment.runner {
 		}
 		
 		
-		public function commenceWithTrial():void {
+		public function commenceWithTrial(params:Object=null):void {
 			//setBackgroundColour(trialProtocolList.TRIAL[runningTrial.TRIAL_ID].@backgroundColour.toString());
 			if(!runningTrial){
 				XperimentMessage.message(theStage,"!End of the study. You should provide an 'end of study' screen and not rely on this message!");
@@ -446,7 +442,7 @@ package com.xperiment.runner {
 			}
 			else{	
 
-				runningTrial.prepare(__nextTrialBoss.currentTrial,trialProtocolList.TRIAL[runningTrial.TRIAL_ID]);	
+				runningTrial.prepare(__nextTrialBoss.currentTrial,trialProtocolList.TRIAL[runningTrial.TRIAL_ID],params);	
 				//trace(11,__nextTrialBoss.currentTrial)
 			}
 		}
@@ -457,7 +453,7 @@ package com.xperiment.runner {
 			if(runningTrial.runTrial == true && isBuilder==false){
 				trialData=runningTrial.giveTrialData();	
 				//XptMemory.updateExptProps(PropValDict.exptProps);
-				if(exptResults)exptResults.give(trialData);	
+				if(exptResults && trialData)exptResults.give(trialData);	
 			}
 			
 			if(P2PgiveF)	P2PgiveF(trialData,__nextTrialBoss.currentTrial);
@@ -510,7 +506,8 @@ package com.xperiment.runner {
 		
 		public function saveDataProcedure():void{
 			if(ExptWideSpecs.IS("assignment_id")!=""){
-				submitMTurk();
+				//submitMTurk(); 
+				MTurkHelper.DO(theStage,ExptWideSpecs.IS("assignment_id"));
 			}
 			
 			if(P2PgiveF)P2PgiveF(exptResults.composeXMLInfo(),null);

@@ -8,7 +8,7 @@
 
 	public class overExperiment extends Trial {
 				
-		override public function prepare(Ord:uint,trial:XML):void {
+		override public function prepare(Ord:uint,trial:XML,params:Object=null):void {
 			Order=Ord;
 		}
 		
@@ -23,7 +23,7 @@
 		public function setupForOverExperiment(theSta:Stage,Attribs:XML):void {
 			theStage=theSta;
 			instantiateVars();
-			CurrentDisplay=new OnScreenBoss();
+			CurrentDisplay=new OnScreenBoss(null);
 			manageBehaviours=new BehaviourBoss(pic,CurrentDisplay);
 			if (Attribs.length==0)elementSetup(new XML, null)
 			else elementSetup(Attribs, null);

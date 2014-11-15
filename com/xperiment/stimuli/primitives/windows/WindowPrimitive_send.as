@@ -4,7 +4,10 @@ package com.xperiment.stimuli.primitives.windows
 	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
 	
 	import flash.events.MouseEvent;
+	import flash.net.URLLoader;
 	import flash.net.URLRequest;
+	import flash.net.URLRequestMethod;
+	import flash.net.URLVariables;
 	import flash.net.navigateToURL;
 	import flash.system.System;
 
@@ -61,7 +64,7 @@ package com.xperiment.stimuli.primitives.windows
 		
 		protected function send(e:MouseEvent):void
 		{
-			var connector:String = "?";
+/*			var connector:String = "?";
 			
 			var urlString:String = "mailto:";
 			
@@ -74,7 +77,16 @@ package com.xperiment.stimuli.primitives.windows
 			//trace(urlString);
 			//if(errInfo!="")urlString += "\n\n error Info:"+errInfo;				
 			navigateToURL(new URLRequest(urlString));
-			trace(123,urlString)
+			trace(123,urlString)*/
+			
+			
+			var variables:URLVariables = new URLVariables();
+			variables.subject = encodeURIComponent("emergencyBackupEmail "+ExptWideSpecs.IS("subject"));
+			variables.body = encodeURIComponent("There was a problem when trying to save your results.  We hope you don't mind, but could you send this email to us. It contains a backup copy of your results. Thanks.") + encodeURIComponent("\n\n"+String(textArea.text));
+			
+			var email:URLRequest= new URLRequest('mailTo:'+ExptWideSpecs.IS("toWhom"));
+			email.data = variables;
+			navigateToURL(email);
 		}
 
 	}

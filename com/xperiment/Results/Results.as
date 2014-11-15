@@ -231,9 +231,10 @@
 			if(res){
 				var trialName:String=res.@name.toString();
 				for each(var s:XML in res.children()){
-					param.results[trialName+"___"+s.name()]=s.toString();
+					param.results[trialName+"_"+s.name()]=s.toString();
 				}
 			}
+			//trace(1111,JSON.stringify(param));
 			_soapService.send(param,SoapService.DRIBBLE_RESULTS,successF);
 
 			function successF(worked:Boolean):void{

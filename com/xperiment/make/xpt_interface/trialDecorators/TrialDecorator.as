@@ -9,8 +9,11 @@ package com.xperiment.make.xpt_interface.trialDecorators
 	import com.xperiment.make.xpt_interface.Bind.Bind_processChanges;
 	import com.xperiment.make.xpt_interface.Bind.UpdateRunnerScript;
 	import com.xperiment.make.xpt_interface.trialDecorators.Helpers.GetSetPos;
+	import com.xperiment.stimuli.addButton;
+	import com.xperiment.stimuli.addJPG;
 	import com.xperiment.stimuli.object_baseClass;
 	import com.xperiment.trial.Trial;
+	
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.display.Stage;
@@ -259,9 +262,17 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			var transparentLayer:Shape;
 			if(transparentLayers){
 				for each(transparentLayer in transparentLayers){
+					
+					
 					if(transparentLayer.parent!=null){
+						
+						if(transparentLayer.parent is addButton){
+							transparentLayer.parent.mouseChildren=true;
+						}
+						
 						transparentLayer.parent.removeChild(transparentLayer);
 					}
+					
 				}
 				transparentLayers=null;		
 			}
@@ -272,7 +283,17 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			var transparentLayer:Shape = new Shape;
 			transparentLayer.name=TRANSPARENT_LAYER;
 			transparentLayer.graphics.beginFill(0xffffff,0);
-			transparentLayer.graphics.drawRect(0,0,stimulus.myWidth,stimulus.myHeight);
+		
+			if(stimulus is addJPG){
+				
+			}
+			else transparentLayer.graphics.drawRect(0,0,stimulus.myWidth,stimulus.myHeight);
+			
+			if(stimulus is addButton){
+				stimulus.mouseChildren=false;
+			}
+			
+			trace(transparentLayer.width,transparentLayer.height,stimulus)
 			stimulus.addChild(transparentLayer);
 			transparentLayers[transparentLayers.length]=transparentLayer;
 			//trace(stimulus,transparentLayer,transparentLayer.parent)

@@ -2,6 +2,7 @@ package com.xperiment.make.xpt_interface
 {
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
 	import com.xperiment.make.xpt_interface.Bind.UpdateRunnerScript;
+	import com.xperiment.stimuli.StimulusFactory;
 	import com.xperiment.stimuli.object_baseClass;
 	
 	import flash.utils.Dictionary;
@@ -39,17 +40,9 @@ package com.xperiment.make.xpt_interface
 			var rows:Array = [];
 			var stim:XML;
 
-			var name:String;
 			for(var i:int=0;i<currentTrialXML.children().length();i++){
-				
 				stim = currentTrialXML.children()[i];
-				name = sortName(stim.name().toString());
-				
-				if(name!=""){
-					appendAttribs(rows,stim,name,stim.name().toString());	
-				}
-				
-				
+				appendAttribs(rows,stim,stim.name(),stim.name().toString());	
 			}
 			
 			var combined:Object = {};
@@ -63,6 +56,9 @@ package com.xperiment.make.xpt_interface
 		
 		private static function appendAttribs(rows:Array, stim:XML, group:String, detailedName:String):void
 		{
+			
+			detailedName = StimulusFactory.getName(detailedName);
+
 			var key:String;
 			var row:Object;
 			var peg:String;
@@ -112,15 +108,9 @@ package com.xperiment.make.xpt_interface
 			return pegs.join("---");
 		}
 		
-		private static function sortName(name:String):String{
-			if(name.substr(0,3)!="add" &&  name.substr(0,5)!="behav")	return '';
-			
-			name = name.split("add").join("").split("behav").join("");
-			return name.charAt(0).toLowerCase() + name.substr(1);
-		}
 		
 		public static function propEdit(data:Object):void{
-			
+
 			var prop:String = data.name;
 			var val:String  = data.value;
 			

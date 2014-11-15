@@ -2,18 +2,17 @@ package com.xperiment.make.xpt_interface.trialDecorators.StimBehav
 {
 	import com.xperiment.make.xpt_interface.TrialBuilder;
 	import com.xperiment.make.xpt_interface.runnerBuilder;
+	import com.xperiment.make.xpt_interface.Bind.BindScript;
 
 
 	public class StimBehav
 	{
 		private static var runner:runnerBuilder;
-		private static var addStim:Function;
 	
 		
-		public static function setup(r:runnerBuilder, a:Function):void
+		public static function setup(r:runnerBuilder):void
 		{
-			runner=r;
-			addStim=a;			
+			runner=r;		
 
 		}
 		
@@ -48,7 +47,7 @@ package com.xperiment.make.xpt_interface.trialDecorators.StimBehav
 			}
 			
 			(runner.runningTrial as TrialBuilder).xml.prependChild(stim.copy());
-			addStim((runner.runningTrial as TrialBuilder).bind_id,stim,update);	
+			BindScript.addStimulus((runner.runningTrial as TrialBuilder).bind_id,stim,update);	
 			
 		}
 /*		

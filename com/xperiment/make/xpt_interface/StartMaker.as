@@ -30,7 +30,9 @@ package com.xperiment.make.xpt_interface
 </SETUP>
 
   <TRIAL TYPE="Trial" hideResults="true" block="1" order="fixed" trials="5" >
-	<addText colour="red" howMany="3" text="abc" x="61.38%" y="29.69%---50%---70%" height="28.4%" width="20.1%"  horizontal="right---middle---middle"/>
+	<JPG filename="new.png"/>
+	<button />
+	<addText colour="red" howMany="1" text="abc" x="61.38%" y="29.69%---50%---70%" height="28.4%" width="20.1%"  horizontal="right---middle---middle"/>
   </TRIAL>
 
 <TRIAL TYPE="Trial" trialName="DoExpt" hideResults="true" block="1" order="fixed" trials="1">

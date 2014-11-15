@@ -99,6 +99,18 @@ package com.xperiment.stimuli
 			return null;
 		}
 		
+		public static function getName(origNam:String):String{
+			var nam:String = origNam;
+			if(!stimuli)setupDict();
+			nam=processStimName(nam);
+			if(stimuli.hasOwnProperty(nam)){
+				nam=stimuli[nam].toString();
+				nam=nam.substr(7,nam.length-8);
+				return nam;
+			}
+			return origNam;
+		}
+		
 		public static function setupDict():void
 		{
 

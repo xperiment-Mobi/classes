@@ -80,7 +80,6 @@ package com.xperiment.make.xpt_interface.trialDecorators
 					MultiTrialCorrection.setMode(data);
 					break;
 				case 'timeChange':
-					trace("received command change");
 					Timeline.timeChange(data);
 					break;
 				case 'orderChange':

@@ -29,7 +29,12 @@
 		
 		private var hack:String = int(Math.random()*1000).toString();
 		
-		public function OnScreenBoss():void {
+		public function params(params:Object):void
+		{
+
+		}
+		
+		public function OnScreenBoss() {
 			_mainTimer=getTrueTimer(1,checkForEvent);
 			_startTimeSorted = [];
 			_endTimeSorted = [];
@@ -38,6 +43,11 @@
 			running = true;
 			
 			//			/trace("set up");
+		}
+		
+		public function getMS():int{
+			
+			return _mainTimer.currentCount;
 		}
 		
 		public function getTrueTimer(interval:int, callBackF:Function):TrueTimer{
@@ -195,7 +205,7 @@
 				}
 				
 				trace(f());*/
-				
+				//trace(_mainTimer.currentCount)
 				if (running  && _startTimeSorted.length!=0 && _startTimeSorted[0].startTime == _mainTimer.currentCount) {
 					
 					do __addToScreen(_startTimeSorted[0] as uberSprite);
@@ -501,9 +511,9 @@
 		
 		public function updateStimTimesFromObj(changed:Object):uberSprite
 		{
-			trace("-");
+			//trace("-");
 			var stim:uberSprite = helper__getStim(changed.peg);
-			trace("---");
+			//trace("---");
 			if(stim && (
 				stim.startTime 	!= 	changed.start ||
 				stim.endTime 	!= 	changed.end
@@ -527,7 +537,7 @@
 		private function helper__getStim(peg:String):uberSprite{
 			if(allStim.length!=0){
 				for(var i:int=0;i<allStim.length;i++){
-					trace((allStim[i] as uberSprite).peg,peg);
+					//trace((allStim[i] as uberSprite).peg,peg);
 					if((allStim[i] as uberSprite).peg==peg){
 						return allStim[i];
 					}
