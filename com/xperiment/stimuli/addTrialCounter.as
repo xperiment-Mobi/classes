@@ -66,7 +66,7 @@ package  com.xperiment.stimuli{
 			
 			myBar=new Shape  ;
 			myBar.graphics.beginFill(getVar("barColour"));
-			myBar.graphics.drawRoundRect(2,2,this.myWidth/getVar("trials")*trials_i,this.myHeight,15,15);
+			myBar.graphics.drawRoundRect(2,2,this.myWidth/getVar("trials")*trials_i-getVar("backBarLineThickness"),this.myHeight-getVar("backBarLineThickness"),15,15);
 
 			combined.addChild(myBar);
 			
