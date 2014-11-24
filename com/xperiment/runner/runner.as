@@ -505,12 +505,12 @@ package com.xperiment.runner {
 
 		
 		public function saveDataProcedure():void{
-			if(ExptWideSpecs.IS("assignment_id")!=""){
-				//submitMTurk(); 
-				MTurkHelper.DO(theStage,ExptWideSpecs.IS("assignment_id"));
-			}
+
+			var mturkId:String = ExptWideSpecs.IS("assignment_id");
+			if(mturkId!=null && mturkId!='')	MTurkHelper.DO(theStage,mturkId);
 			
 			if(P2PgiveF)P2PgiveF(exptResults.composeXMLInfo(),null);
+			
 			dataSave ||= new saveResults(theStage);
 			dataSave.save();
 		}

@@ -29,5 +29,19 @@ package com.xperiment.make.xpt_interface.Bind
 			}
 			
 		}	
+		
+		public static function DELETE_ATTRIB(bind_id:String, prop:String):void
+		{
+			var xml:XML = BindScript.getStimScript(bind_id);
+			var bindLabel:String = BindScript.bindLabel;
+			
+			for each(var stim:XML in runner.trialProtocolList..*.(name()!="TRIAL")){	
+				if(stim.@[bindLabel].toXMLString() == bind_id){
+					delete stim.@[prop];
+					break;
+				}
+				
+			}
+		}
 	}
 }

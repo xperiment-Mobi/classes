@@ -79,6 +79,10 @@ package com.xperiment.make.xpt_interface.Bind
 			
 		}
 
+		public static function delAttrib(bind_id:String,attrib:String,updateInfo:Array):void{
+			delete tagDictionary[bind_id].@[attrib]
+			updated(updateInfo)
+		}
 		
 																									//depth = -1
 		public static function updateAttrib(bind_id:String, attrib:String, val:*, multiSpecs:Object, depth, updateInfo:Array, update:Boolean=true):Boolean{

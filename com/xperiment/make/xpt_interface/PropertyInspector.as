@@ -75,7 +75,7 @@ package com.xperiment.make.xpt_interface
 			group = peg+ ODD_PEG_DIVIDE+group;
 			
 			lookup_peg[group] = bind_id;
-			//trace(group,bind_id)
+			trace(group,bind_id,stim.toXMLString())
 			
 			for each(var a:XML in stim.@*) 
 			{
@@ -108,18 +108,34 @@ package com.xperiment.make.xpt_interface
 			return pegs.join("---");
 		}
 		
+
 		
-		public static function propEdit(data:Object):void{
+		public static function propEdit(data:Object,which:String):void{
 
 			var prop:String = data.name;
 			var val:String  = data.value;
-			
+
 			if(lookup_peg.hasOwnProperty(data.group)){
+
 				var bind_id:String = lookup_peg[data.group];
-				BindScript.updateAttrib(bind_id,prop,val,null,-1,['PropertyInspector']);
 				
-				UpdateRunnerScript.DO(bind_id);
+				var updateInstructs:String;
+				if(which=="edit") 		updateInstructs = 'PropertyInspector.edit';
+				else 					updateInstructs = 'PropertyInspector.addRemove';
+				
+
+				if(which=='remove'){
+					BindScript.delAttrib(bind_id,prop,[updateInstructs]);
+					UpdateRunnerScript.DELETE_ATTRIB(bind_id,prop);
+				}
+				else{
+					BindScript.updateAttrib(bind_id,prop,val,null,-1,[updateInstructs]);
+					UpdateRunnerScript.DO(bind_id);
+				}
+				
+				
 			}
 		}
 	}
 }
+	

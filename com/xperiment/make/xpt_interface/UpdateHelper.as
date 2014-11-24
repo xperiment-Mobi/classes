@@ -26,7 +26,8 @@ package com.xperiment.make.xpt_interface
 		
 		private function initElements():void
 		{
-			elements['PropertyInspector'] 				= ['setScriptEditor','restartTrial'];
+			elements['PropertyInspector.edit'] 			= ['setScriptEditor','restartTrial'];
+			elements['PropertyInspector.addRemove'] 	= ['setScriptEditor','resetPropertyApp','restartTrial'];
 			elements['BindScript.addStimulus'] 			= ['setScriptEditor','restartTrial'];
 			elements['BindScript.deleteTrial']	 		= ['setScriptEditor'];
 			elements['BindScript.deleteTrials'] 		= ['setScriptEditor'];

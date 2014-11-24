@@ -28,8 +28,14 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		{
 				
 			switch(what){
+				case 'propRemove':
+					PropertyInspector.propEdit(data,'remove');
+					return true;
+				case 'propAdd':
+					PropertyInspector.propEdit(data,'add');
+					return true;
 				case 'propEdit':
-					PropertyInspector.propEdit(data);
+					PropertyInspector.propEdit(data,'edit');
 					return true;
 				case 'cards_orderChanged':
 					Cards.change(data as Array);

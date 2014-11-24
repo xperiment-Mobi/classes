@@ -36,7 +36,7 @@ package com.xperiment
 			pword = new TextField;
 			pword.defaultTextFormat= new TextFormat(null,40,0x333333,null,null,null,null,null,TextFormatAlign.CENTER);
 			pword.wordWrap=true;
-			pword.width=theStage.stageWidth;
+			pword.width=Trial.ACTUAL_STAGE_WIDTH;
 			pword.autoSize=TextFieldAutoSize.LEFT;
 			pword.htmlText = getPassword(id);
 			this.addChild(pword);
@@ -44,7 +44,7 @@ package com.xperiment
 			band = new TextField;
 			band.defaultTextFormat= new TextFormat(null,15,0x333333,null,null,null,null,null,TextFormatAlign.CENTER);
 			band.wordWrap=true;
-			band.width=theStage.stageWidth;
+			band.width=Trial.ACTUAL_STAGE_WIDTH;
 			band.autoSize=TextFieldAutoSize.LEFT;
 			var str:String ="mturk pword: "+pword.text 
 			band.htmlText = str + "       " + str + "       " + str + "       " + str + "       " + str + "       " + str;
@@ -54,7 +54,7 @@ package com.xperiment
 			var txt:TextField = new TextField;
 			txt.defaultTextFormat = new TextFormat(null, 20, 0x333333);
 			txt.wordWrap = true;
-			txt.width = theStage.stageWidth;
+			txt.width = Trial.ACTUAL_STAGE_WIDTH;
 			txt.autoSize = TextFieldAutoSize.CENTER;
 	
 			col = 0x00ff00;

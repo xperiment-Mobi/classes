@@ -19,6 +19,7 @@ package com.xperiment.make.xpt_interface
 	import com.xperiment.script.ProcessScript;
 	import com.xperiment.script.ProcessScript_builder;
 	import com.xperiment.trial.Trial;
+	
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
@@ -112,6 +113,8 @@ package com.xperiment.make.xpt_interface
 
 			s.addEventListener(MouseEvent.CLICK,function(e:Event):void{
 				
+				PropertyInspector.propEdit({name:'colour',value:'',group:'noPeg2 — addText'},'remove');
+				
 				//CommandHelper.command('editMode',!editMode);
 		
 				//resize();
@@ -134,9 +137,9 @@ package com.xperiment.make.xpt_interface
 				
 				//PropertyInspector.propEdit({group:'noPeg0---noPeg1---noPeg2---noPeg3---noPeg4---noPeg5---noPeg6---noPeg7---noPeg8---noPeg9 — text',name:'text',value:'aaaa'});
 				
-				BindScript.updateAttrib('TRIAL_7','text','aaaa',null,-1,['PropertyInspector']);
+				//BindScript.updateAttrib('TRIAL_7','text','aaaa',null,-1,['PropertyInspector']);
 				
-				UpdateRunnerScript.DO('TRIAL_7');
+				//UpdateRunnerScript.DO('TRIAL_7');
 				//trace(trialProtocolList)
 				
 				//trace(trialProtocolList)

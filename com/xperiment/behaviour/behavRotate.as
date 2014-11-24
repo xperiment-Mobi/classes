@@ -88,6 +88,7 @@ package com.xperiment.behaviour{
 		override public function setVariables(list:XMLList):void {
 			
 			setVar("int","rotation",180);
+			setVar("string","rotateAtStart","360,2000","","the degrees to rotate then a comma, then the time taken for this rotation in ms");
 			setVar("number","duration",0);
 			//setVar("number","yz","","","rotated value along y-axis but in z plane, in degrees.")
 			setVar("boolean","rotateWithMouseDown",false);	
@@ -137,9 +138,9 @@ package com.xperiment.behaviour{
 		
 		private function action():void{
 			
-		
+			
 			if(rotateWithMouseDown){
-				rotateWithMouseDown.start(behavObjects);
+				rotateWithMouseDown.start(behavObjects, getVar("rotateAtStart"));
 			}
 
 			rotateAll();
@@ -226,15 +227,16 @@ package com.xperiment.behaviour{
 	}
 }
 
-import com.dgrigg.minimalcomps.graphics.Shape;
+
 import com.xperiment.codeRecycleFunctions;
-import com.xperiment.trial.Trial;
 
 import flash.display.Sprite;
 import flash.display.Stage;
+import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.geom.Point;
 import flash.utils.Dictionary;
+import flash.utils.getTimer;
 
 internal class RotateWithMouseDown {
 	private var theStage:Stage;
@@ -255,8 +257,7 @@ internal class RotateWithMouseDown {
 		this.randStart = randStart;
 	}
 	
-	public function start(behavObjects:Array):void{
-		
+	public function start(behavObjects:Array, rotateAtStart:String):void{
 		
 		this.behavObjects=behavObjects;
 		calcPoint();
@@ -273,10 +274,56 @@ internal class RotateWithMouseDown {
 		
 		if(rotate==false){
 			rotate=true;
-			theStage.addEventListener(MouseEvent.MOUSE_MOVE,mouseL);	
-			if(ping)mouseL(null);
+			if(rotateAtStart=="")	startMouse();
+			else setupRotateStart(rotateAtStart);
 		}
 	}
+	
+	private function setupRotateStart(rotateAtStart:String):void
+	{
+		var arr:Array = rotateAtStart.split(",");
+		var or:int=1;
+		
+		var angle:Number = arr[0];
+		if(Math.random()>0.5){
+			or=-1;
+		}
+		var time:int = arr[1];
+		
+		var curAngle:int;
+		var startTime:int = getTimer();
+		var ms:int;
+		
+		
+		theStage.addEventListener(Event.ENTER_FRAME,function(e:Event):void{
+			ms=getTimer()-startTime;
+			if(ms>time){
+				theStage.removeEventListener(Event.ENTER_FRAME, arguments.callee);
+				for(var i:int=0;i<behavObjects.length;i++){
+					doRotateF(behavObjects[i],origAngles[behavObjects[i]]);
+				}
+				startMouse();
+				return;
+			}
+			
+			curAngle=360*ms/time;
+			
+			for(i=0;i<behavObjects.length;i++){
+				doRotateF(behavObjects[i],origAngles[behavObjects[i]]+curAngle*or);
+			}
+			
+		});
+		
+		
+		
+	}
+	
+	private function startMouse():void
+	{
+		theStage.addEventListener(MouseEvent.MOUSE_MOVE,mouseL);	
+		if(ping)mouseL(null);
+	}	
+	
 	
 	private function calcOrigAngles():void
 	{
