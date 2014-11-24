@@ -1,5 +1,6 @@
 package com.xperiment.stimuli
 {
+	import com.xperiment.behaviour.behavAnd;
 	import com.xperiment.behaviour.behavAssignRank;
 	import com.xperiment.behaviour.behavBackgroundImage;
 	import com.xperiment.behaviour.behavBevel;
@@ -11,12 +12,14 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavDragToShiftingArea;
 	import com.xperiment.behaviour.behavFinishStudy;
 	import com.xperiment.behaviour.behavFullScreen;
+	import com.xperiment.behaviour.behavGotoCond;
 	import com.xperiment.behaviour.behavGotoTrial;
 	import com.xperiment.behaviour.behavGradientFill;
 	import com.xperiment.behaviour.behavHide;
 	import com.xperiment.behaviour.behavLanguage;
 	import com.xperiment.behaviour.behavNextTrial;
 	import com.xperiment.behaviour.behavOpacity;
+	import com.xperiment.behaviour.behavOr;
 	import com.xperiment.behaviour.behavOutline;
 	import com.xperiment.behaviour.behavPause;
 	import com.xperiment.behaviour.behavRT;
@@ -41,8 +44,6 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavTrialOrder;
 	import com.xperiment.stimuli.addBarGraph;
 	import com.xperiment.stimuli.addButton;
-	import com.xperiment.stimuli.addCode;
-	import com.xperiment.stimuli.addColourArray;
 	import com.xperiment.stimuli.addComboBox;
 	import com.xperiment.stimuli.addInputTextBox;
 	import com.xperiment.stimuli.addJPG;
@@ -96,6 +97,18 @@ package com.xperiment.stimuli
 
 			
 			return null;
+		}
+		
+		public static function getName(origNam:String):String{
+			var nam:String = origNam;
+			if(!stimuli)setupDict();
+			nam=processStimName(nam);
+			if(stimuli.hasOwnProperty(nam)){
+				nam=stimuli[nam].toString();
+				nam=nam.substr(7,nam.length-8);
+				return nam;
+			}
+			return origNam;
 		}
 		
 		public static function setupDict():void
@@ -152,7 +165,7 @@ package com.xperiment.stimuli
 			//stimuli['3d'] = add3D;
 			stimuli['live'] = addLive;
 			stimuli['trialcounter'] = addTrialCounter;
-			
+			stimuli['motionpatch'] = addMotionPath	;
 			
 			//stimuli['draw'] = behavDraw;
 			//stimuli['colourselector'] = behavColourSelector;
@@ -202,15 +215,11 @@ package com.xperiment.stimuli
 			stimuli['scroll'] = behavScroll;
 			stimuli['assignrank'] = behavAssignRank;
 			stimuli['schedule'] = behavScheduleStuff;
-			
-			
-			
-		
-			
-
-			
-			
-			
+			stimuli['gotocond'] = behavGotoCond;
+			stimuli['and'] = behavAnd;
+			stimuli['or'] = behavOr;
+				
+	
 
 		}
 	}

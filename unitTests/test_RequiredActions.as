@@ -1,9 +1,11 @@
 package unitTests
 {
 
-	import com.xperiment.RequiredActions.RequiredActions;	
+	import com.xperiment.RequiredActions.RequiredActions;
+	
 	import flash.display.Sprite;
-	import flash.events.Event;	
+	import flash.events.Event;
+	
 	import org.flexunit.Assert;
 	import org.flexunit.async.Async;
 	

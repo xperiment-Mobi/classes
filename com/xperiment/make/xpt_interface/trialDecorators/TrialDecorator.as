@@ -1,6 +1,5 @@
 package com.xperiment.make.xpt_interface.trialDecorators
 {
-	import com.dgrigg.minimalcomps.graphics.Shape;
 	import com.greensock.events.TransformEvent;
 	import com.greensock.transform.TransformItem;
 	import com.greensock.transform.TransformManager;
@@ -8,12 +7,15 @@ package com.xperiment.make.xpt_interface.trialDecorators
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
 	import com.xperiment.make.xpt_interface.Bind.Bind_delStim;
 	import com.xperiment.make.xpt_interface.Bind.Bind_processChanges;
-	import com.xperiment.make.xpt_interface.trialDecorators.Helpers.EditText;
+	import com.xperiment.make.xpt_interface.Bind.UpdateRunnerScript;
 	import com.xperiment.make.xpt_interface.trialDecorators.Helpers.GetSetPos;
+	import com.xperiment.stimuli.addButton;
+	import com.xperiment.stimuli.addJPG;
 	import com.xperiment.stimuli.object_baseClass;
 	import com.xperiment.trial.Trial;
 	
 	import flash.display.DisplayObject;
+	import flash.display.Shape;
 	import flash.display.Stage;
 	import flash.events.Event;
 
@@ -34,7 +36,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		public static var TRANSPARENT_LAYER:String = "transparentLayer";
 		private var canReset:Function;
 		
-		private var selected:Array;
+		//private var selected:Array;
 		
 		public function kill():void{
 			startupNativeInteractivity();
@@ -64,9 +66,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			this.trial=runningTrial;
 			this.theStage=theStage;
 			this.canReset = canReset;
-			if(editMode)	init();
-			
-			
+			if(editMode)	init();	
 		}
 		
 		public function newTrial(runningTrial:Trial):void
@@ -83,7 +83,6 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			for(var i:int=0;i<stimuli.length;i++){
 				add(stimuli[i]);
 			}
-			
 			if(_step && !stepMove)step(true);
 		}
 		
@@ -101,7 +100,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			listeners(true);
 			
 			gatherStim();
-			selectItems();
+			//selectItems();
 		}
 		private function deleteL(e:TransformEvent):void{
 			var displayObj:DisplayObject;
@@ -115,7 +114,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			Bind_delStim.stim(binds);
 		}
 		
-		private function selectItems():void
+		/*private function selectItems():void
 		{
 			if(selected){
 				var selectedItems:Vector.<TransformItem> = new Vector.<TransformItem>;
@@ -140,7 +139,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 
 			}
 		}
-		
+		*/
 		public function anySelected():Array{
 			return manager.selectedTargetObjects;
 		}
@@ -159,8 +158,8 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			if(on)	f=manager.addEventListener;
 			else	f=manager.removeEventListener;
 			
-			
-			for each(var eventName:String in [TransformEvent.FINISH_INTERACTIVE_MOVE,TransformEvent.SELECTION_CHANGE,TransformEvent.DOUBLE_CLICK,
+			//TransformEvent.DOUBLE_CLICK
+			for each(var eventName:String in [TransformEvent.FINISH_INTERACTIVE_MOVE,TransformEvent.SELECTION_CHANGE,
 				TransformEvent.START_INTERACTIVE_SCALE,TransformEvent.FINISH_INTERACTIVE_SCALE]){
 					f(eventName,listenerF);
 				}
@@ -201,18 +200,17 @@ package com.xperiment.make.xpt_interface.trialDecorators
 						break;				
 					case TransformEvent.FINISH_INTERACTIVE_SCALE:
 						var dimensions:Object = TrialDecorator_size.finished(stim);
-						//updateTransparentLayer(transformStim);
-						
-						doUpdate([stim],{width:dimensions.width,height:dimensions.height});
+	
+						doUpdate([stim],dimensions);
 						updatePosition(stim, transformStim.x,transformStim.y);
-						saveSelected();
+						//saveSelected();
 						resetTrial();
 						break;
-					case TransformEvent.DOUBLE_CLICK:
+					/*case TransformEvent.DOUBLE_CLICK:
 						
 						if(stimuli.length==1 && manager.selectedItems[0]){
 							
-							saveSelected();
+							//saveSelected();
 							
 							EditText.doubleClick( stim, checkAndInit, finishedF );
 							function checkAndInit():void{
@@ -224,18 +222,18 @@ package com.xperiment.make.xpt_interface.trialDecorators
 							}
 							
 						}
-						break;
+						break;*/
 				}
 			}
 		}
 		
-		private function saveSelected():void
+		/*private function saveSelected():void
 		{
 			selected ||= [];
 			for each(var stim:object_baseClass in manager.selectedTargetObjects){
 				selected.push(stim.getVar(BindScript.bindLabel));
 			}
-		}
+		}*/
 		
 		private function resetTrial():void
 		{
@@ -264,9 +262,17 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			var transparentLayer:Shape;
 			if(transparentLayers){
 				for each(transparentLayer in transparentLayers){
+					
+					
 					if(transparentLayer.parent!=null){
+						
+						if(transparentLayer.parent is addButton){
+							transparentLayer.parent.mouseChildren=true;
+						}
+						
 						transparentLayer.parent.removeChild(transparentLayer);
 					}
+					
 				}
 				transparentLayers=null;		
 			}
@@ -277,9 +283,20 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			var transparentLayer:Shape = new Shape;
 			transparentLayer.name=TRANSPARENT_LAYER;
 			transparentLayer.graphics.beginFill(0xffffff,0);
-			transparentLayer.graphics.drawRect(0,0,stimulus.myWidth,stimulus.myHeight);
+		
+			if(stimulus is addJPG){
+				
+			}
+			else transparentLayer.graphics.drawRect(0,0,stimulus.myWidth,stimulus.myHeight);
+			
+			if(stimulus is addButton){
+				stimulus.mouseChildren=false;
+			}
+			
+			trace(transparentLayer.width,transparentLayer.height,stimulus)
 			stimulus.addChild(transparentLayer);
 			transparentLayers[transparentLayers.length]=transparentLayer;
+			//trace(stimulus,transparentLayer,transparentLayer.parent)
 		}
 		
 		private function updateTransparentLayer(transformStim:TransformItem):void{	
@@ -303,16 +320,18 @@ package com.xperiment.make.xpt_interface.trialDecorators
 				case "orient-bottom":
 					var needsUpdating:Array = GetSetPos.SET(data.info.command,manager.selectedTargetObjects, manager);
 					
-					for(var i:int=0;i<needsUpdating;i++){
-						doUpdate(needsUpdating[i].what,needsUpdating[i].changed);
+					for(var i:int=0;i<needsUpdating.length;i++){
+						//trace(11,needsUpdating.length,needsUpdating[i].what)
+						doUpdate([needsUpdating[i].what],needsUpdating[i].changed);
+						UpdateRunnerScript.DO((needsUpdating[i].what as object_baseClass).getVar(BindScript.bindLabel));
 						//this.dispatchEvent(new NeedsUpdating(needsUpdating[i].what,needsUpdating[i].changed));
 					}
 					break;
 				case "snap-to-grid":
-					if(data.info.val){
-						
-						if(!stepMove)	stepMove = new TrailDecorator_position(manager, theStage);
-					}
+					
+
+					if(!stepMove)	stepMove = new TrailDecorator_position(manager, theStage);
+					
 					else if(stepMove){
 						stepMove.kill();
 						stepMove=null;
@@ -364,6 +383,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		}
 	}
 }
+/*
 import com.greensock.transform.TransformItem;
 import com.greensock.transform.TransformManager;
 import com.xperiment.stimuli.object_baseClass;
@@ -426,4 +446,4 @@ class SelectItems{
 		add(e.target as object_baseClass);
 		
 	}
-}
+}*/

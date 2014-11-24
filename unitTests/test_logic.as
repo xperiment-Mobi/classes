@@ -9,7 +9,8 @@ package unitTests
 	import com.xperiment.parsers.CompiledObject;
 	import com.xperiment.parsers.MathParser;
 	
-	import flexunit.framework.Assert;
+	import org.flexunit.Assert;
+
 	
 	
 	

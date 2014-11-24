@@ -1,15 +1,13 @@
 package com.xperiment.make.xpt_interface.trialDecorators.sizeHelpers
 {
 
-
-	import com.dgrigg.minimalcomps.graphics.Shape;
 	import com.greensock.events.TransformEvent;
 	import com.greensock.transform.TransformManager;
 	import com.xperiment.make.xpt_interface.trialDecorators.TrialDecorator;
 	import com.xperiment.stimuli.object_baseClass;
-	import com.xperiment.trial.Trial;
 	
 	import flash.display.GradientType;
+	import flash.display.Shape;
 	import flash.geom.Matrix;
 
 
@@ -45,19 +43,13 @@ package com.xperiment.make.xpt_interface.trialDecorators.sizeHelpers
 			this.stim = stim;
 			transparentLayer = stim.getChildByName(TrialDecorator.TRANSPARENT_LAYER) as Shape;
 			style(transparentLayer,stim.width, stim.myHeight);
-						
-			
 			size= new Size(stim);
-			
-			
-
 			hide();
 			
 			//listeners(true);
-			
 		}
 		
-		private function style(transparentLayer:Shape, width:int, height:int):void
+		protected function style(transparentLayer:Shape, width:int, height:int):void
 		{
 			
 			var mat:Matrix = new Matrix();
@@ -79,7 +71,7 @@ package com.xperiment.make.xpt_interface.trialDecorators.sizeHelpers
 			transparentLayer.graphics.drawRect(0,0,width, height);
 		}
 		
-		private function hide():void
+		protected function hide():void
 		{
 			for(var i:int=0;i<stim.numChildren;i++){
 				if(stim.getChildAt(i)!=transparentLayer)stim.getChildAt(i).visible=false;

@@ -36,6 +36,7 @@
 		public static var preserveQueue:Boolean = false;
 		
 		public function kill():void{
+	
 			if(queue && preserveQueue==false){
 				queue.cancel()
 				queue.empty(true,true);
@@ -163,7 +164,6 @@
 		public function PreloadStimuli(script:XML,theStage:Stage,kill:Function=null):void{
 			this.theStage=theStage;
 			this.killXperimentF=kill;
-			
 			if(script!=null){
 				localDirectory=codeRecycleFunctions.fixLocalDir(ExptWideSpecs.IS('stimuliFolder'));
 				if(ExptWideSpecs.IS('forceStimuliReload') == true) 	forceReload=true;
@@ -190,7 +190,8 @@
 						filename=arr[i];
 						if(fileExtension!='' && filename.indexOf(".")==-1)	filename=filename+fileExtension;
 						
-						if(files.indexOf(localDirectory+filename)==-1)		files.push(localDirectory+filename);							
+						if(files.indexOf(localDirectory+filename)==-1)		files.push(localDirectory+filename);
+						//trace(localDirectory,filename,111)
 					}
 				}
 			}

@@ -25,6 +25,7 @@ package com.xperiment.events
 		public static var PROBLEM:String = "problem";
 		public static var CHANGE_TRIALORDER:String = "change trial order";
 		public static var MTURK_SUBMIT:String = "submit mechanical turk";
+		public static var GOTO_COND:String = "start a condition";
 		
 		
 		public function GlobalFunctionsEvent(type:String, command:String,values:* = "")

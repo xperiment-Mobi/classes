@@ -79,34 +79,41 @@ package com.xperiment.make.xpt_interface.Bind
 			
 		}
 
+		public static function delAttrib(bind_id:String,attrib:String,updateInfo:Array):void{
+			delete tagDictionary[bind_id].@[attrib]
+			updated(updateInfo)
+		}
 		
 																									//depth = -1
 		public static function updateAttrib(bind_id:String, attrib:String, val:*, multiSpecs:Object, depth, updateInfo:Array, update:Boolean=true):Boolean{
 			var binds:Array = bind_id.split(",");
 			var newVal:String;
-			
+			//trace(111,bind_id)
 			//trace(123,JSON.stringify(multiSpecs),attrib,val);
 			if(binds.length==1 || depth==0){
 				//trace(bind_id,23232,attrib)
 				
-				if(attrib!=xmlBODY){
+				//if(attrib!=xmlBODY){
 					
-					newVal= MultiTrialCorrection.sortMultiSpecs(val,tagDictionary[binds[0]].@[attrib],multiSpecs,attrib);
-	
-					tagDictionary[binds[0]].@[attrib] = newVal;
-				}
+				newVal= MultiTrialCorrection.sortMultiSpecs(val,tagDictionary[binds[0]].@[attrib],multiSpecs,attrib);
+
+				tagDictionary[binds[0]].@[attrib] = newVal;
+				//trace((tagDictionary[binds[0]] as XML).toXMLString());
+					/*}
 				else{
 				
 					//note that have not yet decided how to encompass multistuff with below
 					newVal=val.toString(); //sortMultiSpecs(val.toString(),(tagDictionary[binds[0]] as XML).toString(),multiSpecs);
 					(tagDictionary[binds[0]] as XML).replace("*",  new XML("<![CDATA[" + newVal + "]]>") );
-				}
+				}*/
 				
 				if(update)	updated(updateInfo);
+				//trace(cleanScript(),222)
 				return true;
 			}
 			else{
 				if(depth==-1){
+					
 					var copyOverID:String = tagDictionary[binds[0]].@[ProcessScript.COPYOVER_ID];
 					for(var i:int=0;i<binds.length;i++){	
 						if(searchTemplates(copyOverID, attrib, binds[i], val,multiSpecs)==true) {
@@ -122,6 +129,7 @@ package com.xperiment.make.xpt_interface.Bind
 				}
 				
 			}
+			
 			return false;
 		}
 		
@@ -139,7 +147,7 @@ package com.xperiment.make.xpt_interface.Bind
 			return false;
 		}
 		
-		public static function addStimulus(parentID:String, xml:XML):void{
+		public static function addStimulus(parentID:String, xml:XML, doUpdate:Boolean=true):void{
 			var parent:XML = tagDictionary[parentID];
 			
 			var bind_id:String = TRIAL+"_"+counter.toString();
@@ -149,8 +157,10 @@ package com.xperiment.make.xpt_interface.Bind
 			tagDictionary[bind_id] = xml;
 			
 			parent.prependChild(xml);
-			
-			updated(['BindScript.addStimulus']);
+
+			if(doUpdate) {
+				updated(['BindScript.addStimulus']);
+			}
 		}
 		
 

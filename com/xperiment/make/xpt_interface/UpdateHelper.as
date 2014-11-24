@@ -26,7 +26,8 @@ package com.xperiment.make.xpt_interface
 		
 		private function initElements():void
 		{
-			elements['PropertyInspector'] 				= ['setScriptEditor'];
+			elements['PropertyInspector.edit'] 			= ['setScriptEditor','restartTrial'];
+			elements['PropertyInspector.addRemove'] 	= ['setScriptEditor','resetPropertyApp','restartTrial'];
 			elements['BindScript.addStimulus'] 			= ['setScriptEditor','restartTrial'];
 			elements['BindScript.deleteTrial']	 		= ['setScriptEditor'];
 			elements['BindScript.deleteTrials'] 		= ['setScriptEditor'];
@@ -39,7 +40,7 @@ package com.xperiment.make.xpt_interface
 			elements['Bind_processChanges.timingChanged']=['setScriptEditor','resetPropertyApp'];
 			elements['Bind_delStim.deletePartMultiStim']= ['restartTrial','setScriptEditor','resetPropertyApp','setTimeline__Trial'];
 			elements['Bind_delStim.deleteStim']			= ['restartTrial','setScriptEditor','resetPropertyApp','setTimeline__Trial'];
-			elements['Trial_Goto'] 						= ['setTimeline__Trial','pos_scale_editor__Trial'];
+			elements['Trial_Goto'] 						= ['setTimeline__Trial','pos_scale_editor__Trial','resetPropertyApp'];
 			
 		}
 		
@@ -47,7 +48,7 @@ package com.xperiment.make.xpt_interface
 		{
 			//requirements.push( {'syncRunnerScript_BindScript': 	function():void{runner.syncRunnerScript_BindScript();}} );
 			requirements.push( {'setScriptEditor': 		function():void{Communicator.pass('setScript',BindScript.cleanScript())}} );
-			requirements.push( {'restartTrial': 		function():void{runner.restartTrial()}} );
+			requirements.push( {'restartTrial': 		function():void{runner.restartTrial(false,true)}} );
 			requirements.push( {'resetPropertyApp': 	function():void{PropertyInspector.newTrial(runner.runningTrial as TrialBuilder);}} );
 			requirements.push( {'setTimeline__Trial': 	function():void{Timeline.update(runner.runningTrial);}} );
 			requirements.push( {'pos_scale_editor__Trial': 	function():void{runner.posScaleChanger();}} );
@@ -85,27 +86,19 @@ package com.xperiment.make.xpt_interface
 		private function generateNeeded():Array
 		{
 			var arr:Array = [];
-			var list:Array;
+			var list:Array;	
 			
-			
-			
-			
-			for(var i:int=0;i<updateFrom.length;i++){
-				
+			for(var i:int=0;i<updateFrom.length;i++){	
 				list = elements[updateFrom[i]];
-
 				for each(var requir:String in list){
 					if(arr.indexOf(requir)==-1)arr.push(requir);
 				}
 			}
-			
-			
+				
 			updateFrom = [];
 			return arr;
 		}
-		
-		
-	
+
 		
 		public function kill():void
 		{

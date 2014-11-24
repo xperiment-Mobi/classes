@@ -23,9 +23,6 @@
 			basicText = new BasicText()
 			basicText.setVariablesChild(null);
 			
-			
-			
-			
 			this.OnScreenElements=basicText.OnScreenElements;
 			
 			addAdditionalParams();

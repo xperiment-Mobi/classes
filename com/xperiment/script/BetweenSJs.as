@@ -175,5 +175,16 @@ package com.xperiment.script
 			throw new Error();
 			return null;
 		}
+		
+		public static function forceCond(orig_script:XML, cond:String):XML
+		{
+
+			if(orig_script.hasOwnProperty('MULTISETUP')){
+				orig_script.MULTISETUP[0].@forceCondition=cond;
+				
+				return orig_script;
+			}
+			return null;
+		}
 	}
 }

@@ -15,9 +15,9 @@ package com.xperiment.script{
 
 		
 		public function process(parentScript:XML):void {
-			
 			script=parentScript;
-			
+
+
 			//is the experiment 'mock' value set to true?
 			if(script..*.(hasOwnProperty("@mock") && @mock=='true').length()==1){
 				script=replaceAllInstancesOfAttribWithSuffixedAttrib("mock",script);
@@ -31,11 +31,12 @@ package com.xperiment.script{
 					betweenSJs.removeEventListener(Event.COMPLETE, arguments.callee);
 					removeChild(betweenSJs);
 					script=betweenSJs.script;
+					//trace(111,script)
 					betweenSJs=null;
 					next();
 				},false,0,false);
 			
-			betweenSJs.sortOutMultiExperiment(script,urlParam_cond());
+				betweenSJs.sortOutMultiExperiment(script,urlParam_cond());
 			
 			}
 			else next();
@@ -55,6 +56,7 @@ package com.xperiment.script{
 			script=sortOutETCs(script);
 			script=sortOutSpecialVariables(script);
 			script=StimModify.sortOutOverExptMods(script);
+
 
 			/*for(var command:String in ProcessScript_comands.commands){
 				script=sortOutCommands(script,command,ProcessScript_comands.commands[command]);

@@ -14,7 +14,7 @@
 		private var notYetRun:Boolean=true;
 		private var storeRandomDecision:Boolean;
 
-		private function nextStepONCE():void{
+		protected function nextStepONCE():void{
 
 			if(notYetRun || OnScreenElements.doMany){
 				notYetRun=false;

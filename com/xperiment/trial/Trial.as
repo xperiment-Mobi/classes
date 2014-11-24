@@ -46,8 +46,6 @@
 		static public var ZOOM_X:Number = 1;
 		static public var ZOOM_Y:Number = 1;
 		
-		private static var _overEntireExperiment:overExperiment;
-		
 		public var trialOrderScheme:String;
 		public var trialInfo:Object;
 		public var runTrial:Boolean=true; 
@@ -78,8 +76,6 @@
 		private var endOfTrialStim:Vector.<uberSprite>;
 		
 		
-		public static function set overEntireExperiment(value:overExperiment):void	{_overEntireExperiment = value;}
-
 		
 		public function passExptScriptXML(trialProtocolList:XML):void{
 			this.trialProtocolList=trialProtocolList;
@@ -258,7 +254,6 @@
 					
 					//behaviours=codeRecycleFunctions.multipleTrialCorrection(kinder.attribute("behaviours"),"---",iteration);
 					
-					if (kinder.name()=="addUpdateOverExperiment") TrialVarObj._overEntireExperiment=_overEntireExperiment;
 					if(inContainer!=null)inContainer.passChildObject((freshStim as object_baseClass).pic);
 					
 					
@@ -393,12 +388,11 @@
 			//}
 			
 			OnScreenElements=new Vector.<object_baseClass>;
-
 		}
 		
-		public function prepare(Ord:uint,trial:XML):void {
+
+		public function prepare(Ord:uint,trial:XML,params:Object=null):void {
 			pic ||= new Sprite;
-			
 			Order=Ord;
 			if(trial.hasOwnProperty('@trials'))	numTrials=trial.@trials;
 		
@@ -426,7 +420,7 @@
 			var con_b:container;
 			instantiateVars();
 			
-			CurrentDisplay = getOnScreenBoss(); // slight bodge to allow for stuff to be added when sorting out a multiExperiment Trial.
+			CurrentDisplay = getOnScreenBoss(params); // slight bodge to allow for stuff to be added when sorting out a multiExperiment Trial.
 			pic.addChild(CurrentDisplay);
 				
 			manageBehaviours=manageBehavioursGet();
@@ -462,10 +456,13 @@
 			else{
 				if(P2P_NO_WAIT)run();
 			}
+
 		}
-		
-		public function getOnScreenBoss():OnScreenBoss{
-			return new OnScreenBoss;
+
+		public function getOnScreenBoss(params:Object):OnScreenBoss{
+			var o:OnScreenBoss = new OnScreenBoss;
+			if(params && params.timing) o.params(params.timing);
+			return o;
 		}
 		
 		public function manageBehavioursGet():BehaviourBoss{
@@ -495,9 +492,9 @@
 			return trialData;
 		}
 		
-		
+
 		public function run():void {
-	
+
 			if(pic){
 			
 				pic.addEventListener(GotoTrialEvent.TRIAL_PING_FROM_OBJECT,gotoTrial,false,0,false);//note false here for weak refs.  NEEDED.  If the SJ is on a trial long enough, the eventlistener will just be cleaned up...
@@ -536,7 +533,7 @@
 			
 		}
 		
-		private function gotoTrial(e:GotoTrialEvent):void
+		protected function gotoTrial(e:GotoTrialEvent):void
 		{			
 			if(pic)pic.removeEventListener(GotoTrialEvent.RUNNER_PING_FROM_TRIAL,gotoTrial);
 			if(!endOfTrialStim) nextEvent(e.action);
@@ -579,7 +576,10 @@
 			
 			pic.removeEventListener(GotoTrialEvent.TRIAL_PING_FROM_OBJECT,gotoTrial);
 			
-			if(requiredStim)requiredStim.kill();
+			if(requiredStim){
+				requiredStim.kill();
+				requiredStim=null;
+			}
 			
 			if(manageBehaviours){
 				manageBehaviours.kill();

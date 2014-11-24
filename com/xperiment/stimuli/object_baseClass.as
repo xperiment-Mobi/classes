@@ -10,7 +10,7 @@
 	import com.xperiment.uberSprite;
 	import com.xperiment.behaviour.BehaviourBoss;
 	import com.xperiment.stimuli.primitives.boxLabel;
-	import com.xperiment.trial.overExperiment;
+
 	
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
@@ -29,7 +29,7 @@
 		public var duplicateTrialNumber:uint=new uint  ;
 		public var iteration:uint;
 		//public var finishedSettingVariables:Boolean=false;
-		public var overEntireExperiment:overExperiment;
+
 		public var storedVariables:Array=new Array  ;
 		public var temporaryStoredVariables:Array=new Array  ;
 		public var returnStageHeight:int;
@@ -199,10 +199,7 @@
 			
 			if (trialObjs && trialObjs.perSize &&  trialObjs.perSize!="")percentageScreenSizeFrom=trialObjs.perSize.toLowerCase;
 			storedVariables=trialObjs.storedVariables;
-			if (trialObjs.oe!=null) {
-				overEntireExperiment=trialObjs.oe;
-			}
-			
+
 			iteration=trialObjs.i;
 			trialWithinBlockPosition=trialObjs.trialBlockPositionStart;
 		}

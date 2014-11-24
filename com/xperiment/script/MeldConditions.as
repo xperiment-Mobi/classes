@@ -7,6 +7,12 @@ package com.xperiment.script
 		
 		public static function DO(script:XML, cond:int):XML{
 			
+			if(script.children()[0].name()=="start" && cond!=0){
+				delete script.start
+				cond--;
+			}
+
+			
 			if (cond==0) return script.*[cond]
 			if ((cond>script.*.length()-1)) throw new Error('should be impossible to reach here and to have too few between sj conditions');
 			
@@ -39,6 +45,7 @@ package com.xperiment.script
 					
 				}
 			}
+			
 			//trace(myScript);
 			return myScript;
 		}

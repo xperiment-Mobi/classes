@@ -38,15 +38,15 @@ package unitTests
 			trace("TEST FAILURE :");
 			trace(failure.toString())
 			trace("--------------");
-			var mySound:Sound = new Sound();
-			mySound.load(new URLRequest("assets/error.mp3"));
-			mySound.addEventListener(Event.COMPLETE,function(e:Event):void{
-				mySound.removeEventListener(Event.COMPLETE,arguments.callee);
-				trace("finished")
-				mySound.close();
-				mySound = null;			
-			});
-			mySound.play();
+//			var mySound:Sound = new Sound();
+//			mySound.load(new URLRequest("assets/error.mp3"));
+//			mySound.addEventListener(Event.COMPLETE,function(e:Event):void{
+//				mySound.removeEventListener(Event.COMPLETE,arguments.callee);
+//				trace("finished")
+//				mySound.close();
+//				mySound = null;			
+//			});
+//			mySound.play();
 
 			
 

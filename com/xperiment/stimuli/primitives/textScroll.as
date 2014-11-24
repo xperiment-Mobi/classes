@@ -5,7 +5,6 @@
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import com.xperiment.codeRecycleFunctions;
-	import com.xperiment.trial.overExperiment;
 	import com.xperiment.stimuli.object_baseClass;
 	import com.xperiment.uberSprite;
 	import com.xperiment.script.ProcessScript;

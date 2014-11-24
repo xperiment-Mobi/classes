@@ -54,13 +54,14 @@ package com.xperiment.make.xpt_interface.Bind
 				var wasChange:Boolean = false;
 				for each(prop in propList){
 					wasChange=true;
+					//trace(123,prop,changed[prop],bind_id)
 					//if(prop=='x')		sortX(stim, Number(changed[prop]), bind_id);
 					//else if(prop=='y')	sortY(stim, Number(changed[prop]), bind_id);
 					//else{
 						BindScript.updateAttrib(bind_id,prop,changed[prop],multiSpecs,-1,null,false);
 					//}
 				}
-				trace("in here",222,wasChange)
+				//trace("in here",222,wasChange)
 				if(wasChange) BindScript.updated(['Bind_processChanges']);
 			}
 			

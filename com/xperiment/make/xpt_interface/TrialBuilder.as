@@ -78,7 +78,7 @@ package com.xperiment.make.xpt_interface
 		}
 		
 		
-		override public function prepare(Ord:uint, trial:XML):void{	
+		override public function prepare(Ord:uint, trial:XML,params:Object=null):void{	
 			//trace(trial.toXMLString());
 			bind_id = trial.@[BindScript.bindLabel];
 			xml = trial;
@@ -94,12 +94,22 @@ package com.xperiment.make.xpt_interface
 			return super.composeObject(kinder,iteration, inContainer, true,xmlVal);
 		}
 		
-		override public function getOnScreenBoss():OnScreenBoss{
-			return new OnScreenBossMaker;
+		override public function getOnScreenBoss(params:Object):OnScreenBoss{
+			var o:OnScreenBossMaker = new OnScreenBossMaker;
+			if(params)o.params(params);
+			return o;
 		}
-			
+	
+/*		override public function sortoutTiming(startStr:String, endStr:String,duration:String,peg:String,stim:uberSprite):void{
+			if(endStr.indexOf('etc')!=-1){
+				
+			}
+			super.sortoutTiming(startStr,startStr,duration,peg,stim);
+		}*/
+		
 	}
 }
+
 
 class UniqueNewStim{
 	private var uniqueNewStimID:Array = [];
@@ -118,5 +128,7 @@ class UniqueNewStim{
 	private function gen():String{
 		return int(Math.random()*100000).toString();
 	}
+	
+
 	
 }

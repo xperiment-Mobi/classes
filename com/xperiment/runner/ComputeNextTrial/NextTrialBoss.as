@@ -18,6 +18,7 @@ package com.xperiment.runner.ComputeNextTrial
 		
 		public function NextTrialBoss(script:XML,trialList:Vector.<Trial>,trialOrder)
 		{
+
 			this.trialList = trialList;
 			this.trialOrder = trialOrder;
 			currentTrial = 0;
@@ -26,7 +27,7 @@ package com.xperiment.runner.ComputeNextTrial
 		}
 		
 		public function getTrial(nextCommand:String,prevTrial:Trial):Trial{
-	
+
 			//only bother with Progress when Progress exists and either forward or backward (latter info ignored anyway)
 			var nextTrialNum:int=-1;
 			if(progressDict && prevTrial.trialOrderScheme && progressDict.hasOwnProperty(prevTrial.trialOrderScheme) && [GotoTrialEvent.NEXT_TRIAL,GotoTrialEvent.PREV_TRIAL].indexOf(nextCommand)!=-1){
@@ -95,6 +96,7 @@ package com.xperiment.runner.ComputeNextTrial
 		
 		public function firstTrial():Trial
 		{	
+		
 			return trialList[trialOrder[0]];
 		}
 		

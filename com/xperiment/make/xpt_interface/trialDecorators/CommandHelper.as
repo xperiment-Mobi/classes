@@ -11,6 +11,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 	import com.xperiment.make.xpt_interface.runnerBuilder;
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
 	import com.xperiment.make.xpt_interface.Bind.Bind_delStim;
+	import com.xperiment.make.xpt_interface.Bind.MultiTrialCorrection;
 	import com.xperiment.make.xpt_interface.Cards.Cards;
 	import com.xperiment.make.xpt_interface.ClipboardETC.ClipboardETC;
 	import com.xperiment.make.xpt_interface.trialDecorators.Helpers.EditText;
@@ -25,15 +26,17 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		
 		public static function command(what:String, data:* =null):Boolean
 		{
-			
-
-			if(what=='propEdit'){
-				PropertyInspector.propEdit(data);
-				return true;
-			}
-			
-			
+				
 			switch(what){
+				case 'propRemove':
+					PropertyInspector.propEdit(data,'remove');
+					return true;
+				case 'propAdd':
+					PropertyInspector.propEdit(data,'add');
+					return true;
+				case 'propEdit':
+					PropertyInspector.propEdit(data,'edit');
+					return true;
 				case 'cards_orderChanged':
 					Cards.change(data as Array);
 					return true;
@@ -55,7 +58,6 @@ package com.xperiment.make.xpt_interface.trialDecorators
 					break;
 				case 'loadableStim':
 					StimBehav.addLoadableStimuli(data as Array);
-					
 					break;
 				case 'stimBehav':
 					StimBehav.addStimulus(data as String);
@@ -78,11 +80,12 @@ package com.xperiment.make.xpt_interface.trialDecorators
 					}	
 					break;
 				case 'editMode':
-					r.editMode = data;
 					r.pos_scale.setMode(data);
 					break;
+				case 'editModeType':
+					MultiTrialCorrection.setMode(data);
+					break;
 				case 'timeChange':
-					trace("received command change");
 					Timeline.timeChange(data);
 					break;
 				case 'orderChange':
@@ -127,6 +130,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 				case 'deletePegs':
 					Bind_delStim.delPegs(data as Array, r);
 					break;
+				
 				default:
 					return false;
 					

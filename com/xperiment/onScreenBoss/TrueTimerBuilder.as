@@ -5,9 +5,9 @@ package com.xperiment.onScreenBoss{
 	import flash.events.Event;
 	
 	public class TrueTimerBuilder extends TrueTimer{
-		public var updateEvery:int;
+		public var updateEvery:int = 50;
 		public var initTimeBuilder:int;
-		public var currentTimeBuilder:int;
+		public var currentTimeBuilder:Number;
 		public var trialTime:int=0;
 		private var nextPing:Number;
 		
@@ -25,21 +25,29 @@ package com.xperiment.onScreenBoss{
 
 
 		private function evaluateTime(e:Event):void {
+
 			if (running) {
 				currentTimeBuilder = new Date().valueOf();
+
 				if (currentTimeBuilder >= nextPing) {	
 					tickCount++;
 					trialTime= currentTimeBuilder-initTimeBuilder;
-					nextPing = initTimeBuilder + tickCount * updateEvery;
+					calcNextPing();
 					callF(trialTime);	
+			
 				}
 			}
+		}
+		
+		private function calcNextPing():void{
+			nextPing = initTimeBuilder + tickCount * updateEvery;
 		}
 
 
 		override public function start():void {
 			initTimeBuilder = new Date().valueOf();
 			running=true;
+			calcNextPing()
 			listen(true);
 		}
 		

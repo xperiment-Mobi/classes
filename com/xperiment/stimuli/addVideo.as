@@ -221,9 +221,9 @@
 		private function initVideo(isLoaded:Boolean):Boolean{
 			
 			if(preloader)vidObj = preloader.give(getVar("filename"))
-			
+
 			//annoying race condition in the stimulus loader
-			if(vidObj == null){				
+			if(vidObj == null){			
 				var raceCondTimer:Timer = new Timer(50);
 				raceCondTimer.addEventListener(TimerEvent.TIMER,
 					function(e:TimerEvent):void{
@@ -248,15 +248,15 @@
 			MyNS = new NetStream(nc)
 			Listeners(true);
 			MyNS.addEventListener(AsyncErrorEvent.ASYNC_ERROR, errL); 
-			
+	
 			videoClient = new Object();
 			videoClient.onMetaData = function(infoObject:Object):void{
 				lengthOfVideo = int(infoObject.duration * 1000)+1;
 				if(getVar("exactSize") || getVar("width")=="0"){pic.width = myVideo.width = infoObject.width;setVar("string","width",pic.width);}
 				if(getVar("exactSize") || getVar("height")=="0"){pic.height = myVideo.height = infoObject.height;setVar("string","height",pic.height);}
-				duration = int(infoObject.duration) * 1000 +1
+				duration = int(infoObject.duration) * 1000 +1;
 				setUniversalVariables();
-				trace(111)
+				
 				//pic.visible=true;
 				//MyNS.resume();
 			}
@@ -265,7 +265,7 @@
 			
 			myVideo.attachNetStream(MyNS);
 			
-			MyNS.play(null);
+			MyNS.play(null)
 			
 			
 			if(isLoaded == true){

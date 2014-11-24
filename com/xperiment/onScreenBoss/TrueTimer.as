@@ -46,8 +46,7 @@ package com.xperiment.onScreenBoss{
 				if (__offset > delay) {
 					while (__offset > delay) {
 						currentCount++;
-						__offset -= delay
-							;
+						__offset -= delay;
 						if (repeatCount != 0) {
 							if (currentCount == repeatCount) {
 								timeFromStart=now.valueOf()-initTime.valueOf();

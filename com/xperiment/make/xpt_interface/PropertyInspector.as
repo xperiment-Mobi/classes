@@ -1,7 +1,11 @@
 package com.xperiment.make.xpt_interface
 {
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
+	import com.xperiment.make.xpt_interface.Bind.UpdateRunnerScript;
+	import com.xperiment.stimuli.StimulusFactory;
 	import com.xperiment.stimuli.object_baseClass;
+	
+	import flash.utils.Dictionary;
 	
 	public class PropertyInspector
 	{
@@ -13,36 +17,32 @@ package com.xperiment.make.xpt_interface
 		private static var runningTrial:TrialBuilder;
 		private static var bindLabel:String;
 		private static var ODD_PEG_DIVIDE:String = ' — ';
+		private static var lookup_peg:Dictionary;
+		private static var runner:runnerBuilder;
 		
-		public static function setup(g:Function,j:Function):void
+		public static function setup(g:Function,j:Function,r:runnerBuilder):void
 		{
 			getTrial=g;
 			toJS = j;
+			runner = r;
 			bindLabel = BindScript.bindLabel;
 		}
 		
 		public static function newTrial(r:TrialBuilder):void
 		{
+
 			runningTrial=r;
+			lookup_peg = new Dictionary;
 			var b:String = (runningTrial as TrialBuilder).bind_id;
 
 			currentTrialXML = getTrial(b);
 
 			var rows:Array = [];
 			var stim:XML;
-			var stimObj:Object;
-			var name:String;
+
 			for(var i:int=0;i<currentTrialXML.children().length();i++){
-				
 				stim = currentTrialXML.children()[i];
-				name = sortName(stim.name().toString());
-				
-				if(name!=""){
-					stimObj = {};
-					appendAttribs(rows,stim,name,stim.name().toString());	
-				}
-				
-				
+				appendAttribs(rows,stim,stim.name(),stim.name().toString());	
 			}
 			
 			var combined:Object = {};
@@ -52,8 +52,13 @@ package com.xperiment.make.xpt_interface
 			
 		}
 		
+		
+		
 		private static function appendAttribs(rows:Array, stim:XML, group:String, detailedName:String):void
 		{
+			
+			detailedName = StimulusFactory.getName(detailedName);
+
 			var key:String;
 			var row:Object;
 			var peg:String;
@@ -69,9 +74,11 @@ package com.xperiment.make.xpt_interface
 			
 			group = peg+ ODD_PEG_DIVIDE+group;
 			
+			lookup_peg[group] = bind_id;
+			trace(group,bind_id,stim.toXMLString())
+			
 			for each(var a:XML in stim.@*) 
 			{
-				
 				key = a.name().toString();
 				if(key!=bindLabel){
 					if(key!=peg) rows.push({group:group, name:key, value:a.toString(), detailedName:detailedName,bind_id:bind_id});
@@ -101,20 +108,34 @@ package com.xperiment.make.xpt_interface
 			return pegs.join("---");
 		}
 		
-		private static function sortName(name:String):String{
-			if(name.substr(0,3)!="add" &&  name.substr(0,5)!="behav")	return '';
-			
-			name = name.split("add").join("").split("behav").join("");
-			return name.charAt(0).toLowerCase() + name.substr(1);
-		}
+
 		
-		public static function propEdit(data:Object):void{
-			var bind_id:String = data.bind_id;
-			if(bind_id!=""){
-				var prop:String = data.prop;
-				var val:String = data.val;
-				BindScript.updateAttrib(bind_id,prop,val,null,-1,['PropertyInspector']);
+		public static function propEdit(data:Object,which:String):void{
+
+			var prop:String = data.name;
+			var val:String  = data.value;
+
+			if(lookup_peg.hasOwnProperty(data.group)){
+
+				var bind_id:String = lookup_peg[data.group];
+				
+				var updateInstructs:String;
+				if(which=="edit") 		updateInstructs = 'PropertyInspector.edit';
+				else 					updateInstructs = 'PropertyInspector.addRemove';
+				
+
+				if(which=='remove'){
+					BindScript.delAttrib(bind_id,prop,[updateInstructs]);
+					UpdateRunnerScript.DELETE_ATTRIB(bind_id,prop);
+				}
+				else{
+					BindScript.updateAttrib(bind_id,prop,val,null,-1,[updateInstructs]);
+					UpdateRunnerScript.DO(bind_id);
+				}
+				
+				
 			}
 		}
 	}
 }
+	

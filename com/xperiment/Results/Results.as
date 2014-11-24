@@ -27,6 +27,7 @@
 		private var _deviceUUID:String;
 		private var initial:Boolean = true;
 		//private var uniqueTrialNames:Array = [];
+		private var preserve:Boolean = false;
 
 		
 		public function get ongoingExperimentResults():XMLList
@@ -35,12 +36,14 @@
 		}
 
 		public function kill():void{
-			_finalResults=null;
-			_ongoingExperimentResults=null;
-			_storedVars=null;
-			//uniqueTrialNames=null;
-			Results._instance =null;
-			Results._instance=new Results(new PrivateResults());
+			if(preserve==false){
+				_finalResults=null;
+				_ongoingExperimentResults=null;
+				_storedVars=null;
+				//uniqueTrialNames=null;
+				Results._instance =null;
+				Results._instance=new Results(new PrivateResults());
+			}
 		}
 		
 		public function checkDataExists():Boolean{
@@ -145,19 +148,20 @@
 		{
 			if(!_instance){
 				_instance=new Results(new PrivateResults());
-				
-				var save:Array=ExptWideSpecs.IS("save").toLowerCase().split(",");
-				_instance.trickleToServerBool = save.indexOf("trickletofile")!=-1;
-				_instance.trickleToCloudBool = 	save.indexOf("trickletocloud")!=-1;
 			}					
 			return _instance;
 		}	
+		
+
 		
 		public function setup():void
 		{
 			_uuid=ExptWideSpecs.getSJuuid();
 			_deviceUUID=ExptWideSpecs.IS("deviceUUID");
 			
+			var save:Array=ExptWideSpecs.IS("save").toLowerCase().split(",");
+			_instance.trickleToServerBool = save.indexOf("trickletofile")!=-1;
+			_instance.trickleToCloudBool = 	save.indexOf("trickletocloud")!=-1;
 			//_ongoingExperimentResults=new XMLList;
 			//_ongoingExperimentResults=getPracticeData().*;		
 		}	
@@ -178,6 +182,7 @@
 				if(res!=null)_ongoingExperimentResults+=res;
 				//test(res);
 			}
+			//trace(222,_ongoingExperimentResults)
 		}
 		
 	
@@ -226,9 +231,10 @@
 			if(res){
 				var trialName:String=res.@name.toString();
 				for each(var s:XML in res.children()){
-					param.results[trialName+"___"+s.name()]=s.toString();
+					param.results[trialName+"_"+s.name()]=s.toString();
 				}
 			}
+			//trace(1111,JSON.stringify(param));
 			_soapService.send(param,SoapService.DRIBBLE_RESULTS,successF);
 
 			function successF(worked:Boolean):void{
@@ -374,11 +380,17 @@
 		
 		public function composeXMLResults():XML
 		{
-			trace(_ongoingExperimentResults);
+			//trace(_ongoingExperimentResults);
 			if(trickleToCloudBool)trickleToCloud(null,true);
 			if(trickleToServerBool)trickleToServer(null,true);
 			return composeXMLInfo().appendChild(_ongoingExperimentResults);
 		}		
+		
+		public function preserveOverExpts(p:Boolean):void
+		{
+			preserve = p;
+			
+		}
 	}
 	
 }

@@ -1,4 +1,5 @@
 ﻿package com.xperiment{
+	
 	import flash.display.DisplayObject;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
@@ -13,6 +14,7 @@
 		public static function kill():void{
 			shuffleArrDict = null;
 		}
+		
 		
 		public static function calcArrayAv(arr:Array):Number{
 			var av:Number=0;
@@ -366,6 +368,8 @@
 					return 0x800080;
 					//colours defined here http://www.htmlgoodies.com/tutorials/colors/article.php/3478961/So-You-Want-A-Basic-Color-Code-Huh.htm
 			}
+			
+			if(colour.charAt(0)=="#")colour = "0x" + colour.substr(1);
 			
 			if(!isNaN(int(colour))){
 				return int(colour);

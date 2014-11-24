@@ -11,13 +11,13 @@ package com.xperiment.make.OnScreenBoss
 
 	public class OnScreenBossMaker extends OnScreenBoss
 	{
-		public static var isStill:Boolean = true;
+		
 		public static var instance:OnScreenBossMaker;
 
 		
-		private var currentTime:int;
+		private static var currentTime:int = 1;
 		private var stim:uberSprite;
-		
+		private var START_TIME:int = 1;
 		private static var updateJSEvery:int=100;
 		private static var prevJSUpdate:int = 0;
 		private static var curTime:int = 0;
@@ -28,10 +28,7 @@ package com.xperiment.make.OnScreenBoss
 				if(prevJSUpdate + updateJSEvery <= curTime){
 					prevJSUpdate  = curTime;
 					ExternalInterface.call('timelineHelper.setTime',t);
-				}
-				
-				
-				
+				}	
 			}
 		}
 		
@@ -86,7 +83,7 @@ package com.xperiment.make.OnScreenBoss
 		}		
 	
 		override public function getTrueTimer(interval:int, callBackF:Function):TrueTimer{
-			return new TrueTimerBuilder(1,check);
+			return new TrueTimerBuilder(START_TIME,check);
 		}
 		
 		override public function commenceDisplay(autoStart:Boolean):void {
@@ -106,18 +103,21 @@ package com.xperiment.make.OnScreenBoss
 		
 
 		public function check(time:int):void{
+
 			currentTime_toJS(time);
-			
+			//trace(111,time)
 			__objsOnScreen.splice(0);
-		
+
 			for(var i:int=0;i<_allStim.length;i++){
 				stim = _allStim[i];
-				//trace(8,stim.startTime,stim.startTime<=time , stim.endTime > time,stim.endTime , time)
-				if(stim.startTime<=time && stim.endTime > time){
-					__objsOnScreen.push(stim);
-				}
-				else if(this.contains(stim)==true){
-					this.removeChild(stim);
+				if(stim){
+					//trace(8,stim.startTime,stim.startTime<=time , stim.endTime > time,stim.endTime , time)
+					if(stim.startTime<=time && stim.endTime > time){
+						__objsOnScreen.push(stim);
+					}
+					else if(this.contains(stim)==true){
+						this.removeChild(stim);
+					}
 				}
 			}
 		
@@ -143,6 +143,7 @@ package com.xperiment.make.OnScreenBoss
 
 		public function PLAY():void
 		{
+
 			(_mainTimer as TrueTimerBuilder).reStart();
 		}
 		
@@ -155,10 +156,23 @@ package com.xperiment.make.OnScreenBoss
 		
 		
 		
-		override public function cleanUpScreen():void {
+		override public function cleanUpScreen():void {		
+			running=false;
+			_mainTimer.stop();
+			_mainTimer = null;	
+			
 			for(var i:int=0;i<_allStim.length;i++)	_allStim[i]=null;			
 			
 			stragglers();
+			
+		}
+		
+		override public function params(params:Object):void
+		{
+
+			if(params.hasOwnProperty('startTime')) START_TIME =  params.startTime;
+			
+			super.params(params);
 			
 		}
 
@@ -187,6 +201,7 @@ package com.xperiment.make.OnScreenBoss
 		override public function stopAll():void{notSupported();}
 		override public function updateDepths(newOrder:Array):void{notSupported();}
 		override protected function remove(stim:uberSprite):void{notSupported();}
+
 
 	}
 }
