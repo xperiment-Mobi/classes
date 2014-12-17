@@ -1,5 +1,6 @@
 package com.xperiment.make.xpt_interface
 {
+	import com.xperiment.make.comms.Communicator;
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
 	import com.xperiment.make.xpt_interface.Bind.UpdateRunnerScript;
 	import com.xperiment.stimuli.StimulusFactory;
@@ -10,20 +11,16 @@ package com.xperiment.make.xpt_interface
 	public class PropertyInspector
 	{
 
-		private static var getTrial:Function;
 		private static var currentTrialXML:XML;
 		private static var currentTrial_bindID:String;
-		private static var toJS:Function;
 		private static var runningTrial:TrialBuilder;
 		private static var bindLabel:String;
 		private static var ODD_PEG_DIVIDE:String = ' — ';
 		private static var lookup_peg:Dictionary;
 		private static var runner:runnerBuilder;
 		
-		public static function setup(g:Function,j:Function,r:runnerBuilder):void
+		public static function setup(r:runnerBuilder):void
 		{
-			getTrial=g;
-			toJS = j;
 			runner = r;
 			bindLabel = BindScript.bindLabel;
 		}
@@ -35,7 +32,7 @@ package com.xperiment.make.xpt_interface
 			lookup_peg = new Dictionary;
 			var b:String = (runningTrial as TrialBuilder).bind_id;
 
-			currentTrialXML = getTrial(b);
+			currentTrialXML = BindScript.getStimScript(b);
 
 			var rows:Array = [];
 			var stim:XML;
@@ -48,7 +45,7 @@ package com.xperiment.make.xpt_interface
 			var combined:Object = {};
 			combined.total=rows.length;
 			combined.rows = rows;
-			toJS('propertyInspector',combined);
+			Communicator.pass('propertyInspector',combined);
 			
 		}
 		
@@ -75,7 +72,7 @@ package com.xperiment.make.xpt_interface
 			group = peg+ ODD_PEG_DIVIDE+group;
 			
 			lookup_peg[group] = bind_id;
-			trace(group,bind_id,stim.toXMLString())
+			//trace(group,bind_id,stim.toXMLString())
 			
 			for each(var a:XML in stim.@*) 
 			{
@@ -129,6 +126,7 @@ package com.xperiment.make.xpt_interface
 					UpdateRunnerScript.DELETE_ATTRIB(bind_id,prop);
 				}
 				else{
+					
 					BindScript.updateAttrib(bind_id,prop,val,null,-1,[updateInstructs]);
 					UpdateRunnerScript.DO(bind_id);
 				}

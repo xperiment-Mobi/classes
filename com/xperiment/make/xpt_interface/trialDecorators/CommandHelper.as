@@ -6,6 +6,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 	import com.xperiment.make.xpt_interface.MessageMaker;
 	import com.xperiment.make.xpt_interface.PropertyInspector;
 	import com.xperiment.make.xpt_interface.SortOrientation;
+	import com.xperiment.make.xpt_interface.Stim_Juggle;
 	import com.xperiment.make.xpt_interface.TrialHelpers;
 	import com.xperiment.make.xpt_interface.Trial_Goto;
 	import com.xperiment.make.xpt_interface.runnerBuilder;
@@ -26,7 +27,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		
 		public static function command(what:String, data:* =null):Boolean
 		{
-				
+			//trace(44,what,JSON.stringify(data));
 			switch(what){
 				case 'propRemove':
 					PropertyInspector.propEdit(data,'remove');
@@ -38,15 +39,20 @@ package com.xperiment.make.xpt_interface.trialDecorators
 					PropertyInspector.propEdit(data,'edit');
 					return true;
 				case 'cards_orderChanged':
+					cardEditRefresh();
 					Cards.change(data as Array);
 					return true;
+//				case 'cards_deletedhhh':
+//					cardEditRefresh();
+//					return true;
 				case 'cards_deleted':
+					cardEditRefresh();
 					Cards.deleteTrials(data as Object);
 					return true;
 				case 'cards_runTrial':
+					trace(1111111)
 					TrialHelpers.goto_TrialCardID(data,r);
 					return true;	
-					
 				case 'codeChanged':
 					MessageMaker.refresh(r.theStage, function():void{
 						Communicator.pass('requestScript',null);
@@ -54,7 +60,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 					//Bind_codeMirrorChange.changed(data as Object);
 					break;
 				case 'script':
-					r.newScript(data.toString());
+					r.newScript(data.toString(),true);
 					break;
 				case 'loadableStim':
 					StimBehav.addLoadableStimuli(data.files as Array,data.overTrials as Boolean);
@@ -98,6 +104,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 					EditText.fromJS(data);
 					break;
 				case 'cards_add':
+					cardEditRefresh();
 					Cards.addTrials(data.info);
 					break;
 				case 'trial_toolbar':
@@ -130,7 +137,9 @@ package com.xperiment.make.xpt_interface.trialDecorators
 				case 'deletePegs':
 					Bind_delStim.delPegs(data as Array, r);
 					break;
-				
+				case 'myStimMenu':
+					Stim_Juggle.DO(data as String,r);
+					break;
 				default:
 					return false;
 					
@@ -139,7 +148,11 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			return true;
 		}
 		
-
+		private static function cardEditRefresh():void{
+			MessageMaker.refresh(r.theStage, function():void{
+				r.newScript('',true);
+			});
+		}
 		
 		public static function setup(runner:runnerBuilder):void
 		{

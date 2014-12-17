@@ -21,7 +21,7 @@ package com.xperiment.runner {
 		}
 		
 		override public function newTrial():Trial{
-			throw new Error();
+			throw new Error(); //must be overridden
 			return new Trial();
 		}
 		
@@ -84,6 +84,11 @@ package com.xperiment.runner {
 			
 			NativeApplication.nativeApplication.removeEventListener(Event.DEACTIVATE,deactivateL);
 			NativeApplication.nativeApplication.exit();
+		}
+		
+		override public function askedToRestart():void //for mobile version
+		{
+			kill();
 		}
 		
 		override public function endProgram():void {

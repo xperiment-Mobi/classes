@@ -4,6 +4,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 	import com.greensock.transform.TransformItem;
 	import com.greensock.transform.TransformManager;
 	import com.xperiment.uberSprite;
+	import com.xperiment.behaviour.behav_baseClass;
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
 	import com.xperiment.make.xpt_interface.Bind.Bind_delStim;
 	import com.xperiment.make.xpt_interface.Bind.Bind_processChanges;
@@ -15,20 +16,20 @@ package com.xperiment.make.xpt_interface.trialDecorators
 	import com.xperiment.trial.Trial;
 	
 	import flash.display.DisplayObject;
-	import flash.display.Shape;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.display.Sprite;
 
 	public class TrialDecorator //extends Sprite
 	{
 		private var trial:Trial;
 		private var stimuli:Vector.<object_baseClass>;
 		private var manager:TransformManager;
-		private var transparentLayers:Vector.<Shape>;
+		private var transparentLayers:Vector.<Sprite>;
 		private var _step:Boolean = true;
 		//private var selected:TransformItem;
 		
-		private var stepMove:TrailDecorator_position;
+		private var stepMove:TrialDecorator_position;
 		private var theStage:Stage;
 		//private var snapMenu:SnapMenu;
 		private var editMode:Boolean = true;
@@ -49,6 +50,17 @@ package com.xperiment.make.xpt_interface.trialDecorators
 			}
 		}
 		
+		public function selected():Array{
+
+			var stimuli:Array = [];
+			if(manager){
+				var bind_label:String = BindScript.bindLabel;
+				for each(var stim:object_baseClass in manager.selectedTargetObjects){
+					stimuli.push(stim);
+				}
+			}
+			return stimuli;
+		}
 		
 		public function step(on:Boolean):void{
 			manager.arrowKeysMove=!on;
@@ -78,7 +90,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		
 		
 		private function gatherStim():void{
-			transparentLayers = new Vector.<Shape>;
+			transparentLayers = new Vector.<Sprite>;
 			this.stimuli=trial.OnScreenElements;
 			for(var i:int=0;i<stimuli.length;i++){
 				add(stimuli[i]);
@@ -168,7 +180,6 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		}
 		
 		
-		
 		private function listenerF(e:TransformEvent):void{
 			var stimuli:Array = e.items;
 			var what:Object;
@@ -242,7 +253,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		
 		private function updatePosition(stim:object_baseClass, x:int, y:int):void
 		{
-			TrailDecorator_position.generatePos(stim, x, y, doUpdate);
+			TrialDecorator_position.generatePos(stim, x, y, doUpdate);
 			
 		}
 		
@@ -259,7 +270,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		
 		
 		public function startupNativeInteractivity():void{
-			var transparentLayer:Shape;
+			var transparentLayer:Sprite;
 			if(transparentLayers){
 				for each(transparentLayer in transparentLayers){
 					
@@ -280,32 +291,31 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		
 		private function removeNativeInteractivity(stimulus:object_baseClass):void
 		{
-			var transparentLayer:Shape = new Shape;
-			transparentLayer.name=TRANSPARENT_LAYER;
-			transparentLayer.graphics.beginFill(0xffffff,0);
+			var transparentLayer:Sprite = new Sprite;
+			
 		
 			if(stimulus is addJPG){
 				
 			}
-			else transparentLayer.graphics.drawRect(0,0,stimulus.myWidth,stimulus.myHeight);
+			else if(stimulus is behav_baseClass)	transparentLayer = TransparentLayer.GET_behav(stimulus,TRANSPARENT_LAYER);
+			else									transparentLayer = TransparentLayer.GET(stimulus,TRANSPARENT_LAYER);
 			
 			if(stimulus is addButton){
 				stimulus.mouseChildren=false;
 			}
 			
-			trace(transparentLayer.width,transparentLayer.height,stimulus)
 			stimulus.addChild(transparentLayer);
 			transparentLayers[transparentLayers.length]=transparentLayer;
-			//trace(stimulus,transparentLayer,transparentLayer.parent)
+
 		}
 		
-		private function updateTransparentLayer(transformStim:TransformItem):void{	
+		/*private function updateTransparentLayer(transformStim:TransformItem):void{	
 			var stimulus:object_baseClass = transformStim.targetObject as object_baseClass;
 			var transparentLayer:Shape=stimulus.getChildByName(TRANSPARENT_LAYER) as Shape;
 			transparentLayer.graphics.clear();
 			transparentLayer.graphics.beginFill(0xffffff,.5);
 			transparentLayer.graphics.drawRect(0,0,stimulus.myWidth,stimulus.myHeight);
-		}
+		}*/
 		
 		public function fromJS(data:*):void
 		{
@@ -330,7 +340,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 				case "snap-to-grid":
 					
 
-					if(!stepMove)	stepMove = new TrailDecorator_position(manager, theStage);
+					if(!stepMove)	stepMove = new TrialDecorator_position(manager, theStage);
 					
 					else if(stepMove){
 						stepMove.kill();
@@ -383,6 +393,69 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		}
 	}
 }
+
+
+import com.xperiment.stimuli.object_baseClass;
+
+import flash.display.Bitmap;
+import flash.display.Shape;
+import flash.display.Sprite;
+import flash.filters.DropShadowFilter;
+import flash.text.TextField;
+import flash.text.TextFieldAutoSize;
+
+import avmplus.getQualifiedClassName;
+
+class TransparentLayer{
+	
+	
+	[Embed(source="/assets/wand.png")]
+	private static var Picture:Class;
+	
+	
+	public static function GET(stimulus:object_baseClass,name:String):Sprite
+	{
+		
+		var transparentLayer:Sprite = new Sprite;
+		transparentLayer.name=name;
+		transparentLayer.graphics.beginFill(0xffffff,0);
+		
+		transparentLayer.graphics.drawRect(0,0,stimulus.myWidth,stimulus.myHeight);
+		
+		return transparentLayer;
+	}
+	
+	
+	
+	public static function GET_behav(stimulus:object_baseClass, name:String):Sprite
+	{
+		var transparentLayer:Sprite = new Sprite;
+		transparentLayer.name=name;
+		transparentLayer.graphics.beginFill(0xffff00,1);
+
+		var pic:Bitmap = new Picture();
+		
+		transparentLayer.graphics.drawRoundRect(0,0,stimulus.myWidth,stimulus.myHeight,20,20);
+		transparentLayer.addChild(pic)
+			
+		var text:TextField = new TextField();
+		text.mouseEnabled=false;
+		text.text = getQualifiedClassName(stimulus).split("::").pop();
+		text.autoSize = TextFieldAutoSize.LEFT;
+		
+		transparentLayer.addChild(text);
+		text.x = pic.width;
+		text.y=transparentLayer.height*.5-text.height*.5;
+		
+		transparentLayer.filters = [new DropShadowFilter];
+		
+		return transparentLayer;
+	}
+}
+
+
+
+
 /*
 import com.greensock.transform.TransformItem;
 import com.greensock.transform.TransformManager;

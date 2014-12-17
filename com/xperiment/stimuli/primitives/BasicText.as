@@ -22,6 +22,7 @@ package com.xperiment.stimuli.primitives{
 		public var OnScreenElements:Array = []
 		public var myWidth:Number;
 		public var myHeight:Number;
+		static public var makerObj:Object;
 
 		public function kill():void{
 			if(pic.hasEventListener(MouseEvent.CLICK))pic.removeEventListener(MouseEvent.CLICK,activateTextField);
@@ -44,8 +45,30 @@ package com.xperiment.stimuli.primitives{
 			return myText.text;
 		}
 		
-		private function setVar(notUsed:String, nam:String, val:*):void {
-			if(OnScreenElements.indexOf(nam)==-1)OnScreenElements[nam]=val;
+		private function setVar(typ:String, nam:String, val:*,defaultVals:String='',info:String=''):void {
+			if(OnScreenElements.indexOf(nam)==-1){
+				OnScreenElements[nam]=val;
+			}
+
+			if(makerObj){
+				saveMakerInfo(typ,nam,val,defaultVals,info);
+			}
+		}
+		
+		protected function saveMakerInfo(typ:String, nam:String, val:*,defaultVals:String="",info:String=""):void
+		{
+			nam=nam;
+			val=val;
+			info=info;
+			if(makerObj.attrs) makerObj.attrs[nam] = defaultVals.split("||");
+			if(makerObj.attrsInfo) makerObj.attrsInfo[nam]={type:typ,info:info,defaultVal:val, possibleVals:defaultVals};
+			//if(nam=="showBox")trace(123,nam,typ,info,val, defaultVals)
+		}
+		
+		static public function init_makerObj():void{
+			makerObj = {};
+			makerObj.attrs={};
+			makerObj.attrsInfo={};
 		}
 		
 		public function getVar(nam:String):* {

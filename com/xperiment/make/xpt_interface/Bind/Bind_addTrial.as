@@ -7,6 +7,7 @@ package com.xperiment.make.xpt_interface.Bind
 		private static var sendBack:Array; //horrid bodge, but simpler code with it.
 		
 		public static function DO(info:Object):Array{
+			
 			sendBack=[];
 			var groupSelected:String = info.groupSelected;
 			var trialSelected:String = info.cardSelected;
@@ -28,7 +29,9 @@ package com.xperiment.make.xpt_interface.Bind
 				trialSelected = removeMultiTag(trialSelected);
 				viaTrial(trialSelected,b,toAdd);
 			}
-			else noSelection(b,toAdd);
+			else{
+				noSelection(b,toAdd);
+			}
 			
 			return sendBack;
 		}
@@ -150,6 +153,7 @@ package com.xperiment.make.xpt_interface.Bind
 		
 		private static function addNewDirection(selected:XML, b:Object, toAdd:int):void
 		{
+
 			var parent:XML = selected.parent();
 			var i:int;
 						
@@ -175,6 +179,7 @@ package com.xperiment.make.xpt_interface.Bind
 				}
 						
 			}
+			BindScript.updated(['Bind_addTrial.__addNew']);
 			
 		}		
 		

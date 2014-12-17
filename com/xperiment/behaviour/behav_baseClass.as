@@ -2,6 +2,7 @@
 
 
 	import com.xperiment.uberSprite;
+	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
 	import com.xperiment.events.StimulusEvent;
 	import com.xperiment.stimuli.object_baseClass;
 	
@@ -109,9 +110,18 @@
 			if(getVar('random')!='-1' && getVar('storeRandomDecision') == true){
 				storeRandomDecision = true;
 			}
-	
+
 		}
 		
+		public function exptBuilderVisual():void{
+		
+			OnScreenElements.height='5%';
+			OnScreenElements.width='10%';
+			super.setUniversalVariables();
+			this.scaleX=1;
+			this.scaleY=1;
+		
+		}
 
 		override public function returnsDataQuery():Boolean {
 			var re:Boolean = true;
@@ -119,9 +129,6 @@
 			return re;
 		}		
 		
-
-
-
 		override public function setUniversalVariables():void {
 		}
 

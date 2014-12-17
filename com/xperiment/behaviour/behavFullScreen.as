@@ -6,7 +6,6 @@ package com.xperiment.behaviour
 	import com.xperiment.trial.Trial;
 	
 	import flash.display.Stage;
-	import flash.display.StageAlign;
 	import flash.display.StageDisplayState;
 	import flash.display.StageScaleMode;
 	import flash.events.FullScreenEvent;
@@ -90,18 +89,18 @@ package com.xperiment.behaviour
 
 		
 		private static function completeCallback(command:String):void{
-			trace(1,command)
+			//trace(1,command)
 			if(command==""){
 				wasSet = modalWindow.bigScreen;
 				if(staticCallWhenFinished)staticCallWhenFinished();
 				if(queryIfChange==true && staticStage.displayState == StageDisplayState.FULL_SCREEN_INTERACTIVE ){
 					modalWindow=null;
 					listenBigScreen(true);
-trace(1)
+					//trace(1)
 				}
 			}
 			else if(command=="fs"){
-				trace(2)
+				//trace(2)
 				//Trial.HORIZONTAL_ADJUST=0;
 				staticStage.align="";
 				staticStage.displayState=StageDisplayState.FULL_SCREEN_INTERACTIVE;
@@ -120,7 +119,7 @@ trace(1)
 		}
 
 		private static function listenBigScreen(ON:Boolean):void{
-trace("big",ON);
+			//trace("big",ON);
 			if(ON){
 				if(staticStage.hasEventListener(FullScreenEvent.FULL_SCREEN)==false)staticStage.addEventListener(FullScreenEvent.FULL_SCREEN, listenFullScreen);
 				
@@ -134,14 +133,14 @@ trace("big",ON);
 		
 		protected static function listenFullScreen(e:FullScreenEvent):void
 		{
-			trace(staticStage,e)
+			//trace(staticStage,e)
 			//trace(5,staticStage.displayState)
 			if(staticStage.displayState != StageDisplayState.FULL_SCREEN_INTERACTIVE){
 				var params:Object = {goFullScreen:goFullScreen, goSmallScreen:goSmallScreen, header2:header2, closButtonText:close, headerSize:40,width:Trial.ACTUAL_STAGE_WIDTH*.9,height:Trial.ACTUAL_STAGE_HEIGHT*.7, sendButtonsVisible:false,textAreaVisible:false};
 				modalWindow = new ModalWindow_fullscreen(staticStage, params, header, '',completeCallback);
 			}
 			else{
-				trace(123)
+				//trace(123)
 			}
 			
 			

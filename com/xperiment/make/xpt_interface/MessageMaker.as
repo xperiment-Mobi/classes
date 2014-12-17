@@ -39,6 +39,8 @@ package com.xperiment.make.xpt_interface
 			
 			var width:int = Trial.RETURN_STAGE_WIDTH;
 			var height:int = Trial.RETURN_STAGE_WIDTH;
+			
+			
 			//Without the translation parameters, -circRad+25, -circRad-25, the center
 			//of the gradient will fall at the point x=circRad, y=circRad relative to
 			//the center of the circle. So the center of the gradient will fall in the

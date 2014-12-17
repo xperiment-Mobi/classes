@@ -28,6 +28,7 @@
 		private var initial:Boolean = true;
 		//private var uniqueTrialNames:Array = [];
 		private var preserve:Boolean = false;
+		private var exptId:String;
 
 		
 		public function get ongoingExperimentResults():XMLList
@@ -158,7 +159,7 @@
 		{
 			_uuid=ExptWideSpecs.getSJuuid();
 			_deviceUUID=ExptWideSpecs.IS("deviceUUID");
-			
+			exptId=ExptWideSpecs.IS("id");
 			var save:Array=ExptWideSpecs.IS("save").toLowerCase().split(",");
 			_instance.trickleToServerBool = save.indexOf("trickletofile")!=-1;
 			_instance.trickleToCloudBool = 	save.indexOf("trickletocloud")!=-1;
@@ -208,7 +209,7 @@
 		
 		private function wrapperInfo(param:Object):void{
 			param.info.uuid = _uuid;
-			param.info.expt_id = ExptWideSpecs.IS("id");
+			param.info.expt_id = exptId;
 		}
 		
 		private function trickleToCloud(res:XML,final:Boolean=false):void
@@ -356,7 +357,7 @@
 		
 		
 		public function composeXMLInfo():XML{
-			return <Experiment id={ExptWideSpecs.IS("id")}>{exptSpecs().children()}</Experiment>	
+			return <Experiment id={exptId}>{exptSpecs().children()}</Experiment>	
 		}
 		
 		private function exptSpecs():XML

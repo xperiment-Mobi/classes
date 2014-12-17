@@ -8,7 +8,8 @@ package com.greensock.loading {
 	import com.greensock.loading.core.LoaderItem;
 	
 	import flash.events.Event;
-	import flash.events.ProgressEvent;
+import flash.events.IOErrorEvent;
+import flash.events.ProgressEvent;
 	import flash.net.URLLoader;
 	
 	/** Dispatched when the loader's <code>httpStatus</code> value changes. **/

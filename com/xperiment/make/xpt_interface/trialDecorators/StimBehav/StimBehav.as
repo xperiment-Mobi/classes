@@ -3,6 +3,7 @@ package com.xperiment.make.xpt_interface.trialDecorators.StimBehav
 	import com.xperiment.make.xpt_interface.TrialBuilder;
 	import com.xperiment.make.xpt_interface.runnerBuilder;
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
+	import com.xperiment.stimuli.StimulusFactory;
 
 
 	public class StimBehav
@@ -16,51 +17,24 @@ package com.xperiment.make.xpt_interface.trialDecorators.StimBehav
 
 		}
 		
-		/*public static function addLoadableStimuli(stims:Array):void
-		{
-			function IS(nam:String,what:String):Boolean{
-				return nam.indexOf(what)!=-1;
-			}
-			
-			var type:String;
-			for each(var stim:String in stims){
-				type='';
-				if(	        IS(stim,"jpg" ) )	type="jpg";
-				else if(	IS(stim,"png" ) )	type="jpg";
-				else if(	IS(stim,"mp3" ) )	type="sound";
-				else if(	IS(stim,"flv" ) )	type="video";
-				
-				if(type!=''){
-
-					addStimulus(	type,{filename:stim}	)
-				}
-			}
-			
-		}*/
+	
 		
 		public static function addStimulus(type:String,params:Object=null,update:Boolean=true):void
 		{
 	
+			type = StimulusFactory.getName(type)
+			
 			var stim:XML = <{type} />;
 			for(var key:String in params){
 				stim.@[key] = params[key];
 			}
 			
-			(runner.runningTrial as TrialBuilder).xml.prependChild(stim.copy());
+			
 			BindScript.addStimulus((runner.runningTrial as TrialBuilder).bind_id,stim,update);	
+			(runner.runningTrial as TrialBuilder).xml.prependChild(stim.copy());
 			
 		}
-/*		
-		public static function addStimToBind(stim:uberSprite):void
-		{
-			var trial:TrialBuilder = runner.runningTrial as TrialBuilder;
-			//trace(123,trial.bind_id,addStim,stim as object_baseClass)
-			var bind_id:String = addStim(trial.bind_id,(stim as object_baseClass).stimXML);
-			(stim as object_baseClass).OnScreenElements[BindScript.bindLabel] = bind_id;
-		}
-		*/
-		
-	
+
 		
 		public static function addLoadableStimuli(filenames:Array,overTrials:Boolean):void
 		{

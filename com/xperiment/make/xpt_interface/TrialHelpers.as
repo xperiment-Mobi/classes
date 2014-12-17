@@ -8,6 +8,7 @@ package com.xperiment.make.xpt_interface
 		
 		private static function run(r:runnerBuilder,i:int):void{
 			r.runningTrial.generalCleanUp();
+			r.__nextTrialBoss.currentTrial=i;
 			r.runningTrial=r.trialList[i];
 			r.commenceWithTrial();
 		}
@@ -15,7 +16,10 @@ package com.xperiment.make.xpt_interface
 		public static function goto_TrialNumber(data:*,r:runnerBuilder):void
 		{
 			if(isNaN(Number(data)))r.log("got_trialNumber, number not given: "+data);
-			if(Number(data)>r.trialList.length)r.log("got_trialNumber, number higher than the number of trials: "+data);
+			if(Number(data)>=r.trialList.length){
+				data = r.trialList.length-1;
+				//r.log("got_trialNumber, number higher than the number of trials: "+data);
+			}
 			run(r,int(data));
 		}
 		

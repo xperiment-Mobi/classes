@@ -90,7 +90,7 @@ package com.xperiment.make.xpt_interface.Bind
 			trialSplit = CrunchUp.DO(trialSplit);
 			
 			val = trialSplit.join(";");
-//trace(2,val)
+
 			return val;
 		}
 		
@@ -183,6 +183,54 @@ package com.xperiment.make.xpt_interface.Bind
 			else{
 				throw new Error();
 			}
+		}
+		
+		public static function duplicateUp(howMany:int, stim:XML, stimObj:object_baseClass):Object
+		{
+			var XY:Object ={};
+			
+			var multiSpecs:Object = compute(stimObj);
+			//multi.numItems++;
+			
+			if(stim.hasOwnProperty("@x")){
+				XY.x = sort('x',stim.@x);
+			}
+			if(stim.hasOwnProperty("@y")){
+				XY.y = sort('y',stim.@y);
+			}
+			
+			function sort(attrib:String, oldVal:String):String{
+				
+				//-split up
+				var trialSplit:Array = oldVal.split(";");
+				var defaultStr:String = "50%";
+				
+				
+				for(var i:int=trialSplit.length-1; i>=0; i--){
+					trialSplit[i] = trialSplit[i].split("---");
+				}
+				
+				if(trialSplit.length<multiSpecs.numTrials){
+					__duplicateUp(trialSplit, multiSpecs.numTrials,defaultStr);
+				}
+				
+
+				trialSplit[multiSpecs.trialNum].push(	trialSplit[multiSpecs.trialNum][multiSpecs.itemNum] 	);
+				
+				for(i=trialSplit.length-1; i>=0; i--){
+					if(trialSplit[i] is Array){
+						trialSplit[i] = CrunchUp.DO(trialSplit[i]);
+						trialSplit[i] = trialSplit[i].join("---");
+					}
+					else CrunchUp.DO([trialSplit[i]]);
+				}
+				
+				trialSplit = CrunchUp.DO(trialSplit);
+				
+				return trialSplit.join(";");
+			}
+			
+			return XY;
 		}
 	}
 }

@@ -8,7 +8,6 @@ package com.hurlant.math
 		private var r2:BigInteger;
 		private var q3:BigInteger;
 		private var mu:BigInteger;
-		
 		public function BarrettReduction(m:BigInteger) {
 			// setup Barrett
 			r2 = new BigInteger;

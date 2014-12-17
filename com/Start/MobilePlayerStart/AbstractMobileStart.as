@@ -14,9 +14,9 @@ package com.Start.MobilePlayerStart
 	public class AbstractMobileStart extends AbstractStart implements CanRestart
 	{ 
 		private var Expt:runnerANDROID;
-		protected var url:String;
 		public var __myScript:XML;
-		
+		protected var url:String;
+
 		public function AbstractMobileStart(theStage:Stage,scriptName:String='')
 		{
 			
@@ -85,12 +85,12 @@ package com.Start.MobilePlayerStart
 			throw new Error("must override this abstract method");
 		}
 		
-		override public function startExpt(script:XML):void
+		override public function startExpt(script:XML, params:Object = null):void
 		{
-
 			if(url)script = ParseMobileScript.addRemoteStimFolder(script,url); 
 			expt = exptPlatform();
-			expt.giveScript(script);
+			//trace(112,script)
+			expt.giveScript(script,null, params);
 			
 		}
 		

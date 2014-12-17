@@ -23,7 +23,7 @@ package com.xperiment.make.xpt_interface.Cards
 			refreshScript = r;
 			//CardOrderMem.init();
 		}
-		
+				
 		
 		public static function generateInstructions():void
 		{
@@ -51,13 +51,9 @@ package com.xperiment.make.xpt_interface.Cards
 			Cards_orderChange.DO(data,Cards_Order.GET(BindScript.script,true,true),BindScript.script, testing);
 		}
 		
-		
-
-		
 		public static function editCard(cardId:String):void
 		{
 			// TODO Auto Generated method stub
-			
 			trace("editCard");
 		}
 		
@@ -70,6 +66,7 @@ package com.xperiment.make.xpt_interface.Cards
 		
 		public static function addTrials(data:Object):void //for unit testing
 		{
+
 			///trace(123,JSON.stringify(data));
 			Bind_addTrial.DO(data);
 			generateInstructions();

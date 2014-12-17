@@ -111,7 +111,7 @@
 		
 		
 		override public function setVariables(list:XMLList):void {
-			setVar("string","text","demo button");
+			setVar("string","text","next");
 			setVar("string","goto", "nextTrial");
 			setVar("number","alpha",.9,"0-1");
 			setVar("int","fontSize",-1);

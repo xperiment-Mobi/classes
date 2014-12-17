@@ -226,7 +226,7 @@
 		
 		
 		public function commenceDisplay(autoStart:Boolean):void {
-			
+
 			if(this.stage)stageCount = this.stage.numChildren;
 			sortSpritesTIME();
 			
@@ -411,14 +411,13 @@
 			
 			if(stim)__objsOnScreen.push(stim);
 			
-			__objsOnScreen.sortOn("depth",Array.NUMERIC);
-			
+			//__objsOnScreen.sortOn("depth",Array.NUMERIC);
+			__objsOnScreen.sortOn("depth", Array.DESCENDING | Array.NUMERIC);
 			
 			for(var i:int=0;i<__objsOnScreen.length;i++){
 				
 				if(__objsOnScreen[i])this.addChild(__objsOnScreen[i] as uberSprite);
 			}
-			
 			
 		}		
 		

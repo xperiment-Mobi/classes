@@ -75,7 +75,7 @@
 		
 		
 		override public function stopBehaviour(obj:uberSprite):void{
-			obj.filters=[];
+			if(obj)obj.filters=[];
 		}
 		
 

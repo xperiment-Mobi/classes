@@ -21,6 +21,10 @@
 	import flash.display.Stage;
 	
 	public class object_baseClass extends uberSprite implements iBehav, IStimulus{
+		
+		public static const multTriCorSym:String=";";	
+		public static const multObjCorSym:String="---";
+		
 		public var xmlVal:String;
 		public var driveEvent:String="";
 		public var OnScreenElements:Array=new Array;
@@ -48,7 +52,6 @@
 		public var percentageScreenSizeFrom:String="both";
 		private var myBoxLabel:boxLabel;
 		public var myName:String;
-		public var GUItrialObjs:Object = new Object;
 		public var parentPic:Sprite;
 		public var manageBehaviours:BehaviourBoss;
 		private var classLevel:uint=0;
@@ -121,10 +124,10 @@
 			pic.mouseEnabled=false;
 		}
 		
-		/*override public function myUniqueActions(action:String):Function{
+		override public function myUniqueActions(action:String):Function{
 		
 		return null
-		}*/		
+		}	
 		
 		public function events(active:Boolean):void{};
 		
@@ -156,7 +159,7 @@
 			}
 			if(OnScreenElements.indexOf(nam)==-1)OnScreenElements[nam]=returnType(typ.toLowerCase(),val,nam);
 			//OnScreenElements[nam]=returnType(typ.toLowerCase(),val,nam);
-			if(!theStage)setVarGUI(typ,nam,val,info);
+
 			
 		}
 		
@@ -166,11 +169,20 @@
 				saveMakerInfo(typ,nam,val,defaultVals,info);
 			}
 			if(OnScreenElements.indexOf(nam)==-1)OnScreenElements[nam]=returnType(typ.toLowerCase(),val,nam);
-			if(!theStage)setVarGUI(typ,nam,val,info);
+
 		}
 		
+		public function init_makerObj():void{
+			makerObj = {};
+			makerObj.attrs={};
+			makerObj.attrsInfo={};
+		}
 		
-		private function saveMakerInfo(typ:String, nam:String, val:*,defaultVals:String="",info:String=""):void
+		public function get_makerObj():Object{
+			return makerObj;
+		}
+		
+		protected function saveMakerInfo(typ:String, nam:String, val:*,defaultVals:String="",info:String=""):void
 		{
 			nam=nam;
 			val=val;
@@ -180,13 +192,7 @@
 			//if(nam=="showBox")trace(123,nam,typ,info,val, defaultVals)
 		}
 		
-		private function setVarGUI(typ:String, nam:String, val:*,defaultVals:String="",info:String=""):void{
-			GUItrialObjs[nam]=new Object;
-			GUItrialObjs[nam].defaul=returnType(typ,val,nam);
-			GUItrialObjs[nam].inputMask=defaultVals;
-			GUItrialObjs[nam].info=info;
-		}
-		
+
 		public function setUpTrialSpecificVariables(trialObjs:Object):void {
 			theStage=trialObjs.theStage;
 			if(trialObjs.parent)this.parentPic=trialObjs.parent as Sprite;
@@ -484,8 +490,7 @@
 		
 		public function __correction(str:String):String
 		{
-			var multTriCorSym:String=";";	
-			var multObjCorSym:String="---";
+
 			//var multTriFixedSym:String="~";
 			//var multiObjFixedSym:String="|||"
 			
@@ -652,6 +657,7 @@
 			
 			var hor:Number; var ver:Number;
 			var tempStr:String = getVar("width");
+	
 			if (tempStr!="0" && tempStr!="aspectRatio"){
 				if(tempStr.indexOf("%")!=-1) hor=staWidth*Number(tempStr.replace("%",""))/100;
 				else hor=Number(tempStr);
@@ -673,7 +679,7 @@
 			else if(getVar("height")=="aspectRatio" && getVar("width")=="aspectRatio"){
 				throw new Error(getVar("height")+" you have specified both your width and height as 'aspectRatio' - you can only specify one as 'aspectRatio'");
 			}
-			
+			//trace(3345,hor,ver,this)
 			pic.width=hor;
 			pic.height=ver;
 			
@@ -852,11 +858,7 @@
 					disallowedProps[i]=null;
 				}
 				disallowedProps=null;
-			}
-			
-			GUItrialObjs=null;
-			
-			
+			}			
 			
 			driveEvent=null;
 			super.kill();

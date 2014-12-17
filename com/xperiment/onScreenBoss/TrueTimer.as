@@ -38,7 +38,6 @@ package com.xperiment.onScreenBoss{
 		public function evaluateTime(e:Event):void {
 			
 			if (running) {
-				
 				now = new Date();
 				msDiff=now.valueOf()-currentTime.valueOf();
 				__offset+=msDiff;

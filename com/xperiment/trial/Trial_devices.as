@@ -37,7 +37,7 @@ package com.xperiment.trial {
 			return StimulusFactory.Stimulus(stimName);
 		}
 		
-		override public function getOnScreenBoss():OnScreenBoss{
+		override public function getOnScreenBoss(params:Object):OnScreenBoss{
 			return new OnScreenBoss;
 		}
 		

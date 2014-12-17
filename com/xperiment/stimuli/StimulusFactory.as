@@ -22,7 +22,8 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavOr;
 	import com.xperiment.behaviour.behavOutline;
 	import com.xperiment.behaviour.behavPause;
-	import com.xperiment.behaviour.behavRT;
+import com.xperiment.behaviour.behavPixelEater;
+import com.xperiment.behaviour.behavRT;
 	import com.xperiment.behaviour.behavRand;
 	import com.xperiment.behaviour.behavRandPos;
 	import com.xperiment.behaviour.behavRestart;
@@ -218,6 +219,7 @@ package com.xperiment.stimuli
 			stimuli['gotocond'] = behavGotoCond;
 			stimuli['and'] = behavAnd;
 			stimuli['or'] = behavOr;
+			stimuli['pixeleater'] = behavPixelEater;
 				
 	
 

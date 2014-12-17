@@ -1,4 +1,5 @@
 ﻿package com.xperiment.preloader{
+
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.DataLoader;
 	import com.greensock.loading.LoaderMax;
@@ -7,23 +8,23 @@
 	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
 	import com.xperiment.events.GlobalFunctionsEvent;
 	import com.xperiment.messages.XperimentMessage;
-	
 	import flash.display.Sprite;
 	import flash.display.Stage;
+import flash.errors.IOError;
+import flash.events.Event;
+	import flash.events.IOErrorEvent;
+	import flash.events.TimerEvent;
 	import flash.utils.ByteArray;
+	import flash.utils.Timer;
 	
 	public class PreloadStimuli extends Sprite implements IPreloadStimuli {
 		public static var queue:LoaderMax;
 		public var files:Array = new Array;
-		public var maximumTries:String="5";
-		//public var remoteDirectory:String="";
 		public var localDirectory:String="";
 		
 		private var FunctsOnLoaded:Vector.<Function>;
 		private var FunctsOnAllProgress:Vector.<Function>;
 		private var FunctsOnAllError:Vector.<Function>;
-		private var FsRequestingPingonSuccess:Vector.<Function>;
-		
 		private var FunctsOnFileLoaded:Object;
 		private var FunctsOnFileProgress:Object; 
 		private var FunctsOnFileError:Object;
@@ -32,8 +33,10 @@
 		private var theStage:Stage;
 		private var killXperimentF:Function;
 		private var encrypted:Boolean = false;
+		private var attempts:Object;
 		
 		public static var preserveQueue:Boolean = false;
+		public static var RETRIES:int = 5;
 		
 		public function kill():void{
 	
@@ -145,7 +148,7 @@
 				if(queue.progress==1)return 1;
 
 						
-				var loader:LoaderItem = queue.getLoader(localDirectory+nam)
+				var loader:LoaderItem = queue.getLoader(localDirectory+nam);
 
 				if(loader==null){
 					
@@ -176,7 +179,7 @@
 			var arr:Array;
 			var fileExtension:String='';
 			var filename:String;
-			
+
 			for each(var attrib:XML in script..@*){
 				if(attrib.name().toString().toLowerCase()=="filename"){	
 					
@@ -191,7 +194,7 @@
 						if(fileExtension!='' && filename.indexOf(".")==-1)	filename=filename+fileExtension;
 						
 						if(files.indexOf(localDirectory+filename)==-1)		files.push(localDirectory+filename);
-						//trace(localDirectory,filename,111)
+
 					}
 				}
 			}
@@ -262,7 +265,6 @@
 		}
 		
 		public function getFilesFromWeb(pause:Boolean=false):void{
-
 			if(pause)queue.pause(); //for testing
 			
 			if(!pause){
@@ -274,7 +276,7 @@
 		
 		private function setupQueue():void{
 			LoaderMax.defaultAuditSize = false;
-			queue = new LoaderMax({name:"mainQueue", onProgress:onItemsProgress, onComplete:onFilesLoaded, onError:onAllError,maxConnections:5});
+			queue = new LoaderMax({name:"mainQueue", onProgress:onItemsProgress, onComplete:onFilesLoaded, onError:onAllError,onIOError:onAllError, maxConnections:5});
 		}
 		
 		public function appendToQueueAndLoad(filesToLoad:Array):void{
@@ -291,34 +293,36 @@
 		
 		public function appendToQueue(fileToLoad:Array):Boolean
 		{
-			var typ:String;
 			var fil:String;
-			
 			var loadingOccurs:Boolean=false;
+
 			for (var i:uint=0;i<fileToLoad.length;i++){				
 				fil=fileToLoad[i];
-				//trace(1234,queue.getLoader(fil),queue.getLoader(fil))
 				
-				if(queue.getLoader(fil) == null){
-					loadingOccurs=true;
-					
+				if(queue.getLoader(fil) == null) {
+					loadingOccurs = true;
+
 					var loader:Class;
-					if(encrypted)	loader = EncryptedDataLoader;
-					else			loader = DataLoader;
+					if (encrypted)    loader = EncryptedDataLoader;
+					else            loader = DataLoader;
 
 					//does not work with encryption
-					if(fil.indexOf("swf")!=-1)	FontLoad.init(this,fil,'');
-						//else if(encrypted)			queue.append( new loader(remoteDirectory+fil, {noCache:forceReload}) );
-					else 						queue.append( new loader(fil, {format:'binary', noCache:forceReload}) );
-				}
-				
-			}
 
+					if (fil.indexOf("swf") != -1)    FontLoad.init(this, fil, '');
+					//else if(encrypted)			queue.append( new loader(remoteDirectory+fil, {noCache:forceReload}) );
+
+
+					else                        queue.append(new loader(fil, {
+						format: 'binary',
+						noCache: forceReload
+						//alternateURL: fil
+					}));
+				}
+			}
 			return loadingOccurs;
 		}
 		
 		public function onFilesLoaded(e:LoaderEvent):void {
-
 			if(encrypted) EncryptedDataLoader.kill();
 			if(FunctsOnLoaded){
 				for(var i:int=0;i<FunctsOnLoaded.length;i++){
@@ -337,21 +341,41 @@
 			}
 		}
 		
-		private function onAllError(e:LoaderEvent ): void{
-			if(FunctsOnAllError){
-				for(var i:int=0;i<FunctsOnAllError.length;i++){
-					if(FunctsOnAllError[i] is Function)	FunctsOnAllError[i](e.toString());
-				}	
+		
+		private function onAllError(e:LoaderEvent): void{
+			attempts ||={};
+			var loader:DataLoader = (e.target as DataLoader);
+			if(attempts.hasOwnProperty(loader.url)==false) attempts[loader.url] = {loader:loader,count:0};
+			else{
+				if(attempts[loader.url].count >= RETRIES){
+					finalErr(); 
+					return;
+				}
+				else attempts[loader.url].count++;
 			}
-			removeListeners();
-			trace ("error loading files unfortunately: "+e); 
+			var t:Timer = new Timer(Math.random()*500,0);
+			t.addEventListener(TimerEvent.TIMER,function(e:Event):void{
+				t.removeEventListener(TimerEvent.TIMER,arguments.callee);
+				loader.load(true);
+			});
+			t.start();
 			
-			var file:String = e.text;
-			var arr:Array = file.split('\\');
-			if(arr.length==1)arr=file.split("/");
-			
-			XperimentMessage.message(theStage, "Afraid a stimulus cannot be loaded "+arr[arr.length-1],false);
-			if(killXperimentF)killXperimentF();
+			function finalErr():void{
+				if(FunctsOnAllError){
+					for(var i:int=0;i<FunctsOnAllError.length;i++){
+						if(FunctsOnAllError[i] is Function)	FunctsOnAllError[i](e.toString());
+					}	
+				}
+				removeListeners();
+				trace ("error loading files unfortunately: "+e); 
+
+				var file:String = e.text;
+				var arr:Array = file.split('\\');
+				if(arr.length==1)arr=file.split("/");
+				
+				XperimentMessage.message(theStage, "Afraid a stimulus cannot be loaded "+arr[arr.length-1],false);
+				if(killXperimentF)killXperimentF();
+			}
 		}
 		
 		
@@ -395,7 +419,7 @@
 					
 					FunctsOnFileLoaded ||= {};
 					obj=FunctsOnFileLoaded;
-					var listener:String=LoaderEvent.CHILD_COMPLETE
+					var listener:String=LoaderEvent.CHILD_COMPLETE;
 					var listenerF:Function = fileCompleted;
 				}
 				else if(type==0){
@@ -407,10 +431,11 @@
 				else if(type==-1){
 					FunctsOnFileError ||= {};
 					obj=FunctsOnFileError;
-					listener=LoaderEvent.CHILD_FAIL
+					listener=LoaderEvent.CHILD_FAIL;
 					listenerF = fileFailed;
 				}
-				
+
+
 				if(queue && !queue.hasEventListener(listener))queue.addEventListener(listener,listenerF);	
 
 				

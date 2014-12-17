@@ -1,8 +1,7 @@
 package com.xperiment.stimuli
 {
-	import com.xperiment.codeRecycleFunctions;
+
 	import com.xperiment.behaviour.behav_baseClass;
-	
 	import flash.events.TimerEvent;
 	import flash.utils.Dictionary;
 	import flash.utils.Timer;

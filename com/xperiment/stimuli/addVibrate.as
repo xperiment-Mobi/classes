@@ -19,8 +19,9 @@
 			
 			if(initialised==false){
 				try{
-					Vibration.init("75d795f721aef531b70e41c6f438a41730036748SoXvDJNmgUYIuW7uC3UHvYSPm4cPNYZms0/7OF+VWUTYS5PHf7dSAOM33HZvnSO04x7P+EtF6H38JKojMqFSFA==");
-					initialised=true;
+					//add back
+					//Vibration.init("75d795f721aef531b70e41c6f438a41730036748SoXvDJNmgUYIuW7uC3UHvYSPm4cPNYZms0/7OF+VWUTYS5PHf7dSAOM33HZvnSO04x7P+EtF6H38JKojMqFSFA==");
+					//initialised=true;
 				}
 				catch(e:Error){
 				

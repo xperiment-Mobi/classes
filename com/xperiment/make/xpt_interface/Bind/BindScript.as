@@ -221,6 +221,7 @@ package com.xperiment.make.xpt_interface.Bind
 					linkup(item, xml.name());
 				}
 			}
+
 			return xml.@[bindLabel];
 		}
 		

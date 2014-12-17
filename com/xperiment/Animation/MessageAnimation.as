@@ -50,8 +50,8 @@ package com.xperiment.Animation
 			
 			messageTF.setTextFormat(format);
 
-			messageTF.x=Trial.RETURN_STAGE_WIDTH*.5-messageTF.width*.5;
-			messageTF.y=Trial.RETURN_STAGE_HEIGHT*.5-messageTF.height*.5;
+			//messageTF.x=Trial.RETURN_STAGE_WIDTH*.5-messageTF.width*.5;
+			//messageTF.y=Trial.RETURN_STAGE_HEIGHT*.5-messageTF.height*.5;
 			
 			this.graphics.beginFill(Style.BACKGROUND,.9);
 			this.graphics.drawCircle(messageTF.x+messageTF.width*.5,messageTF.y+messageTF.height*.5,messageTF.width*.5);

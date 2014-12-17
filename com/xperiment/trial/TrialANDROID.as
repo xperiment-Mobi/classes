@@ -1,12 +1,15 @@
 ﻿package com.xperiment.trial {
 
+	import com.xperiment.behaviour.behavFullScreen_Android;
+	import com.xperiment.behaviour.behavFuture;
 	import com.xperiment.stimuli.IStimulus;
 	import com.xperiment.stimuli.addComboBox_Android;
 	import com.xperiment.stimuli.addInputTextBox_Android;
+	import com.xperiment.stimuli.addLive;
 	import com.xperiment.stimuli.addTouch;
 	import com.xperiment.stimuli.addTouchScreen;
 	import com.xperiment.stimuli.addVibrate;
-	import com.xperiment.stimuli.addLive;
+
 
 
 
@@ -21,6 +24,9 @@
 				case "input":				return new addInputTextBox_Android;
 				case "combobox":			return new addComboBox_Android;
 				case "p2p":					return new addLive;
+				case "fullscreen":			return new behavFullScreen_Android;
+				case "future":				return new behavFuture;
+					
 					//case "admindata": 		return new adminData;
 					//case "adminsetvariable": 	return new adminSetVariable;
 					//case "adminconsole": 		return new adminConsole;

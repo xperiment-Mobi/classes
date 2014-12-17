@@ -13,6 +13,7 @@ package com.xperiment.ExptWideSpecs
 		
 		static public var __ExptWideSpecs:Object;
 		static public var uuidSavedToCloud:Boolean = false;
+		static public var isBuilder:Boolean = false;
 		static private var SJuuid:String; 
 		
 		public static var encryptKeyLoc:String =  "https://www.xpt.mobi/api/key/";
@@ -245,7 +246,8 @@ package com.xperiment.ExptWideSpecs
 		{
 
 			for each(var style:XML in styles.attributes()){
-				if(Style.hasOwnProperty(style.name())){
+				Style
+				if(Style[style.name().toString()] != undefined){
 					Style[style.name().toString()]=style.toString();
 				}
 				else if (style.name()=="__BIND"){}
@@ -410,13 +412,12 @@ package com.xperiment.ExptWideSpecs
 			return returnType;
 		}
 		
-		public static function URLVariables(parameters:Object,url:String):void
+		public static function URLVariables(parameters:Object,url:String=null):void
 		{
 
 			for(var param:String in parameters){
 				//exclude params in the array
-
-				if(['studyUrl','scriptName','exptId'].indexOf(param)!=-1){
+				if(['studyUrl','scriptName','exptId','scriptUrl'].indexOf(param)!=-1){
 					__ExptWideSpecs.urlParams[param]=parameters[param];
 				}
 				else if(['ip','assignment_id','worker_id','hit_id'].indexOf(param)!=-1){
@@ -425,9 +426,13 @@ package com.xperiment.ExptWideSpecs
 				else if(['ip','assignmentId','workerId','hitId'].indexOf(param)!=-1){ //legacy
 					__ExptWideSpecs.computer[param]=parameters[param];
 				}
+				else if(['url'].indexOf(param)!=-1){
+					__ExptWideSpecs.computer.stimuliFolder = parameters.url;
+				}
 			}
 			xptCloudSpecific(parameters,url);
 		}
+
 		
 		private static function xptCloudSpecific(parameters:Object,url:String):void
 		{
@@ -435,15 +440,18 @@ package com.xperiment.ExptWideSpecs
 				if(__ExptWideSpecs.results.save=='')	__ExptWideSpecs.results.save='cloud';
 			}
 
-			if(parameters.hasOwnProperty('exptId')){
+			if(parameters.hasOwnProperty('exptId')) {
 				__ExptWideSpecs.computer.cloud = true;
 				__ExptWideSpecs.info.id = __ExptWideSpecs.computer.cloudID = parameters.exptId;
 				updateSaveResults();
-				
-				if(url.indexOf("static")==-1)	url = url.split("/swf")[0];    //when swf is versioned.
-				else 							url = url.split("/static")[0]; //when swf is default
 
-				__ExptWideSpecs.computer.stimuliFolder=url+'/stimuli/'+parameters.exptId;
+
+				if(url!='') {
+					if (url.indexOf("static") == -1)    url = url.split("/swf")[0];    //when swf is versioned.
+					else                            	url = url.split("/static")[0]; //when swf is default
+
+					__ExptWideSpecs.computer.stimuliFolder = url + '/stimuli/' + parameters.exptId;
+				}
 			}
 			
 			if(parameters.hasOwnProperty('one_key'))		__ExptWideSpecs.computer.one_key = parameters.one_key;

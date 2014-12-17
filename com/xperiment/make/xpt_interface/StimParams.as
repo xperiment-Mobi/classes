@@ -67,18 +67,16 @@ package com.xperiment.make.xpt_interface
 				
 				stimulus.myUniqueProps('null');
 				stimulus.maker=true;
-				stimulus.makerObj={};
+				stimulus.init_makerObj();
 				
 				
-				stimulus.makerObj.attrs={};
-				stimulus.makerObj.attrsInfo={};
-				
+
 				stimulus.setVariables(new XMLList);
 				props.TRIAL.children.push(stimulusName);
 				
 				PropsEventsActions.extract(stimulus,stimulus.makerObj);
 				
-				props[stimulusName]=stimulus.makerObj;
+				props[stimulusName]=stimulus.get_makerObj();
 				
 				
 			}

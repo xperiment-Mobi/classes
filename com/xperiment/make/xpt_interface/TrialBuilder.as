@@ -2,7 +2,7 @@ package com.xperiment.make.xpt_interface
 {
 
 	import com.xperiment.behaviour.behavFullScreenDummy;
-	import com.xperiment.container.container;
+	import com.xperiment.behaviour.behav_baseClass;
 	import com.xperiment.make.OnScreenBoss.OnScreenBossMaker;
 	import com.xperiment.make.xpt_interface.Bind.BindScript;
 	import com.xperiment.onScreenBoss.OnScreenBoss;
@@ -10,6 +10,7 @@ package com.xperiment.make.xpt_interface
 	import com.xperiment.stimuli.StimulusFactory;
 	import com.xperiment.stimuli.object_baseClass;
 	import com.xperiment.trial.Trial;
+	import com.xperiment.container.container;
 	
 	public class TrialBuilder extends Trial
 	{
@@ -90,8 +91,9 @@ package com.xperiment.make.xpt_interface
 			super.setup(info);
 		}
 		
-		override public function composeObject(kinder:XML, iteration:uint,inContainer:container,saveParams:Boolean=false,xmlVal:String=''):container {
-			return super.composeObject(kinder,iteration, inContainer, true,xmlVal);
+		override public function composeObject(kinder:XML, iteration:uint,inContainer:container,saveParams:Boolean=false,xmlVal:String='',isBuilder:Boolean=false):container {
+			return super.composeObject(kinder,iteration, inContainer, true,xmlVal,true);
+
 		}
 		
 		override public function getOnScreenBoss(params:Object):OnScreenBoss{
@@ -105,7 +107,10 @@ package com.xperiment.make.xpt_interface
 				
 			}
 			super.sortoutTiming(startStr,startStr,duration,peg,stim);
+	
 		}*/
+		
+
 		
 	}
 }

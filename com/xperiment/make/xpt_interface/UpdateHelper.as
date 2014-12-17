@@ -28,19 +28,20 @@ package com.xperiment.make.xpt_interface
 		{
 			elements['PropertyInspector.edit'] 			= ['setScriptEditor','restartTrial'];
 			elements['PropertyInspector.addRemove'] 	= ['setScriptEditor','resetPropertyApp','restartTrial'];
-			elements['BindScript.addStimulus'] 			= ['setScriptEditor','restartTrial'];
+			elements['BindScript.addStimulus'] 			= ['restartTrial','setScriptEditor','resetPropertyApp','setTimeline__Trial'];
+			elements['BindScript.duplicated'] 			= ['restartTrial','setScriptEditor','resetPropertyApp','setTimeline__Trial'];
 			elements['BindScript.deleteTrial']	 		= ['setScriptEditor'];
 			elements['BindScript.deleteTrials'] 		= ['setScriptEditor'];
 			elements['BindScript.depthOrderChanged'] 	= ['setScriptEditor'];
 			elements['Bind_processChanges']				= ['setScriptEditor','resetPropertyApp'];
-			elements['Bind_addTrial.__addNew'] 			= ['setScriptEditor'];
+			elements['Bind_addTrial.__addNew'] 			= ['setScriptEditor','restartTrial'];
 			elements['Bind_delTrial.delCards'] 			= ['setScriptEditor'];
 			elements['Cards.freshCardsApp'] 			= [];
 			elements['Timeline.__processMultiStim'] 	= [];
 			elements['Bind_processChanges.timingChanged']=['setScriptEditor','resetPropertyApp'];
 			elements['Bind_delStim.deletePartMultiStim']= ['restartTrial','setScriptEditor','resetPropertyApp','setTimeline__Trial'];
 			elements['Bind_delStim.deleteStim']			= ['restartTrial','setScriptEditor','resetPropertyApp','setTimeline__Trial'];
-			elements['Trial_Goto'] 						= ['setTimeline__Trial','pos_scale_editor__Trial','resetPropertyApp'];
+			elements['Trial_Goto'] 						= [];
 			
 		}
 		
@@ -56,8 +57,12 @@ package com.xperiment.make.xpt_interface
 		}
 		
 		public function updateStuff(u:Array):void{
+
+			//Communicator.pass('as3Error','inn '+u.join(","))
 			for(var i:int=0;i<u.length;i++){
-				if(updateFrom.indexOf(u[i])==-1)updateFrom.push(u[i]);
+				if(updateFrom.indexOf(u[i])==-1){
+					updateFrom.push(u[i]);
+				}
 			}
 			timer.reset();
 			timer.start();
@@ -87,11 +92,13 @@ package com.xperiment.make.xpt_interface
 		{
 			var arr:Array = [];
 			var list:Array;	
-			
+
 			for(var i:int=0;i<updateFrom.length;i++){	
 				list = elements[updateFrom[i]];
 				for each(var requir:String in list){
-					if(arr.indexOf(requir)==-1)arr.push(requir);
+					if(arr.indexOf(requir)==-1){
+						arr.push(requir);
+					}
 				}
 			}
 				

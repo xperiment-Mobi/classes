@@ -2,11 +2,15 @@ package com.Start.MobilePlayerStart
 {
 	
 	import com.Start.MobilePlayerStart.services.GetStudies;
+	import com.Start.MobilePlayerStart.services.ScanQR;
 	import com.Start.MobilePlayerStart.view.PlayerView;
 	import com.greensock.events.LoaderEvent;
+	import com.xperiment.messages.WholeScreenMessage;
 	
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.events.TimerEvent;
+	import flash.utils.Timer;
 	
 	
 	
@@ -33,24 +37,60 @@ package com.Start.MobilePlayerStart
 		{		
 
 			super(theStage,'');
-			//scriptLoad("vibrofone.xml");
+			
+			if(scriptName!=''){
+				scriptLoad(scriptName);
+			}
+			
+			
+			//scriptLoad("delay.xml");
 			//scriptLoad("assets/network1.xml");
 			
-			
-			
-			//url="http://www.opensourcesci.com/experiments/Oxford/vibrofone/vibrofone.xml"
+			//url="https://www.xpt.mobi/experiment/ebced5891c4f49979a5751928c8c7d93/app/";
+			//url="https://www.xpt.mobi/experiment/62a62aea21fb4e35918890eaeb90c2fd/app/"
+			//url='http://127.0.0.1:8000/experiment/c977bfd1ca1241f79d33954fb1531f79/app/'
 			//scriptLoad(url);
+
 		}
+		
+		/*private function hack():void
+		{
+			ScanQR.DO(playerView.stage,scanQR_callback);
+			var t:Timer = new Timer(1000,0);
+			t.start();
+			t.addEventListener(TimerEvent.TIMER,function(e:Event):void{
+				ScanQR.hack();
+			
+			});
+		}	*/	
+	
 		
 		private function playerViewL(e:Event):void{
 			playerView.removeEventListener(Event.COMPLETE, arguments.callee);
-			url=playerView.exptSelected.url;
-			if(url!="")scriptLoad(url);
+			var selected:Object = playerView.exptSelected;
+			url=selected.url;
+			if(url!="" && url!=null)scriptLoad(	addAppEnding(url)	);
 			else{
-				playerView.exptSelected.funct();
+				selected.funct();
+				if(selected.special=="qr") return;
 			}
 			killPlayerView();		
-			
+		}
+		
+		private function scanQR_callback(url:String):void{
+			if(url!=''){
+				this.url=addAppEnding(url);
+				scriptLoad(this.url);
+			}
+			else{
+				WholeScreenMessage.DO(playerView.stage,':(',200);
+			}
+		}
+
+		private function addAppEnding(str:String):String{
+			str = str.split("").reverse().join("");
+			str = str.replace("nur","ppa"); //only changes first instance
+			return 'https://www.xpt.mobi'+str.split("").reverse().join("");
 		}
 		
 		override public function __start():void{
@@ -61,6 +101,19 @@ package com.Start.MobilePlayerStart
 						
 			
 			var expt:ExptInfo = new ExptInfo(null);
+			expt.title="Scan a QR code?"
+			expt.special="qr";
+			expt.colour='#6f2e0c'
+			expt.button = "begin";
+			expt.funct = function():void{
+				ScanQR.DO(playerView.stage,scanQR_callback);
+			};
+			expt.info ="Use this option when you have been given a 'qr-code' to scan for an experiment."
+			playerView.addExpt(expt);
+
+
+
+			expt = new ExptInfo(null);
 			expt.title="Scan for a local study?"
 			expt.special="scan";
 			expt.colour='#6f2e0c'
@@ -98,7 +151,7 @@ package com.Start.MobilePlayerStart
 			
 			//scriptLoad('weightColour.xml');
 		}
-		
+
 		private function givenStudies(exptsVect:Vector.<ExptInfo>):void{
 			if(exptsVect==null){
 				exptsVect = new Vector.<ExptInfo>;
@@ -117,17 +170,18 @@ package com.Start.MobilePlayerStart
 			}	
 		};
 					
-		override public function startExpt(script:XML):void
+		override public function startExpt(script:XML,params:Object=null):void
 		{
-			
 			killPlayerView();		
 			
 			if(checkIfExists){
 				checkIfExists.kill();
 				checkIfExists=null;
 			}
-				
-			super.startExpt(script);
+
+
+			if(params && url)params.url = url.substr(0,url.length-5).replace('experiment','stimuli');
+			super.startExpt(script,params);
 		}
 		
 
@@ -155,8 +209,6 @@ package com.Start.MobilePlayerStart
 		
 		private function addScriptText(url:String):String
 		{
-			
-			
 			var sep:String = "/";
 			if(url.split("\\").length>1)sep="\\";
 			

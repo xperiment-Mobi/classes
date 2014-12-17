@@ -17,7 +17,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 	import flash.geom.Point;
 
 
-	public class TrailDecorator_position
+	public class TrialDecorator_position
 	{
 		private var manager:TransformManager;
 		private var movingStim:object_baseClass;
@@ -132,7 +132,7 @@ package com.xperiment.make.xpt_interface.trialDecorators
 		
 
 	
-		public function TrailDecorator_position(manager:TransformManager,theStage:Stage)
+		public function TrialDecorator_position(manager:TransformManager,theStage:Stage)
 		{
 			this.manager=manager;
 			this.theStage=theStage;

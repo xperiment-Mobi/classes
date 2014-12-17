@@ -5,17 +5,16 @@ package com.xperiment.make.xpt_interface.trialDecorators.sizeHelpers
 	import com.greensock.transform.TransformManager;
 	import com.xperiment.make.xpt_interface.trialDecorators.TrialDecorator;
 	import com.xperiment.stimuli.object_baseClass;
-	
 	import flash.display.GradientType;
-	import flash.display.Shape;
 	import flash.geom.Matrix;
+	import flash.display.Sprite;
 
 
 	public class Sizer
 	{
 		protected var stim:object_baseClass;
 		protected var manager:TransformManager;
-		protected var transparentLayer:Shape;
+		protected var transparentLayer:Sprite;
 		protected var size:Size;
 		
 		public function Sizer( manager:TransformManager ){
@@ -41,7 +40,8 @@ package com.xperiment.make.xpt_interface.trialDecorators.sizeHelpers
 		public function init(stim:object_baseClass):void
 		{
 			this.stim = stim;
-			transparentLayer = stim.getChildByName(TrialDecorator.TRANSPARENT_LAYER) as Shape;
+			transparentLayer = stim.getChildByName(TrialDecorator.TRANSPARENT_LAYER) as Sprite;
+			trace(transparentLayer,22)
 			style(transparentLayer,stim.width, stim.myHeight);
 			size= new Size(stim);
 			hide();
@@ -49,7 +49,7 @@ package com.xperiment.make.xpt_interface.trialDecorators.sizeHelpers
 			//listeners(true);
 		}
 		
-		protected function style(transparentLayer:Shape, width:int, height:int):void
+		protected function style(transparentLayer:Sprite, width:int, height:int):void
 		{
 			
 			var mat:Matrix = new Matrix();

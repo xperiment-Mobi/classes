@@ -1,6 +1,7 @@
 package com.xperiment.make.xpt_interface
 {
 
+	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
 	import com.xperiment.make.comms.Communicator;
 	import com.xperiment.make.helpers.ResizeHelper;
 	import com.xperiment.make.richSync.RichXML;
@@ -35,9 +36,11 @@ package com.xperiment.make.xpt_interface
 		private var richXML:RichXML;
 		private var inFocus:Boolean = false;
 		private var _editMode:Boolean = true;
+		private var run_trialBindID_onStart:String = '';
 		
-		override public function giveScript(scr:XML,remote_url:String=null):void{
-			trace("initialising...");
+		override public function giveScript(scr:XML,remote_url:String=null, params:Object = null):void{
+			trace("initialising....");
+			
 			updateHelper = new UpdateHelper(this);
 			scr = BindScript.setup(scr.copy(),updateHelper.updateStuff);
 			if(Communicator._linked == false) initComms();
@@ -47,11 +50,8 @@ package com.xperiment.make.xpt_interface
 			Timeline.setup(this,Communicator.pass,BindScript.depthOrderChanged, Bind_processChanges.timingChanged );
 			StimBehav.setup(this);
 			Bind_delStim.setup(this);
-
-			PropertyInspector.setup(BindScript.getStimScript,Communicator.pass,this);
-
+			PropertyInspector.setup(this);
 			UpdateRunnerScript.setup(this);
-
 			PlayHelper.setup(this);
 			
 			//Coder.setup(this);
@@ -59,14 +59,15 @@ package com.xperiment.make.xpt_interface
 			Cards.setup(Communicator.pass,updateHelper.updateStuff);
 			Cards.generateInstructions();
 			sendInitialParasJS();
+			
 		/*	if(!t){ t = new Timer(1000,0);
 				t.addEventListener(TimerEvent.TIMER,function(e:TimerEvent):void{
 					commandF('script', scr);
 				});
 				t.start();
 			}*/
-			
-	
+
+
 			//addStimuli(["t.png"]);
 		}
 		
@@ -77,7 +78,7 @@ package com.xperiment.make.xpt_interface
 			
 			super(sta);
 			checkFocus();
-			hhhh();
+			//hhhh();
 			
 			ResizeHelper.init(theStage,resize);
 			
@@ -110,10 +111,14 @@ package com.xperiment.make.xpt_interface
 			s.graphics.beginFill(Math.random()*0xffffff,.4);
 			s.graphics.drawRect(0,0,100,100);
 			theStage.addChild(s);
-
+			
+			var This:runnerBuilder = this;
+			
 			s.addEventListener(MouseEvent.CLICK,function(e:Event):void{
 				
 				PropertyInspector.propEdit({name:'colour',value:'',group:'noPeg2 — addText'},'remove');
+				
+				CommandHelper.command('cards_deletedhhh',null);
 				
 				//CommandHelper.command('editMode',!editMode);
 		
@@ -143,7 +148,9 @@ package com.xperiment.make.xpt_interface
 				//trace(trialProtocolList)
 				
 				//trace(trialProtocolList)
-				//StimBehav.addLoadableStimuli(["new.png"]);
+				//StimBehav.addLoadableStimuli(["new.png"],true);
+	
+				//Stim_Juggle.DO('duplicate',This);
 
 				//OnScreenBossMaker.fromJS({command:"play"});
 				//StimBehav.addStimulus("Button");
@@ -170,7 +177,8 @@ package com.xperiment.make.xpt_interface
 			
 			theStage.addEventListener(KeyboardEvent.KEY_UP,function(e:KeyboardEvent):void{
 				if(e.keyCode==81){
-					pos_scale.hack();
+					Stim_Juggle.DO('duplicate',This);
+					//pos_scale.hack();
 				}
 				else if(e.keyCode==87){
 					pos_scale.hack1();
@@ -201,26 +209,38 @@ package com.xperiment.make.xpt_interface
 		
 		//nb restart other stuff used for Maker
 		override public function runningExptNow_II():void{
+			ExptWideSpecs.isBuilder = true;
+
 			commenceWithTrial();//starts the trial sequence 
+		}
+		
+		override protected function firstTrial():Trial{
+			if(run_trialBindID_onStart=='') return super.firstTrial();
+			
+			return super.firstTrial();
+			
 		}
 		
 		
 		override public function commenceWithTrial(params:Object=null):void {
+			Communicator.pass('trailNum',__nextTrialBoss.currentTrial)
 			super.commenceWithTrial();
+		
+			if(!params || 
+				(params.hasOwnProperty('updateOtherStuff') == true && params.updateOtherStuff==true)
+						){
 
-			//if(updateOtherStuff){
-			
 				PropertyInspector.newTrial(runningTrial as TrialBuilder);
 				Timeline.update(runningTrial);
 				posScaleChanger();
-			//}
+			}
 		}
 		
-		/*override public function runningExptNow_II(restartOtherStuff:Boolean):void{
+		/*override public function runningExptNow_II(updateOtherStuff:Boolean):void{
 			//runningTrial.ITI=0;
 			//Cards.generateInstructions();
 			commenceWithTrial();
-			if(restartOtherStuff){
+			if(updateOtherStuff){
 				PropertyInspector.newTrial(runningTrial as TrialBuilder);
 				Timeline.update(runningTrial);
 				posScaleChanger();
@@ -288,7 +308,7 @@ package com.xperiment.make.xpt_interface
 		override protected function commandF(what:String, data:* =null):void{
 			//Communicator.pass('info',what+"___"+data.toString());
 			//trace(23232,what)
-
+			trace(what,data,222222)
 			var found:Boolean = CommandHelper.command(what,data);
 			if(found==false)	super.commandF(what,data);
 		}
@@ -301,13 +321,14 @@ package com.xperiment.make.xpt_interface
 		}
 		
 		*/
-		public function restartTrial(restartOtherStuff:Boolean=true, keepTimePos:Boolean=true):void{
+		public function restartTrial(updateOtherStuff:Boolean=true, keepTimePos:Boolean=true):void{
 			
 			var params:Object;
 			if(keepTimePos){
 				params = {timing: {startTime:runningTrial.CurrentDisplay.getMS()}}	
 					
 			}
+			params.updateOtherStuff = updateOtherStuff;
 			//trace(111,JSON.stringify(params));
 	
 			runningTrial.generalCleanUp();
@@ -342,9 +363,17 @@ package com.xperiment.make.xpt_interface
 			Trial_Goto.fromJS({command:'first'});
 		}
 
-		public function newScript(data:String):void
+		public function newScript(data:String, keepCurrentTrial:Boolean):void
 		{
+
+			if(keepCurrentTrial){
+				run_trialBindID_onStart = (runningTrial as TrialBuilder).xml.@[BindScript.bindLabel];
+			}
+			else run_trialBindID_onStart = '';
+			
+			
 			try{
+				if(data=='') 	data = BindScript.cleanScript();
 				var newScript:XML = XML(data);
 				//trace(123,newScript);
 				kill();
@@ -371,6 +400,10 @@ package com.xperiment.make.xpt_interface
 		{
 			_editMode = ON;
 			//OnScreenBossMaker.isStill = ON;
+		}
+		
+		override protected function setWebSiteColour(colour:String):void{
+			
 		}
 
 	}

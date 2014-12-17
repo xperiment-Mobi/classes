@@ -1,7 +1,7 @@
 package com.Start
 {
 	import com.greensock.events.LoaderEvent;
-	import com.greensock.loading.XMLLoader;
+	import com.greensock.loading.DataLoader;
 	import com.xperiment.messages.XperimentMessage;
 	import com.xperiment.runner.runner;
 	
@@ -11,11 +11,11 @@ package com.Start
 
 	public class AbstractStart implements CanRestart
 	{
-		private var scriptLoader:XMLLoader;
-		protected var content:XML;
+		private var scriptLoader:DataLoader;
+		public var scriptXML:XML;
 		public var expt:runner;
-		
 		public var theStage:Stage;
+		
 		
 		
 		public function AbstractStart(theStage:Stage,scriptName:String=''){
@@ -34,28 +34,58 @@ package com.Start
 		
 		public function scriptLoad(scriptName:String):void
 		{
-			scriptLoader = new XMLLoader(scriptName,{noCache:true});
+			
+			scriptLoader = new DataLoader(scriptName,{noCache:true});
 			scriptListeners(true);	
 			LoadingAnimation.init(theStage);
-			scriptLoader.load();
+			try{
+				scriptLoader.load();
+			}
+			catch(e:Error){
+				trace(e);
+			}
+			trace("start load");
 			
 		}
 		
 		public function kill_expt():void{
-			if(expt)expt.kill();
+			if(expt){
+				trace("kill expt");
+				expt.kill();
+			}
 		}
 		
 		public function restart():Function{
 
 			return function():void{
 				expt.kill();
-				startExpt(content);}
+				startExpt(scriptXML);}
 		}
 		
 		private function dataLoaded(e:LoaderEvent):void
 		{
-			if(!content)content=e.target.content;	
-			startExpt(content);
+			//trace(111)
+			var params:Object ;
+
+			if(!scriptXML){
+				params = {}
+				var str:String = e.target.content;
+				var arr:Array = str.split('---end script---')
+				if(arr.length>1){
+					params = {};
+					scriptXML = XML(arr[0]);
+					var strSplit:Array;
+					for each(str in arr[1].split("\n")){
+						strSplit=str.split(":");
+						if(strSplit.length>1) {
+							params[strSplit[0]] = strSplit[1];
+						}
+					}
+				}
+				else scriptXML = XML(str);
+			}
+
+			startExpt(scriptXML,params);
 			kill();
 		}	
 		
@@ -67,7 +97,7 @@ package com.Start
 		
 		public function dataNotLoaded(e:LoaderEvent):void
 		{
-			
+			trace("prob loading data");
 			XperimentMessage.message(theStage, "Afraid your Xperiment Script cannot be loaded.  Here is the error message: \n"+e.text);
 			kill();
 		}
@@ -89,10 +119,10 @@ package com.Start
 			}
 		}
 				
-		public function startExpt(script:XML):void
+		public function startExpt(script:XML, params:Object = null):void
 		{
 			expt = exptPlatform();
-			expt.giveScript(script);
+			expt.giveScript(script, null, params);
 		}
 		
 		public function exptPlatform():runner{

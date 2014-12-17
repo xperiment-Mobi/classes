@@ -156,14 +156,15 @@ package com.xperiment.runner {
 			return new ProcessScript();
 		}
 	
-		public function giveScript(scr:XML,remote_url:String=null):void {
+		public function giveScript(scr:XML,remote_url:String=null, params:Object = null):void {
 			startStudyQuery('processScript');
 			trialList = new Vector.<Trial>;
 			orig_script = scr.copy();
 
-			
 			var processScript:ProcessScript = giveProcessScript();
-			
+
+			//Hack.DO();
+
 			processScript.addEventListener(Event.COMPLETE, function(e:Event):void{
 				e.target.removeEventListener(e.type,arguments.callee);
 				//trace(123,processScript.script)
@@ -171,34 +172,32 @@ package com.xperiment.runner {
 				//trace(trialProtocolList)
 
 				processScript=null;
-				doAfterScript();
+				ExptWideSpecs.setup(trialProtocolList);
+trace(123344,params)
+				if(params) ExptWideSpecs.URLVariables(params,'');
+				else ExptWideSpecs.URLVariables(theStage.loaderInfo.parameters,theStage.loaderInfo.url);
+
+				if(remote_url)ExptWideSpecs.remote_url(remote_url);
+				if(ExptWideSpecs.IS("mock") == true)	MockResults.sortExptWideSpecs();
+
+				exptResults = Results.getInstance();
+				exptResults.setup();
+
+				populatePropValDict();
+				checkForLoadableObjects();
+
+				setBackgroundColour();
+				resizeListeners();
+				startStudyQuery('giveScript');
+
+				initDeviceSpecificStuff();
 				
 			},false,0,false); 
 			
 			processScript.process(scr);
 			
 			
-			function doAfterScript():void{
 
-				ExptWideSpecs.setup(trialProtocolList);
-				//trace(trialProtocolList)
-				ExptWideSpecs.URLVariables(theStage.loaderInfo.parameters,theStage.loaderInfo.url);
-				if(remote_url)ExptWideSpecs.remote_url(remote_url);
-
-				if(ExptWideSpecs.IS("mock") == true)	MockResults.sortExptWideSpecs();
-
-				exptResults = Results.getInstance();
-				exptResults.setup();
-				
-				populatePropValDict();
-				checkForLoadableObjects();
-				
-				setBackgroundColour();	
-				resizeListeners();
-				startStudyQuery('giveScript');
-				
-				initDeviceSpecificStuff();
-			}
 		}
 		
 					
@@ -324,20 +323,8 @@ package com.xperiment.runner {
 					askedToQuit();
 					break;
 				case GlobalFunctionsEvent.GOTO_COND:
-					runningTrial.compileOutputForTrial();
-					runningTrial.generalCleanUp();
-					
-					extractTrialData(runningTrial);
-					exptResults.preserveOverExpts(true);
-					runningTrial = null;
 					var newScript:XML = BetweenSJs.forceCond(orig_script,e.values);	
-					askedToQuit();
-					ExptWideSpecs.kill();
-					trialList = new Vector.<Trial>;
-					preloader.kill(); preloader = null;
-					setNeedsDoing();
-	
-					giveScript(newScript);
+					loadDifferentScript(newScript);
 					break;
 				case GlobalFunctionsEvent.PROBLEM:
 					kill();
@@ -346,6 +333,25 @@ package com.xperiment.runner {
 				default:
 					throw new Error("unrecognised global command:"+e.command);
 			}
+		}
+		
+		public function loadDifferentScript(newScript:XML):void
+		{
+			runningTrial.compileOutputForTrial();
+			runningTrial.generalCleanUp();
+			
+			extractTrialData(runningTrial);
+			exptResults.preserveOverExpts(true);
+			runningTrial = null;
+			
+			askedToRestart();
+			
+			ExptWideSpecs.kill();
+			trialList = new Vector.<Trial>;
+			preloader.kill(); preloader = null;
+			setNeedsDoing();
+			
+			giveScript(newScript);
 		}
 		
 /*		protected function submitMTurk():void
@@ -385,9 +391,13 @@ package com.xperiment.runner {
 			
 			genTrialOrder(true);
 			
-			runningTrial=__nextTrialBoss.firstTrial();
+			runningTrial=firstTrial();
 
 			runningExptNow_II();
+		}
+		
+		protected function firstTrial():Trial{
+			return __nextTrialBoss.firstTrial();
 		}
 		
 		private function genTrialOrder(genTrials:Boolean):void
@@ -464,7 +474,7 @@ package com.xperiment.runner {
 			extractTrialData(runningTrial);
 			
 			runningTrial=__nextTrialBoss.getTrial(e.action,runningTrial);
-	
+
 			if(runningTrial){
 				
 				if(runningTrial.runTrial == true){
@@ -501,6 +511,11 @@ package com.xperiment.runner {
 		public function askedToQuit():void
 		{
 			kill();
+		}
+		
+		public function askedToRestart():void //for mobile version
+		{
+			askedToQuit(); 
 		}
 
 		
@@ -554,10 +569,14 @@ package com.xperiment.runner {
 	
 		
 		public function setBackgroundColour(colour:String=''):void {	
-			
-			if(colour=='')	theStage.color=codeRecycleFunctions.getColour(ExptWideSpecs.IS("BGcolour"));
-			else			theStage.color=codeRecycleFunctions.getColour(colour);
+			if(colour=='')	colour = ExptWideSpecs.IS("BGcolour");
+			theStage.color = codeRecycleFunctions.getColour(colour);
+			setWebSiteColour(colour);
+		}
 		
+		protected function setWebSiteColour(colour:String):void{
+			colour = colour.split("0x").join("#");
+			Communicator.pass('bgCol',colour);
 		}
 		
 

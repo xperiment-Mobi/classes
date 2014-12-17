@@ -18,8 +18,9 @@ package com.xperiment.ExptWideSpecs
 			params.computer.dataFolderLocation = '';
 			
 			try{
-				Application.init("75d795f721aef531b70e41c6f438a41730036748SoXvDJNmgUYIuW7uC3UHvYSPm4cPNYZms0/7OF+VWUTYS5PHf7dSAOM33HZvnSO04x7P+EtF6H38JKojMqFSFA==");
-				params.computer.deviceUUID = Application.service.device.uniqueId();
+				//switch back on
+				//Application.init("75d795f721aef531b70e41c6f438a41730036748SoXvDJNmgUYIuW7uC3UHvYSPm4cPNYZms0/7OF+VWUTYS5PHf7dSAOM33HZvnSO04x7P+EtF6H38JKojMqFSFA==");
+				//params.computer.deviceUUID = Application.service.device.uniqueId();
 			}
 			catch(e:Error){
 				

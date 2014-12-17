@@ -5,6 +5,7 @@
 	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
 	import com.xperiment.MockResults.MockResults;
 	import com.xperiment.behaviour.BehaviourBoss;
+	import com.xperiment.behaviour.behav_baseClass;
 	import com.xperiment.container.container;
 	import com.xperiment.events.GotoTrialEvent;
 	import com.xperiment.exptWideAction.ExptWideAction;
@@ -185,7 +186,7 @@
 			return StimulusFactory.Stimulus(name);
 		}
 		
-		public function composeObject(kinder:XML, iteration:uint,inContainer:container, saveParams:Boolean=false,xmlVal:String=''):container {
+		public function composeObject(kinder:XML, iteration:uint,inContainer:container, saveParams:Boolean=false,xmlVal:String='',isBuilder:Boolean=false):container {
 			
 			
 			//using the 'present' attribute (where 0 means 'do not show');
@@ -288,6 +289,7 @@
 						
 					}
 					if(saveParams)(freshStim as object_baseClass).stimXML = kinder;
+					if(isBuilder && freshStim is behav_baseClass)	(freshStim as behav_baseClass).exptBuilderVisual();
 					freshStim.RunMe();
 				}
 			}
@@ -392,6 +394,7 @@
 		
 
 		public function prepare(Ord:uint,trial:XML,params:Object=null):void {
+	
 			pic ||= new Sprite;
 			Order=Ord;
 			if(trial.hasOwnProperty('@trials'))	numTrials=trial.@trials;
@@ -443,18 +446,24 @@
 			TrialHelper.computeLayerOrder(OnScreenElements);
 			
 			if(ExptWideSpecs.IS("mock")==true)MockResults.giveStimuli(OnScreenElements);
+
 			
 			if(ITI!=0){
 				ITItimer=new Timer(ITI);
 				ITItimer.addEventListener(TimerEvent.TIMER, function(e:TimerEvent):void{
 					ITItimer.stop();
 					ITItimer.removeEventListener(TimerEvent.TIMER,arguments.callee);
-					if(P2P_NO_WAIT)run();
+					if(P2P_NO_WAIT){
+						run();
+					}
 				});
 				ITItimer.start();
 			}
 			else{
-				if(P2P_NO_WAIT)run();
+	
+				if(P2P_NO_WAIT){
+					run();
+				}
 			}
 
 		}
@@ -494,7 +503,7 @@
 		
 
 		public function run():void {
-
+		
 			if(pic){
 			
 				pic.addEventListener(GotoTrialEvent.TRIAL_PING_FROM_OBJECT,gotoTrial,false,0,false);//note false here for weak refs.  NEEDED.  If the SJ is on a trial long enough, the eventlistener will just be cleaned up...
@@ -510,9 +519,6 @@
 					CallAtStart=null;
 				}
 				
-			
-				
-		
 				if(ExptWideSpecs.IS("mock")==true)MockResults.start();
 				
 				if(scroll){

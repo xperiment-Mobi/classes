@@ -86,6 +86,7 @@ package com.hurlant.util {
 		
 		public static function decode(data:String):String {
 			// Decode data to ByteArray
+	
 			var bytes:ByteArray = decodeToByteArray(data);
 			
 			// Convert to string and return

@@ -41,6 +41,7 @@ package com.xperiment.make.comms
 				_runBacklog();
 				}
 			else{ //only pass interesting stuff along
+				//trace(what,data)
 				commandF(what,data);
 			}
 		}
@@ -55,7 +56,6 @@ package com.xperiment.make.comms
 		//can pass vars anytime as, if comms not established, stored and then run when established via the runBacklog command.
 		public static function pass(what:String, data:*):void
 		{
-			//trace(123,what)
 			//XperimentMessage.message(theStage,'link-iii: '+what+" "+data.toString());
 			if(_linked==false){
 				if(!_backlog)_backlog=[];

@@ -4,7 +4,9 @@ package com.xperiment.make.xpt_interface.trialDecorators.sizeHelpers
 	import com.greensock.transform.TransformManager;
 	import com.xperiment.stimuli.addJPG;
 	
+	import flash.display.DisplayObject;
 	import flash.display.Shape;
+	import flash.display.Sprite;
 
 	public class SizerJPG extends Sizer
 	{
@@ -14,7 +16,7 @@ package com.xperiment.make.xpt_interface.trialDecorators.sizeHelpers
 		
 		public function SizerJPG(manager:TransformManager,stim:addJPG){
 			super(manager);
-			var transformStim:TransformItem = manager.getItem(stim);
+			var transformStim:TransformItem = manager.getItem(stim as DisplayObject);
 			
 			
 			exactSize= stim.getVar("exactSize");		
@@ -34,7 +36,7 @@ package com.xperiment.make.xpt_interface.trialDecorators.sizeHelpers
 			return dimensions;
 		}
 		
-		override protected function style(transparentLayer:Shape, width:int, height:int):void{};
+		override protected function style(transparentLayer:Sprite, width:int, height:int):void{};
 		override protected function hide():void{};
 	}
 }

@@ -15,7 +15,7 @@ package com.xperiment.make.xpt_interface
 		public function StartMaker(theStage:Stage, scriptName:String='')
 		{
 			var nam:String
-			
+
 			if(Capabilities.isDebugger==false){
 				nam='build.xml';
 			}
@@ -25,14 +25,17 @@ package com.xperiment.make.xpt_interface
 			var xml:XML = <Bouba2 exptType="WEB">
 
  <SETUP>                          
-	<screen BGcolour="white" />		  
+	<screen BGcolour="gray" />		  
 	<computer stimuliFolder="assets" />
 </SETUP>
 
   <TRIAL TYPE="Trial" hideResults="true" block="1" order="fixed" trials="5" >
-	<JPG filename="new.png"/>
-	<button />
-	<addText colour="red" howMany="1" text="abc" x="61.38%" y="29.69%---50%---70%" height="28.4%" width="20.1%"  horizontal="right---middle---middle"/>
+	
+<addSlider />
+<JPG filename="new.png"/>
+	<button width="5%" height="5%"/>
+	<addText colour="red" howMany="2" text="abc" x="61.38%" y="29.69%---50%---70%" height="28.4%" width="20.1%"  horizontal="right---middle---middle"/>
+	<behavBlur timeStart="0" howMany="3" x="50%" y="80%"/>
   </TRIAL>
 
 <TRIAL TYPE="Trial" trialName="DoExpt" hideResults="true" block="1" order="fixed" trials="1">
@@ -231,7 +234,7 @@ timeStart="0"  timeEnd="forever"></addText>
 			}
 			
 			super(theStage,nam);
-			
+
 			if(nam==""){
 				startExpt(xml);
 			}

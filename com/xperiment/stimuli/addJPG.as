@@ -64,12 +64,12 @@ package  com.xperiment.stimuli{
 			if(getVar("smoothing"))content.smoothing = true;
 			pic.addChild(content);
 			pic.name=peg;
-			
-			
-			if(getVar("exactSize")==false){
-				
+
+			trace(111,getVar("width").toLowerCase(),getVar("height").toLowerCase());
+			//if(getVar("exactSize")==false){
+
 				if(getVar("width").toLowerCase()=="aspectratio" || getVar("height").toLowerCase()=="aspectratio"){
-					
+
 					var maxRatio1:Number = content.width/pic.myWidth;
 					var maxRatio2:Number = content.height/pic.myHeight;
 					
@@ -81,11 +81,8 @@ package  com.xperiment.stimuli{
 					content.x=(pic.myWidth-content.width)*.5;
 					content.y=(pic.myHeight-content.height)*.5;
 				}
-				else{
-					content.width=pic.myWidth;
-					content.height=pic.myHeight;
-				}
-			}
+
+
 			else{
 				
 				pic.myWidth=content.width;
@@ -106,7 +103,7 @@ package  com.xperiment.stimuli{
 		loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(e:Event):void{
 			e.currentTarget.removeEventListener(e.type,arguments.callee);
 			var bmp:Bitmap = loader.content as Bitmap;
-			__addPic(bmp);	
+			__addPic(bmp);
 			if (getVar("showBox"))showBox();
 		});
 		loader.loadBytes(ByteArray(content));

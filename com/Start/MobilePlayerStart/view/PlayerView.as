@@ -395,10 +395,11 @@ If you suspect an experiment does not adhere to any of  the above policies, plea
 		 */
 		private function doStudy(e:Event):void
 		{
-			if(exptSelected.runnable)	this.dispatchEvent(new Event(Event.COMPLETE));
-			
+
+			if(exptSelected.runnable){
+				this.dispatchEvent(new Event(Event.COMPLETE));
+			}
 			else if(exptSelected.funct){
-				
 				if(exptSelected.funct.length==0)	exptSelected.funct();
 				if(exptSelected.funct.length==2){ //hacky!
 					
@@ -409,6 +410,7 @@ If you suspect an experiment does not adhere to any of  the above policies, plea
 					return;
 				}
 			}
+
 			backToList(null);
 		}
 		

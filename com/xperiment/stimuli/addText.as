@@ -22,9 +22,9 @@
 		override public function setVariables(list:XMLList):void {
 			basicText = new BasicText()
 			basicText.setVariablesChild(null);
-			
+
 			this.OnScreenElements=basicText.OnScreenElements;
-			
+
 			addAdditionalParams();
 
 			super.setVariables(list);
@@ -47,7 +47,26 @@
 				
 			basicText.createStimulus();
 			if(correctForBlankValue)basicText.text('');
+			
+		}
+		
+		override public function init_makerObj():void{
 
+			BasicText.init_makerObj();
+			super.init_makerObj();	
+		}
+		
+		override public function get_makerObj():Object{
+			var b:Object = BasicText.makerObj;
+		
+			for(var key:String in b.attrs){
+				this.makerObj.attrs[key] = b.attrs[key];
+			}
+			for(key in b.attrsInfo){
+				this.makerObj.attrsInfo[key] = b.attrsInfo[key];
+			}
+			BasicText.makerObj=null;
+			return super.get_makerObj();
 		}
 		
 		public function addAdditionalParams():void
