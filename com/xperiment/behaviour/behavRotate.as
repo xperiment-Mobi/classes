@@ -88,7 +88,7 @@ package com.xperiment.behaviour{
 		override public function setVariables(list:XMLList):void {
 			
 			setVar("int","rotation",180);
-			setVar("string","rotateAtStart","360,2000","","the degrees to rotate then a comma, then the time taken for this rotation in ms");
+			setVar("string","rotateAtStart","","360,2000","the degrees to rotate then a comma, then the time taken for this rotation in ms");
 			setVar("number","duration",0);
 			//setVar("number","yz","","","rotated value along y-axis but in z plane, in degrees.")
 			setVar("boolean","rotateWithMouseDown",false);	
@@ -102,6 +102,7 @@ package com.xperiment.behaviour{
 			TweenPlugin.activate([TransformAroundPointPlugin]);
 			
 			if(getVar("rotateWithMouseDown")){
+
 				rotateWithMouseDown = new RotateWithMouseDown(theStage,applyAngle,getVar("rotateWithMouseDownPreRotate"),getVar("randomStartRotation"));
 			}
 		}	
@@ -255,18 +256,17 @@ internal class RotateWithMouseDown {
 		this.doRotateF=doRotateF;
 		this.ping=ping;
 		this.randStart = randStart;
+
 	}
 	
 	public function start(behavObjects:Array, rotateAtStart:String):void{
 		
 		this.behavObjects=behavObjects;
 		calcPoint();
-		
-		if(randStart){
+		if(randStart == true){
 			var randOrient:Number;
 			for(var i:int=0;i<behavObjects.length;i++){
 				randOrient=360*Math.random();
-				
 				doRotateF(behavObjects[i],randOrient);
 			}
 		}

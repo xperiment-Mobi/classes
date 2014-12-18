@@ -426,11 +426,8 @@ package com.xperiment.ExptWideSpecs
 				else if(['ip','assignmentId','workerId','hitId'].indexOf(param)!=-1){ //legacy
 					__ExptWideSpecs.computer[param]=parameters[param];
 				}
-				else if(['url'].indexOf(param)!=-1){
-					__ExptWideSpecs.computer.stimuliFolder = parameters.url;
-				}
 			}
-			xptCloudSpecific(parameters,url);
+			xptCloudSpecific(parameters,parameters.url);
 		}
 
 		

@@ -7,9 +7,6 @@
 	import flash.display.BitmapData;
 	import flash.display.Shape;
 	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.EventDispatcher;
-	import flash.events.MouseEvent;
 	import flash.geom.Matrix;
 
 

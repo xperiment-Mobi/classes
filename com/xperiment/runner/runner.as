@@ -130,7 +130,7 @@ package com.xperiment.runner {
 		
 		
 		protected function scaleMode():void{
-			theStage.scaleMode=StageScaleMode.NO_SCALE;
+			theStage.scaleMode=StageScaleMode.SHOW_ALL;
 		}
 		
 		public function initDeviceSpecificStuff():void{
@@ -173,9 +173,13 @@ package com.xperiment.runner {
 
 				processScript=null;
 				ExptWideSpecs.setup(trialProtocolList);
-trace(123344,params)
-				if(params) ExptWideSpecs.URLVariables(params,'');
-				else ExptWideSpecs.URLVariables(theStage.loaderInfo.parameters,theStage.loaderInfo.url);
+
+				for(var key:String in theStage.loaderInfo.parameters){
+					if(params.hasOwnProperty(key)==false)	params[key]= theStage.loaderInfo.parameters[key];
+				}
+				if(params.hasOwnProperty('url')==false)	params.url = theStage.loaderInfo.url;
+				ExptWideSpecs.URLVariables(params);
+				
 
 				if(remote_url)ExptWideSpecs.remote_url(remote_url);
 				if(ExptWideSpecs.IS("mock") == true)	MockResults.sortExptWideSpecs();

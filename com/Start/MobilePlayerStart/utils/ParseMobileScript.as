@@ -1,5 +1,7 @@
 package com.Start.MobilePlayerStart.utils
 {
+	import com.Start.WebStart.utils.StimuliUrl;
+
 	public class ParseMobileScript
 	{
 
@@ -12,7 +14,7 @@ package com.Start.MobilePlayerStart.utils
 
 
 			setAttrib(script, 'SETUP','results','saveDataURL',loc);
-			setAttrib(script, 'SETUP','computer','stimuliFolder',getStimLoc(loc) );
+			setAttrib(script, 'SETUP','computer','stimuliFolder',StimuliUrl.getStimLoc(loc) );
 			
 			XML.prettyPrinting=true;
 			//trace(script)
@@ -20,21 +22,7 @@ package com.Start.MobilePlayerStart.utils
 			return script;
 		}
 		
-		private static function getStimLoc(loc:String):String
-		{
-			//'experiment/62a62aea21fb4e35918890eaeb90c2fd/app/'
-			loc = loc.split("\\").join("/"); //think apple needs this
-			
-			var arr:Array = loc.split("/");	
-			for each(loc in arr){
-				if(loc.length==32){
-					return 'https://www.xpt.mobi/stimuli/'+loc+"/";
-				}
-			}
-			throw new Error();
-				
-			return loc;
-		}		
+		
 		
 		//below, testing setAttrib
 		/*private static var my_xml:XML = <a><c cc='1'><c cc='1'/></c></a>;

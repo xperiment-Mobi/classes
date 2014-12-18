@@ -85,13 +85,9 @@ package com.Start.MobilePlayerStart
 			throw new Error("must override this abstract method");
 		}
 		
-		override public function startExpt(script:XML, params:Object = null):void
-		{
+
+		override protected function modifyScript(script:XML):void{
 			if(url)script = ParseMobileScript.addRemoteStimFolder(script,url); 
-			expt = exptPlatform();
-			//trace(112,script)
-			expt.giveScript(script,null, params);
-			
 		}
 		
 		override public function exptPlatform():runner{

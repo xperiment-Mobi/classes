@@ -199,7 +199,7 @@ package com.xperiment.make.OnScreenBoss
 		override public function __addToScreen(stim:uberSprite,doEvents=true):void{notSupported();}
 		override public function time():int{notSupported();return currentTime;}
 		override public function stopAll():void{notSupported();}
-		override public function updateDepths(newOrder:Array):void{notSupported();}
+		//override public function updateDepths(newOrder:Array):void{notSupported();}
 		override protected function remove(stim:uberSprite):void{notSupported();}
 
 

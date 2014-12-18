@@ -18,6 +18,7 @@ package com.xperiment.trial
 			var depth:String;
 			for (var i:int =0;i< stimuli.length; i++){
 				depth=stimuli[i].getVar("depth").toLowerCase();
+				
 				if(depth==" ")depth=""
 				if(depth!=""){
 					if(depth=='top')		stimuli[i].depth=OnScreenBoss.TOP;
@@ -38,6 +39,7 @@ package com.xperiment.trial
 					stimuli[i].depth=i;
 					depthNoSet[depthNoSet.length]=stimuli[i];
 				}
+				//trace("____________",stimuli[i],depth,stimuli[i].depth)
 			}
 			
 			if(depthSet.length>0)__computeDepths(depthSet,depthNoSet);

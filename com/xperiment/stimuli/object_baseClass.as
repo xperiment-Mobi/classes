@@ -351,8 +351,7 @@
 			pic.addEventListener(Event.REMOVED_FROM_STAGE,removedFromScreen,false,0,true);
 			
 			if(getVar("visible")==false)pic.visible=false;
-			if(getVar("depth")!=0)		depth=getVar("depth");
-			
+								
 			
 			if (getVar("padding")!=0){
 				if (getVar("padding_left")==0) setVarBase("int","padding_left",getVar("padding"));

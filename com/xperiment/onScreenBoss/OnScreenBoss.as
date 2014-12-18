@@ -9,8 +9,8 @@
 	
 	public class OnScreenBoss extends Sprite  {
 		
-		public static var BOTTOM:int=int.MIN_VALUE+1000; 
-		public static var TOP:int=int.MAX_VALUE-1000;
+		public static var BOTTOM:int=int.MAX_VALUE; 
+		public static var TOP:int=int.MIN_VALUE;
 		protected static var MAX_CHILDREN:int = int.MAX_VALUE;
 		public static const FOREVER:Number=int.MAX_VALUE;
 		
@@ -21,7 +21,7 @@
 		
 		private var stageCount:int;
 		public var running:Boolean = true;
-		private var depthRecyc:int;
+		//private var depthRecyc:int;
 		protected var _allStim:Array;
 		
 		
@@ -415,7 +415,7 @@
 			__objsOnScreen.sortOn("depth", Array.DESCENDING | Array.NUMERIC);
 			
 			for(var i:int=0;i<__objsOnScreen.length;i++){
-				
+				if(!__objsOnScreen[i])trace(11111)
 				if(__objsOnScreen[i])this.addChild(__objsOnScreen[i] as uberSprite);
 			}
 			
@@ -491,6 +491,7 @@
 			return null;
 		}
 		
+		/*
 		public function updateDepths(newOrder:Array):void
 		{
 			
@@ -506,7 +507,7 @@
 			
 			depthManager();
 			
-		}
+		}*/
 		
 		public function updateStimTimesFromObj(changed:Object):uberSprite
 		{

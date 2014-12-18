@@ -1,13 +1,17 @@
 package com.Start
 {
+
+	import com.Start.MobilePlayerStart.utils.ParseMobileScript;
+	import com.Start.WebStart.utils.StimuliUrl;
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.DataLoader;
 	import com.xperiment.messages.XperimentMessage;
 	import com.xperiment.runner.runner;
 	
 	import flash.display.Stage;
-	import flash.display.StageAlign;
-	import flash.display.StageScaleMode;
+
+	//import flash.display.StageAlign;
+	//import flash.display.StageScaleMode;
 
 	public class AbstractStart implements CanRestart
 	{
@@ -19,8 +23,8 @@ package com.Start
 		
 		
 		public function AbstractStart(theStage:Stage,scriptName:String=''){
-			theStage.align=StageAlign.TOP_LEFT;
-			theStage.scaleMode=StageScaleMode.SHOW_ALL;
+			//theStage.align=StageAlign.TOP_LEFT;
+			//theStage.scaleMode=StageScaleMode.SHOW_ALL;
 			//theStage.autoOrients = true;
 			//theStage.setOrientation(StageOrientation.DEFAULT);
 			this.theStage=theStage;
@@ -118,9 +122,20 @@ package com.Start
 					}
 			}
 		}
+		
+		protected function modifyScript(script:XML):void{
+		}
+		
+		protected function modifyParams(params:Object):void{
+			params ||= {};
+		}
 				
 		public function startExpt(script:XML, params:Object = null):void
 		{
+			
+			modifyScript(script);
+			modifyParams(params);
+
 			expt = exptPlatform();
 			expt.giveScript(script, null, params);
 		}

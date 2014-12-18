@@ -68,7 +68,7 @@ package com.xperiment.make.xpt_interface.trialDecorators.Timeline
 			var stim:Array;
 			
 			if(currentTrial){
-				currentTrial.CurrentDisplay.updateDepths(newOrder);
+				//currentTrial.CurrentDisplay.updateDepths(newOrder);
 				stim = currentTrial.CurrentDisplay.allStim;
 			}
 			else{ //unit testing

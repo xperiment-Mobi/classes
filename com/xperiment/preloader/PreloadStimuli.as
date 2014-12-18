@@ -10,9 +10,8 @@
 	import com.xperiment.messages.XperimentMessage;
 	import flash.display.Sprite;
 	import flash.display.Stage;
-import flash.errors.IOError;
-import flash.events.Event;
-	import flash.events.IOErrorEvent;
+	import flash.errors.IOError;
+	import flash.events.Event;
 	import flash.events.TimerEvent;
 	import flash.utils.ByteArray;
 	import flash.utils.Timer;

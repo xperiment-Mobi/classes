@@ -9,6 +9,7 @@ package com.xperiment.behaviour
 	import flash.display.StageDisplayState;
 	import flash.display.StageScaleMode;
 	import flash.events.FullScreenEvent;
+	import flash.system.Capabilities;
 	
 	public class behavFullScreen extends behav_baseClass
 	{
@@ -103,6 +104,11 @@ package com.xperiment.behaviour
 				//trace(2)
 				//Trial.HORIZONTAL_ADJUST=0;
 				staticStage.align="";
+				
+				if(Capabilities.screenResolutionX>=1024 && Capabilities.screenResolutionY >=768){
+					staticStage.scaleMode=StageScaleMode.NO_SCALE;
+				}
+					
 				staticStage.displayState=StageDisplayState.FULL_SCREEN_INTERACTIVE;
 				
 			}
