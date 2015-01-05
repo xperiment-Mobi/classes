@@ -15,8 +15,8 @@ package com.xperiment.behaviour {
 		override public function setVariables(list:XMLList):void {
 			setVar("string","fontColour","black");
 			setVar("int","fontSize",50);
-			setVar("int","xPos","70","the pixel at which within the original image the label is placed");
-			setVar("int","yPos","70","the pixel at which within the original image the label is placed");
+			setVar("number","xPos","70","the pixel at which within the original image the label is placed");
+			setVar("number","yPos","70","the pixel at which within the original image the label is placed");
 			setVar("boolean","lockAfterFinish",true);
 			super.setVariables(list);
 		}
@@ -148,8 +148,6 @@ class Rank extends Sprite{
 		txt.autoSize = TextFieldAutoSize.LEFT;
 		txt.defaultTextFormat = new TextFormat(null,size,col);
 		txt.text=num.toString();
-		txt.x=xPos;
-		txt.y=xPos;
 		this.addChild(txt);
 		
 	}
@@ -168,8 +166,12 @@ class StimRank {
 	}
 	
 	public function add():void{
+
+		rank.x=Rank.xPos;
+		rank.y=Rank.yPos;
 		
 		stim.addChild(rank);
+		
 	}
 	
 	public function kill():void

@@ -364,7 +364,7 @@ package com.xperiment.behaviour
 				}
 				
 				str=obj.getVar("if");
-				
+
 				if(str!=""){
 					if(cmbndObjLogActs!="")cmbndObjLogActs+=",";
 					cmbndObjLogActs+=str;

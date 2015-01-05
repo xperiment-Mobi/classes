@@ -10,15 +10,14 @@
 	import com.xperiment.uberSprite;
 	import com.xperiment.behaviour.BehaviourBoss;
 	import com.xperiment.stimuli.primitives.boxLabel;
-
 	
 	import flash.display.DisplayObject;
 	import flash.display.Shape;
 	import flash.display.Sprite;
+	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
-	import flash.display.Stage;
 	
 	public class object_baseClass extends uberSprite implements iBehav, IStimulus{
 		
@@ -447,44 +446,28 @@
 			var attNamesList:XMLList=textinfo.@*;
 			var tag:String
 			var tagValue:String;
-			
+
 			for (var i:int=0; i<attNamesList.length(); i++) {
 				tag=attNamesList[i].name();// id and color
-				
-/*				for each(var key:String in ['y','x']){
-					if(tag==key && attNamesList[i].toString() == "" && OnScreenElements[tag]!=undefined) attNamesList[i] = OnScreenElements[tag];
-				}*/
-						
+
 				tagValue=__correction(attNamesList[i].toString());
-				
-				
-				//trace(tag,tagValue,3434334);
-				//tagValue=suckOutPutInStoredVariables(tagValue);
-				
-				//var a:Array=tag.split('.');
-				//trace(tag,OnScreenElements[tag],22);
+
 				var message:String = new String;
 				
 				if (OnScreenElements[tag]!=undefined) {
-					//if(this.toString()=="[object addShapeMatrix]"){
-					//trace(OnScreenElements[a[0]],a,tagValue,typeof OnScreenElements[a[0]]);
-					//}
-					//					/trace(tag,tagValue,34343,OnScreenElements[tag]);
+
 					OnScreenElements[tag]=returnType(typeof OnScreenElements[tag],tagValue,tag);
-					
 				}
 				else {
 					OnScreenElements[tag]=tagValue as String;
-					//trace(tag,tagValue,222);
+
 					message=". BTW, there are no default settings for this variable so the variable may be redundant.";
 				}
-				
-				//if(logger)logger.log("["+attNamesList[i].name()+"="+tagValue+"]" +message);
+
 			}
-			
-			//remove text2 text3 etc and append onto text [attribute agnostic]
+
 			__appendMultiples(OnScreenElements);
-			//
+
 		}
 		
 		public function __correction(str:String):String
@@ -514,11 +497,13 @@
 		
 		public function __appendMultiples(arr:Array):void
 		{
+			
 			//concatenates up properties
 			//below, searches for attribs appended with 0 or 1.  These are special you see as they imply an 'appendUp' attribute.
 			var appendUpAttribs:Array;
 			
 			for (var prop:String in arr) {	
+				
 				if("1"== prop.charAt(prop.length-1) && isNaN(Number(prop.charAt(prop.length-2) ))){
 					appendUpAttribs ||= [];
 					if(appendUpAttribs.indexOf(prop)==-1){
@@ -527,9 +512,11 @@
 				}
 			}
 			
+
+			
 			if(appendUpAttribs){
 				var i:int;
-				var appendUpProp:String = '';
+				var appendUpProp:String;
 				var appendUpVal:String = '';
 				for each (prop in appendUpAttribs){
 					
@@ -547,7 +534,7 @@
 					}		
 					arr[prop]=appendUpVal;
 				}
-			}
+			}			
 		}
 		
 		
@@ -691,8 +678,7 @@
 		}
 		
 		public function setPosPercent():void {
-			var tempPos:Number;
-			
+
 			switch (getVar("horizontal")) {
 				case ("left") :
 					horizontalCorrection=0;
@@ -729,11 +715,12 @@
 				pic.y=containerY+(Number((getVar("y")as String).replace("%",""))*.01*returnStageHeight)-(pic.myHeight*verticalCorrection);	
 			}
 			else {
-				pic.y=containerY+Number(getVar("y"))-(pic.myHeight);
+				pic.y=containerY+Number(getVar("y"))-(pic.myHeight*verticalCorrection);
 			}
 			
 			pic.myX=pic.x;
 			pic.myY=pic.y;
+			//trace(444,pic.myX,pic.myY)
 		}
 		
 		
@@ -751,29 +738,7 @@
 		}
 		
 		
-		
-		
-		public function getFromStoredVariables(str:String):String {
-			var returnStr:String=new String  ;
-			
-			for (var i:uint=0; i<storedVariables.length; i++) {
-				
-				if (storedVariables[i][0]==str) {
-					returnStr=storedVariables[i][1];
-				}
-			}
-			for (i=0; i<temporaryStoredVariables.length; i++) {
-				if (temporaryStoredVariables[i][0]==str) {
-					returnStr=temporaryStoredVariables[i][1];
-				}
-			}
-			
-			if (returnStr=="") {
-				//logger.log("no variable stored of this name: "+str);
-			}
-			
-			return returnStr;
-		}
+
 		
 		override public function kill():void {
 			
@@ -866,46 +831,7 @@
 			//System.gc();
 		}
 		
-		
-		public function getClassName(o:Object):String{
-			var fullClassName:String = getQualifiedClassName(o);
-			return fullClassName.slice(fullClassName.lastIndexOf("::") + 1);
-		}
-		
-		
-		public function behav_getVar(variable:String):*{
-			//trace("getVar:"+variable);
-			if(this.hasOwnProperty(variable) && String(typeof((this[variable]))).toLocaleLowerCase()=="function") { //else if a special function set up/
-				//trace(55,variable,this.hasOwnProperty(variable) , String(typeof((this[variable]))).toLocaleLowerCase()=="function");
-				return this[variable]();
-			}
-				
-			else if(this.OnScreenElements.hasOwnProperty(variable)){ //if saved as a property	
-				return this.OnScreenElements[variable];
-			}
-			else {
-				//if(logger)logger.log("!You asked me (peg="+peg+") for a variable's ("+variable+") value, but that variable does not exist");
-				return "";
-			}
-		}
-		
-		public function behav_setVar(variable:String,what:*):void{
-			//trace(111,variable,what,peg,this);
-			if(what!=null){
-				if(this.hasOwnProperty(variable) && String(typeof((this[variable]))).toLocaleLowerCase()=="function") { //else if a special function set up
-					this[variable](what);
-				}
-					
-				else if(this.OnScreenElements.indexOf(variable)!=-1){ //if saved as a property	
-					this.OnScreenElements[variable]=what;
-					//trace("in here",variable,what,peg);
-				}
-				else{
-					//if (logger)logger.log("!You asked me (peg="+peg+") to set a variable's ("+variable+") value (to this: "+what+"), but that variable does not exist");	
-				}
-			}
-			
-		}
+
 		
 		
 		public function giveBehavBoss(manageBehaviours:BehaviourBoss):void{
@@ -932,11 +858,6 @@
 			return "";
 		}
 		
-		
-		
-		/*		public function hack():void
-		{
-		trace("hack",peg);
-		}*/
+
 	}
 }

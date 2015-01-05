@@ -1,6 +1,8 @@
 ﻿package com.xperiment{
-	
-	import flash.display.DisplayObject;
+
+import com.xperiment.stimuli.object_baseClass;
+
+import flash.display.DisplayObject;
 	import flash.geom.Matrix;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
@@ -24,6 +26,70 @@
 			}
 			
 			return av/arr.length;
+		}
+
+		public static  function posSetterGetter(stim:object_baseClass, prop:String):Function
+		{
+			var funct:Function = function(what:String=null, to:String=null):String{
+
+				var modifier:Number=0;
+				if(what){
+					to=to.split("'").join("");
+
+					if(prop=='x'){
+						switch(stim.getVar("horizontal").toLowerCase()){
+							case 'middle':
+								modifier=stim.myWidth*.5;
+								break;
+							case 'right':
+								modifier=stim.myWidth;
+								break;
+						}
+					}
+					else if(prop=='y'){
+						switch(stim.getVar("vertical").toLowerCase()){
+							case 'middle':
+								modifier=stim.myHeight*.5;
+								break;
+							case 'bottom':
+								modifier=stim.myHeight;
+								break;
+						}
+					}
+					stim.OnScreenElements[prop]=String(Number(to)+modifier);
+					stim.setPosPercent();
+
+				}
+
+
+
+				modifier=0;
+				if(prop=='x'){
+					switch(stim.getVar("horizontal").toLowerCase()){
+						case 'left':
+							modifier=-stim.myWidth*.5;
+							break;
+						case 'right':
+							modifier=stim.myWidth*.5;
+							break;
+					}
+				}
+				else if(prop=='y'){
+					switch(stim.getVar("vertical").toLowerCase()){
+						case 'top':
+							modifier=-stim.myHeight*.5;
+							break;
+						case 'bottom':
+							modifier=stim.myHeight*.5;
+							break;
+					}
+				}
+
+
+				if(prop=="x")return String(stim.myX+modifier);
+				return String(stim.myY+modifier);
+			}
+			return funct;
 		}
 		
 

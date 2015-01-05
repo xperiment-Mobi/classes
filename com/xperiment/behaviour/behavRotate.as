@@ -1,7 +1,5 @@
 package com.xperiment.behaviour{
 
-	import com.greensock.plugins.TransformAroundPointPlugin;
-	import com.greensock.plugins.TweenPlugin;
 	import com.xperiment.codeRecycleFunctions;
 	import com.xperiment.uberSprite;
 	import com.xperiment.stimuli.object_baseClass;
@@ -20,20 +18,17 @@ package com.xperiment.behaviour{
 		private var angle:String;
 		private var point:Point;
 		private var distance:Number;
-		private var gradientColors:Object;
 		private var gradientMatrix:Matrix;
 		private var rotateWithMouseDown:RotateWithMouseDown
 		private var duration:Number;
 		private var bounds:Dictionary;
+		private var shiftPos:Object; 
 		
 		override public function kill():void{
-
-			
 			removeListeners();
 			if(rotateWithMouseDown)rotateWithMouseDown.kill();
 			
 			bounds = null;
-			
 						
 			super.kill();
 		}
@@ -51,7 +46,6 @@ package com.xperiment.behaviour{
 		}
 		
 		override public function returnsDataQuery():Boolean{
-			
 			if(getVar("hideResults")!='true'){
 				return true;
 			}
@@ -59,9 +53,7 @@ package com.xperiment.behaviour{
 		}
 		
 		override public function storedData():Array {
-			
 			objectData.push({event:peg,data:angle});
-			
 			return objectData;
 		}
 		
@@ -80,7 +72,6 @@ package com.xperiment.behaviour{
 				}; 	
 			}
 			
-			
 			if(uniqueProps.hasOwnProperty(prop)) return uniqueProps[prop]
 			return super.myUniqueProps(prop);
 		}
@@ -94,26 +85,31 @@ package com.xperiment.behaviour{
 			setVar("boolean","rotateWithMouseDown",false);	
 			setVar("boolean","rotateWithMouseDownPreRotate",false,"will move your stimulus to orientate with the mouse before even the mouse moves");
 			setVar("boolean","randomStartRotation",false);
+			//setVar("string","shiftPos","","","will move stimulus vertically X% first 180 degrees from vertical Y%, then -X% second 180 degrees. Eg 50%,50%");
 			super.setVariables(list);
 			
 			duration 	= 	getVar("duration");
 			angle		=	getVar("rotation");
 			
-			TweenPlugin.activate([TransformAroundPointPlugin]);
+			//sortShift(getVar("shiftPos"));
 			
 			if(getVar("rotateWithMouseDown")){
-
 				rotateWithMouseDown = new RotateWithMouseDown(theStage,applyAngle,getVar("rotateWithMouseDownPreRotate"),getVar("randomStartRotation"));
 			}
 		}	
 		
 		
-
-		private function randRotation(obj:uberSprite):void{
-			rotateAroundCenter(obj,Math.random()*360);
+	/*	private function sortShift(shiftStr:String):void
+		{
+		
+			var arr:Array = shiftStr.split(",");
+			if(arr.length==2){
+				arr[0] = arr[0].split("%").join("");
+				arr[1] = arr[1].split("%").join("");
+				shiftPos = {x:Number(arr[0]), y: Number(arr[1])};
+			}
 		}
-		
-		
+		*/
 		override public function nextStep(id:String=""):void{
 
 			makeBounds();
@@ -159,7 +155,7 @@ package com.xperiment.behaviour{
 			action();
 		}	
 			
-		
+
 		private function applyAngle(us:uberSprite, angle:String):void{	
 			
 			if(us.parent){
@@ -177,7 +173,7 @@ package com.xperiment.behaviour{
 				
 				//us.graphics.beginFill(0xff4400);
 				//us.graphics.drawRect(0,0,us.width,us.height);
-				
+
 			}
 			(us as object_baseClass).OnScreenElements.rotate=angle;
 		}
@@ -192,9 +188,7 @@ package com.xperiment.behaviour{
 			// get the bounded rectangle of objects
 			var bound:Rectangle = bounds[us.peg];
 
-			// calculate mid points 
-			var midx1:Number =  bound.x + bound.width/2;
-			var midy1:Number =  bound.y + bound.height/2;
+		
 			
 			// assign the rotation
 			
@@ -204,8 +198,8 @@ package com.xperiment.behaviour{
 			
 			
 			// assign the previous mid point as (x,y)
-			us.x = midx1;
-			us.y = midy1; 
+			//us.x = midx1;
+			//us.y = midy1; 
 			
 			// get the new bounded rectangle of objects 
 			bound = us.getRect(this); 
@@ -214,7 +208,10 @@ package com.xperiment.behaviour{
 			var midx2:Number = bound.x + bound.width * .5;
 			var midy2:Number = bound.y + bound.height * .5; 
 			
-			// calculate differnece between the current mid and (x,y) and subtract
+			
+
+
+			// calculate difference between the current mid and (x,y) and subtract
 			//it to position the object in the previous bound.
 			var diff:Number 
 			
@@ -223,7 +220,7 @@ package com.xperiment.behaviour{
 			diff = midy2 - us.myY - us.myHeight*.5;
 			us.y -= diff;
 		
-
+			
 		}
 	}
 }
@@ -258,6 +255,7 @@ internal class RotateWithMouseDown {
 		this.randStart = randStart;
 
 	}
+	
 	
 	public function start(behavObjects:Array, rotateAtStart:String):void{
 		
@@ -308,8 +306,11 @@ internal class RotateWithMouseDown {
 			
 			curAngle=360*ms/time;
 			
+			
+			var newAng:Number = origAngles[behavObjects[i]]+curAngle*or;
+			
 			for(i=0;i<behavObjects.length;i++){
-				doRotateF(behavObjects[i],origAngles[behavObjects[i]]+curAngle*or);
+				doRotateF(behavObjects[i],newAng);
 			}
 			
 		});

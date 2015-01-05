@@ -146,7 +146,7 @@
 			if(queue){
 				if(queue.progress==1)return 1;
 
-						
+					trace(	localDirectory+nam );
 				var loader:LoaderItem = queue.getLoader(localDirectory+nam);
 
 				if(loader==null){

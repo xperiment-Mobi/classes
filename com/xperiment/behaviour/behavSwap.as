@@ -56,6 +56,7 @@
 				case "random":
 				default:
 					newPos = codeRecycleFunctions.arrayShuffle(origPos,keepInMemory);
+
 					break;
 	
 			}
@@ -72,7 +73,9 @@
 				
 				behavObjects[i].myX = newPos[i].origX;
 				behavObjects[i].myY = newPos[i].origY;
-			
+
+				trace(behavObjects[i].myX , behavObjects[i].myY,7)
+
 				positions[behavObjects[i].peg]="x:"+behavObjects[i].myX+" y:"+behavObjects[i].myY;
 			}
 			

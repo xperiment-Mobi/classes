@@ -18,7 +18,8 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavHide;
 	import com.xperiment.behaviour.behavLanguage;
 	import com.xperiment.behaviour.behavNextTrial;
-	import com.xperiment.behaviour.behavOpacity;
+import com.xperiment.behaviour.behavOcclude;
+import com.xperiment.behaviour.behavOpacity;
 	import com.xperiment.behaviour.behavOr;
 	import com.xperiment.behaviour.behavOutline;
 	import com.xperiment.behaviour.behavPause;
@@ -220,7 +221,7 @@ import com.xperiment.behaviour.behavRT;
 			stimuli['and'] = behavAnd;
 			stimuli['or'] = behavOr;
 			stimuli['pixeleater'] = behavPixelEater;
-				
+			stimuli['occlude'] = behavOcclude;
 	
 
 		}
