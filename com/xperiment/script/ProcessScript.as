@@ -15,8 +15,8 @@ package com.xperiment.script{
 
 		
 		public function process(parentScript:XML):void {
-			script=parentScript;
 
+			script=parentScript;
 
 			//is the experiment 'mock' value set to true?
 			if(script..*.(hasOwnProperty("@mock") && @mock=='true').length()==1){
@@ -25,13 +25,13 @@ package com.xperiment.script{
 		
 			if(['multi','betweensjs'].indexOf(script.name().toString().toLowerCase())!=-1){
 				var betweenSJs:BetweenSJs = new BetweenSJs;
+
 				this.addChild(betweenSJs);
 				betweenSJs.addEventListener(Event.COMPLETE, function(e:Event):void{
 					e.stopPropagation();
 					betweenSJs.removeEventListener(Event.COMPLETE, arguments.callee);
 					removeChild(betweenSJs);
 					script=betweenSJs.script;
-					//trace(111,script)
 					betweenSJs=null;
 					next();
 				},false,0,false);
@@ -53,6 +53,7 @@ package com.xperiment.script{
 		
 		private function next():void{
 			script=sortOutTemplates(script);
+			
 			script=sortOutETCs(script);
 			script=sortOutSpecialVariables(script);
 			script=StimModify.sortOutOverExptMods(script);
@@ -115,71 +116,7 @@ package com.xperiment.script{
 			}
 		}		
 
-		/*private function sortOutOverExptStuff(script:XML):XML
-		{
-			var joinedAttribs:Array = [];
-			var temp:String;
-			var arr:Array;
-			var i:int;
-			var accordingTo:String;
-			var max:int=0;
-			for each (var stimulus:XML in script..@SHUFFLE) {
-				// SHUFFLE="text-LINK-name,;" where after the comma is what to seperated the shuffled  attributes according to.
-				
-				temp=stimulus.toString();
-				
-				
-				if(temp.indexOf(",")!=-1){
-					accordingTo=",";
-					temp=temp.split(",")[0];
-				}
-				else if(temp.indexOf(";")!=-1){
-					accordingTo=";";
-					temp=temp.split(";")[0];
-				}
-
-				else accordingTo="---";
-				
-				
-				arr=temp.split("-LINK-");
-				
-				for(i=0;i<arr.length;i++){
-					temp=stimulus.parent().@[arr[i]];
-					if(temp.length!=0){
-						joinedAttribs[arr[i]]=[]
-						joinedAttribs[arr[i]]=temp.split(accordingTo);
-						if(joinedAttribs[arr[i]].length>max){			
-							max=joinedAttribs[arr[i]].length;
-						}
-					}
-				}
-				
-				//joinedAttribs.text="111---222---333"
-				//joinedAttribs.name="a---b---c"
-				
-				var shuffleArr:Array=[];
-				for(i=0;i<max;i++)shuffleArr.push(i);
-				shuffleArr=codeRecycleFunctions.arrayShuffle(shuffleArr);
-				
-				for (var attrib:String in joinedAttribs){
-					//trace(attrib,"  ",joinedAttribs[attrib]);
-					arr=joinedAttribs[attrib]
-					//trace(222,arr);
-					joinedAttribs[attrib]=[];
-					for (i=0;i<shuffleArr.length;i++){
-						joinedAttribs[attrib][i]=arr[shuffleArr[i]%arr.length];
-					}
-					stimulus.parent().@[attrib]=(joinedAttribs[attrib] as Array).join(accordingTo);
-					
-				
-				}
-				delete stimulus.parent().@SHUFFLE;
-			}
-		
-			//trace(script);
-			return script;
-		}*/
-		
+	
 		private function sortOutETCs(script:XML):XML
 		{
 			var startingVal:String;
@@ -218,7 +155,7 @@ package com.xperiment.script{
 				
 				for each (var stimulus:XML in script..*.(attributes().toString().indexOf(splitter)!=-1)) {
 					//need this loop within a loop as whole objects above are retrieved.  Need to isolate the attribute in the second loop.
-					
+				
 					for each (var attrib:XML in stimulus.attributes()) {
 						startingVal=attrib.toString();
 						var isPercent:String = "";
@@ -230,23 +167,20 @@ package com.xperiment.script{
 							}
 							
 							startingVal=startingVal.replace(splitter,"");
-							
+
 							if(splitter=="---etc---")etcArr=startingVal.split("---");
 							else etcArr=startingVal.split(splitter.substr(0,1));
 							
 							num=uint(stimulus.@howMany.toString());
 							
 					
-							if(splitter==";;;etc;;;")num=stimulus.parent().parent().@numberTrials.toString();
+							if(splitter==";;;etc;;;")num=stimulus.parent().@trials.toString();
 							if(stimulus.@etcHowMany.toString()!="")num=stimulus.@etcHowMany.toString();
 							//trace(num);
 							//if all the elements in the Array are numbers, only then perform 'etc' operation
+
 							
-							//////////////////////////////////MONSTROUS FILTER FUNCTION
-							//
-							
-							//////////////MAKE THIS COMPATIBLE WITH TEXT TOO
-							if(etcArr.filter(function(element:*, index:int, arr:Array):Boolean{
+							function myFilter(element:*, index:int, arr:Array):Boolean{
 								if((tempnum=arr[index].indexOf(":"))!=-1){
 									prefix=arr[index].split(":")[0]+":";
 									arr[index]=arr[index].split(":")[1];
@@ -255,7 +189,12 @@ package com.xperiment.script{
 								//trace(type,!isNaN(arr[index]),etcArr.length,num);
 								return !isNaN(arr[index]);								
 								
-							}).length==etcArr.length && num>1){
+							}
+							//trace(111,etcArr.filter(myFilter),etcArr.length , num)
+							
+							//////////////MAKE THIS COMPATIBLE WITH TEXT TOO
+							if(etcArr.filter(myFilter).length==etcArr.length && num>=1){
+
 								var pos1:Number=etcArr.shift();
 								//etcArr.unshift(0);
 								difArr=new Array;
@@ -264,31 +203,37 @@ package com.xperiment.script{
 									difArr.push(etcArr[i]-etcArr[i-1]+pos1);
 					
 								}
-								
-								
-								
+
 								if(difArr[0]==0)difArr.shift();
 								
 								etcArr.unshift(pos1);
-								for(i=etcArr.length-1;i<num;i++){
+								for(i=etcArr.length;i<num;i++){
 									etcArr.push(etcArr[etcArr.length-1]+difArr[(i+1)%difArr.length]-pos1);
 								}
-								
-								
-								
+	
 								etcSuffix=(stimulus.@etcSuffix.toString());
 								etcPrefix=(stimulus.@etcPrefix.toString());
 								
-								//trace(111,etcArr)
-								if(splitter=="---etc---") stimulus.@[attrib.name()]=prefix+etcArr.join(etcSuffix+isPercent+"---"               +etcPrefix);
-								else					  stimulus.@[attrib.name()]=prefix+etcArr.join(etcSuffix+isPercent+splitter.substr(0,1)+etcPrefix);
+								if( isPercent=="%"){
+									
+									etcArr[etcArr.length-1]+="%";
+								}
+				
+								if(num==1){
+									stimulus.@[attrib.name()]=prefix+etcArr[0]+isPercent;
+								}
 								
-								/////////////////
+								else if(splitter=="---etc---"){
+									
+									stimulus.@[attrib.name()]=prefix+etcArr.join(etcSuffix+isPercent+"---"               +etcPrefix);
+								}
+								else{			
+									
+									stimulus.@[attrib.name()]=prefix+etcArr.join(etcSuffix+isPercent+splitter.substr(0,1)+etcPrefix);
+								}
+		
 							
 							}
-							//
-							//////////////////////////////////
-							//////////////////////////////////
 						}			
 					}
 				}

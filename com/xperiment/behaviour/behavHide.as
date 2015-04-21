@@ -1,8 +1,4 @@
 ﻿package com.xperiment.behaviour{
-	import com.xperiment.uberSprite;
-	
-	import flash.display.Sprite;
-	import flash.events.MouseEvent;
 	
 	public class behavHide extends behav_baseClass {
 

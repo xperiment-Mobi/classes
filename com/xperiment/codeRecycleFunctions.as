@@ -3,11 +3,13 @@
 import com.xperiment.stimuli.object_baseClass;
 
 import flash.display.DisplayObject;
-	import flash.geom.Matrix;
-	import flash.geom.Rectangle;
-	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
-	import flash.utils.getDefinitionByName;
+import flash.events.TimerEvent;
+import flash.geom.Matrix;
+import flash.geom.Rectangle;
+import flash.utils.ByteArray;
+import flash.utils.Dictionary;
+import flash.utils.Timer;
+import flash.utils.getDefinitionByName;
 	
 	public class codeRecycleFunctions {
 		
@@ -27,13 +29,71 @@ import flash.display.DisplayObject;
 			
 			return av/arr.length;
 		}
+		
+		//unit test me
+		/*var arr:Array = [];
+		arr.a=1;
+		arr.a1=2;
+		arr.a2=3;
+		__appendMultiples(arr);
+		trace(arr.a=='123', arr.a1==undefined, arr.a2==undefined)
+		arr.b=1;
+		arr.b2=2;
+		trace(arr.b=='1', arr.b2=='2')*/
+		
+		static public function appendMultiples(arr:Array):void
+		{
+			
+			//concatenates up properties
+			//below, searches for attribs appended with 0 or 1.  These are special you see as they imply an 'appendUp' attribute.
+			var appendUpAttribs:Array;
+			
+			for (var prop:String in arr) {	
+				
+				if("1"== prop.charAt(prop.length-1) && isNaN(Number(prop.charAt(prop.length-2) ))){
+					appendUpAttribs ||= [];
+					if(appendUpAttribs.indexOf(prop)==-1){
+						appendUpAttribs.push(prop.substr(0,prop.length-1));
+					}
+				}
+			}
+			
+			
+			
+			if(appendUpAttribs){
+				var i:int;
+				var appendUpProp:String;
+				var appendUpVal:String = '';
+				for each (prop in appendUpAttribs){
+					
+					i=0;
+					while(true){
+						appendUpProp=prop;
+						
+						if(i!=0)appendUpProp+=i.toString();
+						if(arr.hasOwnProperty(appendUpProp)==true){
+							appendUpVal+=arr[appendUpProp];
+							//if(i!=0) arr[appendUpProp] = null;
+							i++;
+						}
+						else break;	
+					}		
+					arr[prop]=appendUpVal;
+				}
+			}			
+		}
 
 		public static  function posSetterGetter(stim:object_baseClass, prop:String):Function
 		{
 			var funct:Function = function(what:String=null, to:String=null):String{
 
 				var modifier:Number=0;
+				
+				var propUpperCase:Boolean = ['Y','X'].indexOf(prop)==-1;
+				prop = prop.toLowerCase();
+			
 				if(what){
+
 					to=to.split("'").join("");
 
 					if(prop=='x'){
@@ -61,8 +121,6 @@ import flash.display.DisplayObject;
 
 				}
 
-
-
 				modifier=0;
 				if(prop=='x'){
 					switch(stim.getVar("horizontal").toLowerCase()){
@@ -83,6 +141,10 @@ import flash.display.DisplayObject;
 							modifier=stim.myHeight*.5;
 							break;
 					}
+				}
+				
+				if(propUpperCase){
+					return stim.getVar(prop);
 				}
 
 
@@ -568,6 +630,61 @@ import flash.display.DisplayObject;
 			if(htmlText.substr(0,9)!="<![CDATA[" || htmlText.substr(htmlText.length-3,3)!="]]>")throw new Error();
 			
 			return htmlText.substr(9,htmlText.length-12);
+		}
+		
+		public static function delay(callF:Function, time:int):void{
+			var t:Timer = new Timer(time,1);
+			t .addEventListener(TimerEvent.TIMER,function(e:TimerEvent):void{
+				//////////////////////////////////////
+				e.target.removeEventListener(e.type,arguments.callee);
+				//////////////////////////////////////Anonymous Function
+				t.stop();
+				callF();
+				//////////////////////////////////////
+				//////////////////////////////////////
+			});
+			t.start();
+		}
+		
+		public static function arrayStr2Str(str:String):Array{
+			var arr = str.split("[");
+			var index:int=0;
+			
+			for(var i:int=arr.length-1;i>=0;i--){
+				str = arr[i];
+				if(str.length==0) arr.splice(i,1);
+				else{
+					index = arr[i].indexOf("]");
+					if(index!=-1){
+						arr[i] = str.substr(0,index);
+					}
+				}
+			}
+			return arr;
+			
+		}
+		
+		public static function strToObj(jitterStr:String):Object
+		{
+			var obj:Object = {};
+			var propVals:Array = jitterStr.split(",");
+			var arr:Array;
+			
+			function sortType(str:String):*{
+				if(str.toLowerCase()=='false') return false;
+				if(str.toLowerCase()=='true') return true;
+				if(!isNaN(Number(str))) return Number(str);
+				return str;
+			}
+			
+			for each(var propVal:String in propVals){
+				arr = propVal.split(":");
+				if(arr.length==2){
+					obj[arr[0]]=sortType(arr[1]);
+				}
+			}
+
+			return obj;
 		}
 	}
 }

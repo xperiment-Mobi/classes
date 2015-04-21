@@ -52,7 +52,7 @@ package com.xperiment.ExptWideSpecs
 			__ExptWideSpecs.computer = new Array;
 			__ExptWideSpecs.computer.autoClose = true ;
 			__ExptWideSpecs.computer.autoCloseTimer = 2000 as int;
-
+			__ExptWideSpecs.computer.overSJs = "" ;
 			__ExptWideSpecs.computer.saveLocallySubFolder = "results" ;
 			__ExptWideSpecs.computer.dataFolderLocation = "My Documents" ;
 			__ExptWideSpecs.computer.ip = "" ;
@@ -97,6 +97,8 @@ package com.xperiment.ExptWideSpecs
 				+ "EMAILADDRESS. For your convenience, this text has been copied to your clipboard.\n\n Are you a <b>Mechanical Turker</b>? Make sure to close this window when done to retrieve your code. Thanks.";
 			
 			__ExptWideSpecs.results.saveSuccessMessage="<font size= '20'><b>Successfully saved your data. You can close this message-window. Thankyou.<font size= '15'>";
+			__ExptWideSpecs.results.saveClose="close when ready";
+			
 			__ExptWideSpecs.results.save='cloud,trickletocloud' ;
 			__ExptWideSpecs.results.saveDataURL = "" ; //eg http://www.opensourcesci.com/experiments/Liverpool/perception1 
 			//__ExptWideSpecs.results.saveToServerFile = true ;
@@ -107,6 +109,7 @@ package com.xperiment.ExptWideSpecs
 			
 			__ExptWideSpecs.defaults = new Array;
 			__ExptWideSpecs.defaults.ITI=500 as uint;
+			__ExptWideSpecs.defaults.EndOfTrialDelay=50 as uint;
 			__ExptWideSpecs.defaults.restart='false' ;	
 			__ExptWideSpecs.defaults.quitOnFinish='false' ;
 			
@@ -128,6 +131,21 @@ package com.xperiment.ExptWideSpecs
 			__ExptWideSpecs.core = [];
 			__ExptWideSpecs.core.isDebugger = Capabilities.isDebugger ;
 			__ExptWideSpecs.core.touchScreenType = Capabilities.touchscreenType;  //"finger","none","stylus"			
+		}
+		
+		public static function changeSaveMessage(str:String):void
+		{
+			__ExptWideSpecs.results.saveSuccessMessage = "<font size= '20'><b>"+str+"<font size= '15'>";
+		}
+		
+		public static function changeErreMessage(str:String):void
+		{
+			__ExptWideSpecs.results.saveSuccessMessage = "<font size= '20'><b>"+str+ "EMAILADDRESS<font size= '15'>";
+		}
+		
+		public static function changeCloseMessage(str:String):void
+		{
+			__ExptWideSpecs.results.saveClose = str;
 		}
 		
 		public static function setApp(appID:String):void
@@ -222,7 +240,7 @@ package com.xperiment.ExptWideSpecs
 			var setup:XMLList=myScript.SETUP;
 			
 			if(setup.hasOwnProperty('style')){
-				sortStyle(setup.style);
+				Style.sortStyle(setup.style);
 				delete setup.style;
 			}
 			
@@ -242,20 +260,7 @@ package com.xperiment.ExptWideSpecs
 		}
 	
 		
-		private static function sortStyle(styles:XMLList):void
-		{
-
-			for each(var style:XML in styles.attributes()){
-				Style
-				if(Style[style.name().toString()] != undefined){
-					Style[style.name().toString()]=style.toString();
-				}
-				else if (style.name()=="__BIND"){}
-				else throw new Error("you tried to set an unknown global style '"+style.name().toString()+"'.");
-				
-			}
-			
-		}
+		
 		
 		public static function getSJuuid():String{
 			if(!SJuuid){
@@ -414,7 +419,6 @@ package com.xperiment.ExptWideSpecs
 		
 		public static function URLVariables(parameters:Object,url:String=null):void
 		{
-
 			for(var param:String in parameters){
 				//exclude params in the array
 				if(['studyUrl','scriptName','exptId','scriptUrl'].indexOf(param)!=-1){
@@ -427,7 +431,7 @@ package com.xperiment.ExptWideSpecs
 					__ExptWideSpecs.computer[param]=parameters[param];
 				}
 			}
-			xptCloudSpecific(parameters,parameters.url);
+			if(parameters)xptCloudSpecific(parameters,parameters.url);
 		}
 
 		
@@ -454,6 +458,7 @@ package com.xperiment.ExptWideSpecs
 			if(parameters.hasOwnProperty('one_key'))		__ExptWideSpecs.computer.one_key = parameters.one_key;
 			if(parameters.hasOwnProperty('xpt_course_id'))	__ExptWideSpecs.computer.xpt_course_id = parameters.xpt_course_id;
 			if(parameters.hasOwnProperty('xpt_user_id'))	__ExptWideSpecs.computer.xpt_user_id = parameters.xpt_user_id;
+			if(parameters.hasOwnProperty('overSJs'))		__ExptWideSpecs.computer.overSJs = parameters.overSJs;
 			
 			//__ExptWideSpecs.urlParams['ip']='173.3.74.171'
 			__updateStimuliFolderWithCloudUrl(parameters);

@@ -179,6 +179,7 @@ package com.xperiment.script
 		public static function forceCond(orig_script:XML, cond:String):XML
 		{
 
+			trace(4545)
 			if(orig_script.hasOwnProperty('MULTISETUP')){
 				orig_script.MULTISETUP[0].@forceCondition=cond;
 				

@@ -32,6 +32,13 @@
 			super.setVariables(list);
 			if(list.@hideResults.toString()!="true")OnScreenElements.hideResults=false;
 			
+			
+			
+			if(list.hasOwnProperty("@actionsAfterHowManyFilled")==false){
+				var count:int = getVar("dragPegs").split(",").length; 
+				OnScreenElements.actionsAfterHowManyFilled = count;
+			}
+			
 			draggedObjsList = getVar("dragPegs").split(",");
 		}
 
@@ -63,7 +70,7 @@
 				if(DropZonesOccupied[i]!=null){
 					
 					tempData = new Array();
-					tempData.data=DropZones[i].peg;
+					tempData.data=DropZonesOccupied[i].peg;
 					//trace(111,DropZonesOccupied[i].peg,DropZones[i].peg)
 					
 					if(dragableObjects.length>1)tempData.event=DropZones[i].peg;
@@ -75,9 +82,6 @@
 			
 		}
 		
-
-
-
 		private function whichImageHideAfter():void{
 			var selected:Array=new Array();
 				for (var i:uint=0; i<behavObjects.length;i++){
@@ -135,6 +139,7 @@
 				obj.addEventListener(MouseEvent.MOUSE_DOWN, startBlockMove,false,0,true);
 			}
 			else {
+
 				DropZones.push(obj);
 				DropZonesOccupied.push(null);
 			}
@@ -193,6 +198,7 @@
 					}
 					
 					DropZonesOccupied[i]=movingBlock;
+					trace(111,movingBlock.peg,DropZones[i].peg)
 					
 					if (getVar("lockInPlaceOncePlaced")) {
 						movingBlock.removeEventListener(MouseEvent.MOUSE_DOWN, startBlockMove);

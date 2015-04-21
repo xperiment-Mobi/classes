@@ -12,7 +12,7 @@ package com.xperiment.script.ProcessScriptHelpers
 			var variable:String;
 			var value:String;
 			
-			StimModify.process(variables);
+			StimModify.process(variables,null);
 			
 			for each(var variableXML:XML in variables.attributes()){
 				variable= variableXML.name();

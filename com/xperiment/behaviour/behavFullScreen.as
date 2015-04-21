@@ -104,8 +104,8 @@ package com.xperiment.behaviour
 				//trace(2)
 				//Trial.HORIZONTAL_ADJUST=0;
 				staticStage.align="";
-				
-				if(Capabilities.screenResolutionX>=1024 && Capabilities.screenResolutionY >=768){
+				var browserMenuHeight:int = 68;
+				if(Capabilities.screenResolutionX>=1024 && Capabilities.screenResolutionY - browserMenuHeight>=768 ){
 					staticStage.scaleMode=StageScaleMode.NO_SCALE;
 				}
 					

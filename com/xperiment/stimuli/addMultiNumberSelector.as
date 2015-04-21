@@ -41,7 +41,7 @@
 			setVar("int","triangleDistFromBox",0);
 			setVar("uint","triangleSeperation",5);
 			setVar("number","textBoxColour",Style.BUTTON_FACE);
-			setVar("string","startingVal","22");
+			setVar("string","startingVal","00");
 
 			
 			super.setVariables(list);
@@ -55,7 +55,7 @@
 			if(uniqueProps.hasOwnProperty('result')==false){
 				uniqueProps.result= function():String{
 									//AW Note that text is NOT set if what and to and null. 
-									
+									//trace(222,selected(),selected().length);
 									return "'"+selected()+"'";
 								};
 			}
@@ -91,14 +91,15 @@
 		private function selected():String{
 			var str:String = '';
 			var temp:String;
+			var arr:Array = [];
+			
 			for(var i:uint=0;i<selectors.length;i++){
-				temp = selectors[i].giveData();
 				
-				if(str!="" || temp!="0") 	str+=String(selectors[i].giveData());
+				if(selectors[i].changed || arr.length>0)	arr.push(String(	selectors[i].giveData())	);
 				
 			}
-			if(str=='')str="0";
-			return str;
+			//if(str=='')str="0";
+			return arr.join("");
 		}
 	
 

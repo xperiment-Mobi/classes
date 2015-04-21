@@ -26,7 +26,7 @@ package com.xperiment.trial.helpers
 				for each(var stim:object_baseClass in required){
 					
 					result = stim.myUniqueProps("result")();
-					//trace(stim,result);
+					
 					var requiredStr:String = "'"+stim.getVar("required")+"'";
 
 					if(requiredStr.length>1 && requiredStr.substr(1,2)=="=="){	

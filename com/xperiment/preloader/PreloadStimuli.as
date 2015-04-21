@@ -8,6 +8,7 @@
 	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
 	import com.xperiment.events.GlobalFunctionsEvent;
 	import com.xperiment.messages.XperimentMessage;
+	
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.errors.IOError;
@@ -146,7 +147,7 @@
 			if(queue){
 				if(queue.progress==1)return 1;
 
-					trace(	localDirectory+nam );
+				//trace(	localDirectory+nam );
 				var loader:LoaderItem = queue.getLoader(localDirectory+nam);
 
 				if(loader==null){
@@ -177,29 +178,71 @@
 		{
 			var arr:Array;
 			var fileExtension:String='';
+			var filenamePrefix:String='';
+			var filenameSuffix:String='';
 			var filename:String;
+			var mult:Array;
 
-			for each(var attrib:XML in script..@*){
-				if(attrib.name().toString().toLowerCase()=="filename"){	
-					
-					fileExtension = attrib.parent().@extension;
-
-					if(fileExtension!='' && fileExtension.indexOf(".")==-1)	fileExtension = "."+fileExtension;	
-					
-					arr=attrib.toString().replace(/---/g,",").replace(/&/g,",").replace(/;/g,",").split(",");
-					
-					for (var i:int=0;i<arr.length;i++){
-						filename=arr[i];
-						if(fileExtension!='' && filename.indexOf(".")==-1)	filename=filename+fileExtension;
-						
-						if(files.indexOf(localDirectory+filename)==-1)		files.push(localDirectory+filename);
-
-					}
+			
+			function checkMult(stim:XML, lev:int, myMult:Array):Array{
+				
+				if(stim.hasOwnProperty("@filename" + lev.toString())){
+					myMult ||= [];
+					myMult.push(stim.@['filename'+lev.toString()]);
+					return checkMult(stim,lev+1, myMult);
 				}
+				else if(lev==0)	return checkMult(stim,lev+1,myMult);
+				return myMult;
 			}
 			
-			if(files.length>0){
+			function sortMult(files:Array, myMult:Array):Array{
+			
+				if(myMult && myMult.length>0) {
+					var filesCopy:Array = files.concat();
+					files = [];
+
+					var currentMultLevel:Array = removeJargon(	myMult.shift()	);
+					for(var i_m:int = 0;i_m<currentMultLevel.length;i_m++){
+						
+						for(var i_f:int=0;i_f<filesCopy.length;i_f++){
+							files[files.length] = filesCopy[i_f] + currentMultLevel[i_m];
+						}						
+					}
+					return sortMult(files, myMult);
+				}
+
+				return files;
+			}
+			
+			function removeJargon(myStr:String):Array{
+				return myStr.replace(/---/g,",").replace(/&/g,",").replace(/;/g,",").split(",");
+			}
+			
+			
+			var trialList:XMLList = script..TRIAL.*.(hasOwnProperty("@filename"));
+			for each(var attrib:XML in trialList){
+			
+				mult = checkMult(attrib, 0, mult);					
+				fileExtension 	= attrib.@extension;
+				filenamePrefix	= attrib.@filenamePrefix;
+				filenameSuffix	= attrib.@filenameSuffix;
 				
+				if(fileExtension!='' && fileExtension.indexOf(".")==-1)	fileExtension = "."+fileExtension;	
+				
+				arr=removeJargon(attrib.@filename.toString());
+						
+				arr = sortMult(arr, mult);
+
+				for (var i:int=0;i<arr.length;i++){
+					filename=arr[i];
+					
+					if(fileExtension!='' && filename.indexOf(".")==-1)	filename=filenamePrefix+filename+filenameSuffix+fileExtension;
+					if(files.indexOf(localDirectory+filename)==-1)		files.push(localDirectory+filename);
+				}
+			}
+
+			if(files.length>0){
+				//trace(files)
 				if(ExptWideSpecs.IS("one_key")!=""){// && ExptWideSpecs.IS("isDebugger")==false) {
 					encrypted = true;
 					Encrypted.getKey(encryptCallBack);
@@ -224,13 +267,16 @@
 		}
 		
 		public function give(filename:String,appendLocalDir:Boolean=true):ByteArray{			
-			
+
+			if(filename=="" || filename==undefined) throw  new Error("asked for a stimulus. Not given a filename");
+
 			if(appendLocalDir==true)filename=localDirectory+filename;
 			var loadedItem:LoaderItem = queue.getLoader(filename);
 		
 			if(loadedItem==null)return null;
+
 			var ba:ByteArray= (loadedItem as DataLoader).content as ByteArray;
-			ba.position=0;
+			if(ba) ba.position=0;
 			return ba
 		}
 		
@@ -311,11 +357,13 @@
 					//else if(encrypted)			queue.append( new loader(remoteDirectory+fil, {noCache:forceReload}) );
 
 
-					else                        queue.append(new loader(fil, {
+					else{
+						queue.append(new loader(fil, {
 						format: 'binary',
 						noCache: forceReload
 						//alternateURL: fil
 					}));
+					}
 				}
 			}
 			return loadingOccurs;

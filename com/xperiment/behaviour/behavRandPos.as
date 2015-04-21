@@ -6,6 +6,8 @@ package com.xperiment.behaviour
 	public class behavRandPos extends behav_baseClass
 	{
 		protected var box:uberSprite;
+		private var noBoxYetArr:Array;
+		private var placed:Vector.<uberSprite> = new Vector.<uberSprite>;
 		
 		override public function setVariables(list:XMLList):void {
 			setVar("string","box","");
@@ -16,11 +18,14 @@ package com.xperiment.behaviour
 		override public function givenObjects(obj:uberSprite):void{
 			if(obj.peg == getVar("box")){
 				box = obj;
+				boxGiven();
+				trace(113)
 			}
 			
 			else super.givenObjects(obj);
 		}
 		
+	
 
 		override public function nextStep(id:String=""):void
 		{
@@ -36,7 +41,7 @@ package com.xperiment.behaviour
 			
 			codeRecycleFunctions.arrayShuffle(behavObjects);
 			
-			var placed:Vector.<uberSprite> = new Vector.<uberSprite>;
+			
 			
 			for each(var stim:uberSprite in behavObjects){
 				
@@ -45,14 +50,19 @@ package com.xperiment.behaviour
 				}
 				placed.push(stim);
 			}
-			
-			placed=null;
-			
+		
 			return true;
 		}		
 		
 		private function randPos(stim:uberSprite,placed:Vector.<uberSprite>):Boolean{
-
+			
+			if(!box){
+				noBoxYetArr ||=[];
+				noBoxYetArr.push(stim)
+				return false;
+			}
+		
+			
 			stim.x = box.x + (box.width - stim.width) * Math.random();
 			stim.y = box.y + (box.height - stim.height) * Math.random();
 			
@@ -65,7 +75,29 @@ package com.xperiment.behaviour
 			return true;
 		}
 		
+		private function boxGiven():void
+		{			
+			if(noBoxYetArr){
+				trace(11)
+				var index:int;
+				for(var i:int=0;i<noBoxYetArr.length;i++){
+					index = placed.indexOf(noBoxYetArr[i]);
+					if(index!=-1){
+						placed.splice(index,1);
+					}
+				}
+				
+				while(noBoxYetArr.length>0){
+					randPos(noBoxYetArr[0],placed);
+				}	
+			}
+			
+		}	
+		
 		override public function kill():void{
+			
+			placed=null;
+			noBoxYetArr=null;
 			box=null;
 			super.kill();
 		}

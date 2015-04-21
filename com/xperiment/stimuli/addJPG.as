@@ -31,9 +31,8 @@ package  com.xperiment.stimuli{
 			setVar("boolean","exactSize",true);
 			setVar("boolean","smoothing",false);
 			setVar("boolean","showOutlineBeforeLoaded",false);
-			super.setVariables(list);
-			setVariables_loadingSpecific();
 			
+			super.setVariables(list);			
 		}
 		
 		override public function RunMe():uberSprite {
@@ -42,7 +41,9 @@ package  com.xperiment.stimuli{
 				
 				var ba:ByteArray=givePreloaded();
 				
+				
 				if (ba != null) {
+					
 					setUniversalVariables();
 					doAfterLoaded(ba);
 				}
@@ -65,7 +66,7 @@ package  com.xperiment.stimuli{
 			pic.addChild(content);
 			pic.name=peg;
 
-			trace(111,getVar("width").toLowerCase(),getVar("height").toLowerCase());
+			//trace(111,getVar("width").toLowerCase(),getVar("height").toLowerCase());
 			//if(getVar("exactSize")==false){
 
 				if(getVar("width").toLowerCase()=="aspectratio" || getVar("height").toLowerCase()=="aspectratio"){
@@ -91,23 +92,30 @@ package  com.xperiment.stimuli{
 				setPosPercent();
 			}	
 
+			
 			pic.dispatchEvent(new Event(Event.COMPLETE));
 		}
 		
 		
 
 		override public function doAfterLoaded(content:ByteArray):void{
-		setUniversalVariables();
-
-		var loader:Loader = new Loader;
-		loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(e:Event):void{
-			e.currentTarget.removeEventListener(e.type,arguments.callee);
-			var bmp:Bitmap = loader.content as Bitmap;
-			__addPic(bmp);
-			if (getVar("showBox"))showBox();
-		});
-		loader.loadBytes(ByteArray(content));
-	}		
+			if(content){
+				setUniversalVariables();
+		
+				var loader:Loader = new Loader;
+				loader.contentLoaderInfo.addEventListener(Event.COMPLETE,function(e:Event):void{
+					e.currentTarget.removeEventListener(e.type,arguments.callee);
+					var bmp:Bitmap = loader.content as Bitmap;
+					__addPic(bmp);
+					if (getVar("showBox"))showBox();
+				});
+				
+				loader.loadBytes(ByteArray(content));
+			}
+			else{
+				setupPreloader();
+			}
+		}		
 
 	}
 }

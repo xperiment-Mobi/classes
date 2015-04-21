@@ -85,6 +85,7 @@
 			
 			results.final = true;
 			results.ip = ExptWideSpecs.IS("ip");
+			results.overSJs = ExptWideSpecs.IS("overSJs");		if(results.overSJs == '') results.overSJs = null;
 			
 			if(ExptWideSpecs.uuidSavedToCloud){
 				soapService.send(results,SoapService.UUID_ALREADY_SAVED_TO_CLOUD,success);

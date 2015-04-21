@@ -2,6 +2,7 @@ package com.xperiment.stimuli
 {
 	import com.xperiment.behaviour.behavAnd;
 	import com.xperiment.behaviour.behavAssignRank;
+	import com.xperiment.behaviour.behavAudioPassword;
 	import com.xperiment.behaviour.behavBackgroundImage;
 	import com.xperiment.behaviour.behavBevel;
 	import com.xperiment.behaviour.behavBlur;
@@ -10,6 +11,7 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavCursor;
 	import com.xperiment.behaviour.behavDrag;
 	import com.xperiment.behaviour.behavDragToShiftingArea;
+	import com.xperiment.behaviour.behavEat;
 	import com.xperiment.behaviour.behavFinishStudy;
 	import com.xperiment.behaviour.behavFullScreen;
 	import com.xperiment.behaviour.behavGotoCond;
@@ -18,13 +20,13 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavHide;
 	import com.xperiment.behaviour.behavLanguage;
 	import com.xperiment.behaviour.behavNextTrial;
-import com.xperiment.behaviour.behavOcclude;
-import com.xperiment.behaviour.behavOpacity;
+	import com.xperiment.behaviour.behavOcclude;
+	import com.xperiment.behaviour.behavOpacity;
 	import com.xperiment.behaviour.behavOr;
 	import com.xperiment.behaviour.behavOutline;
 	import com.xperiment.behaviour.behavPause;
-import com.xperiment.behaviour.behavPixelEater;
-import com.xperiment.behaviour.behavRT;
+	import com.xperiment.behaviour.behavPixelEater;
+	import com.xperiment.behaviour.behavRT;
 	import com.xperiment.behaviour.behavRand;
 	import com.xperiment.behaviour.behavRandPos;
 	import com.xperiment.behaviour.behavRestart;
@@ -44,6 +46,7 @@ import com.xperiment.behaviour.behavRT;
 	import com.xperiment.behaviour.behavTransformDragCopy;
 	import com.xperiment.behaviour.behavTrial;
 	import com.xperiment.behaviour.behavTrialOrder;
+	import com.xperiment.behaviour.behav_baseClass;
 	import com.xperiment.stimuli.addBarGraph;
 	import com.xperiment.stimuli.addButton;
 	import com.xperiment.stimuli.addComboBox;
@@ -51,7 +54,6 @@ import com.xperiment.behaviour.behavRT;
 	import com.xperiment.stimuli.addJPG;
 	import com.xperiment.stimuli.addKeyPress;
 	import com.xperiment.stimuli.addLoadingIndicator;
-	import com.xperiment.stimuli.addMechanicalTurk;
 	import com.xperiment.stimuli.addMultiNumberSelector;
 	import com.xperiment.stimuli.addMultipleChoice;
 	import com.xperiment.stimuli.addNumberSelector;
@@ -96,7 +98,7 @@ import com.xperiment.behaviour.behavRT;
 			
 			stimName=processStimName(stimName);
 			if(stimuli.hasOwnProperty(stimName)) return new stimuli[stimName];
-
+			if(stimName=='') return new behav_baseClass;
 			
 			return null;
 		}
@@ -128,13 +130,14 @@ import com.xperiment.behaviour.behavRT;
 			stimuli['combobox'] = addComboBox;
 			//stimuli['dropdownlist'] = addDropDownList;
 			stimuli['inputtextbox'] = addInputTextBox;
+			stimuli['inputtext'] = stimuli['inputtextbox'];
 			stimuli['input'] = stimuli['inputtextbox'];
 			stimuli['inputbox'] = stimuli['inputtextbox'];
 			stimuli['jpg'] = addJPG;
 			//stimuli['jpgs'] = addJPGs;
 			stimuli['keypress'] = addKeyPress;
 			stimuli['loadingindicator'] = addLoadingIndicator;
-			stimuli['mechanicalturk'] = addMechanicalTurk;
+			//stimuli['mechanicalturk'] = addMechanicalTurk;
 			stimuli['multinumberselector'] = addMultiNumberSelector;
 			stimuli['multiplechoice'] = addMultipleChoice;
 			stimuli['numberselector'] = addNumberSelector;
@@ -144,9 +147,11 @@ import com.xperiment.behaviour.behavRT;
 			stimuli['shapematrix'] = addShapeMatrix;
 			stimuli['linescale'] = addSlider;
 			stimuli['slider'] = stimuli['linescale'];
+			stimuli['scale'] = stimuli['linescale'];
 			stimuli['vas'] = stimuli['linescale'];
 			stimuli['lms'] = addLMS;
 			stimuli['lams'] = addLAMS;
+			stimuli['lhs'] = addLHS;
 			stimuli['screen'] = addScreen;
 			stimuli['sound'] = addSound;
 			stimuli['tone'] = addTone;
@@ -159,7 +164,6 @@ import com.xperiment.behaviour.behavRT;
 			stimuli['framerate'] = addFrameRate;
 			stimuli['clickablejpg'] = addClickableJPG;
 			//stimuli['checkvolume'] = addCheckVolume;
-			stimuli['audiocaptcha'] = addAudioCaptcha;
 			//stimuli['p2p'] = addP2P;
 			stimuli['time'] = addTime;
 			stimuli['vibrate'] = addVibrateFake;
@@ -168,7 +172,8 @@ import com.xperiment.behaviour.behavRT;
 			stimuli['live'] = addLive;
 			stimuli['trialcounter'] = addTrialCounter;
 			stimuli['motionpatch'] = addMotionPath	;
-			
+			stimuli['fixationcross'] = addFixationCross	;
+			stimuli['draw'] = addDraw;
 			//stimuli['draw'] = behavDraw;
 			//stimuli['colourselector'] = behavColourSelector;
 			//stimuli['colorselector'] = stimuli['colourselector']
@@ -222,7 +227,8 @@ import com.xperiment.behaviour.behavRT;
 			stimuli['or'] = behavOr;
 			stimuli['pixeleater'] = behavPixelEater;
 			stimuli['occlude'] = behavOcclude;
-	
+			stimuli['audiopassword'] = behavAudioPassword;
+			stimuli['eat'] = behavEat;
 
 		}
 	}

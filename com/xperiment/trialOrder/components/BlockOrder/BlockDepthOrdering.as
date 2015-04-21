@@ -107,34 +107,37 @@ package com.xperiment.trialOrder.components.BlockOrder
 		{			
 
 			atDepth_trialBlocks.sortOn('currentDepthID', Array.NUMERIC);
-		
-				switch(sortType.toUpperCase()){
-					case TrialBlock.FIXED:
-						break;
-					
-					case TrialBlock.RANDOM:
-						codeRecycleFunctions.arrayShuffle(atDepth_trialBlocks);
-						break;
-					
-					case TrialBlock.REVERSE:
-						atDepth_trialBlocks=atDepth_trialBlocks.reverse();
-						break;			
-					
-					default: 
-						
-						if(sortType.indexOf(TrialBlock.PREDETERMINED)!=-1){
-							var newOrder:Array = sortType.split(TrialBlock.PREDETERMINED)[1].split(",");
-							
-							if(newOrder.length!=atDepth_trialBlocks.length)throw new Error("Error! You have specified a predetermined trial Ordering that does not have the same number of trials as the trials you wish to order: "+newOrder.join(","));
-							for(var i:int = 0;i<atDepth_trialBlocks.length;i++){
-								(atDepth_trialBlocks[i] as TrialBlock).preterminedSortOnOrder = int(newOrder[i]);
-							}
-							atDepth_trialBlocks.sortOn("preterminedSortOnOrder",Array.NUMERIC);
-						}
-						else throw new Error();
-				}
+	
+			switch(sortType.toUpperCase()){
+				case TrialBlock.FIXED:
+					break;
 				
-			
+				case TrialBlock.RANDOM:
+					codeRecycleFunctions.arrayShuffle(atDepth_trialBlocks);
+					break;
+				
+				case TrialBlock.REVERSE:
+					atDepth_trialBlocks=atDepth_trialBlocks.reverse();
+					break;			
+				
+				default: 
+					
+					if(sortType.indexOf(TrialBlock.PREDETERMINED)!=-1){
+						var newOrder:Array = sortType.split(TrialBlock.PREDETERMINED)[1].split(",");
+						
+						if(newOrder.length!=atDepth_trialBlocks.length)throw new Error("Error! You have specified a predetermined trial Ordering that does not have the same number of trials as the trials you wish to order: "+newOrder.join(","));
+						for(var i:int = 0;i<atDepth_trialBlocks.length;i++){
+							(atDepth_trialBlocks[i] as TrialBlock).preterminedSortOnOrder = int(newOrder[i]);
+						}
+						atDepth_trialBlocks.sortOn("preterminedSortOnOrder",Array.NUMERIC);
+					}
+					else throw new Error();
+			}
+/*				trace("-----");
+			for(var i:int=0;i<atDepth_trialBlocks.length;i++){
+				trace(atDepth_trialBlocks[i].trials)
+				
+			}*/
 			
 			__flatten(atDepth_trialBlocks);
 		}		

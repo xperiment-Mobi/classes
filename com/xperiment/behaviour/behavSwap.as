@@ -9,6 +9,8 @@
 		private var newPos:Array = [];
 		private var positions:Object = {};
 		
+		private var sticky:Object;
+		
 		override public function setVariables(list:XMLList):void {
 			setVar("string","doOnce",'false');
 			setVar("string","how","random, flipped");
@@ -36,6 +38,8 @@
 
 		private function flip():void{
 
+			
+			
 			var tempPoint:Object;
 			
 			for(var i:int=0;i<behavObjects.length;i++){
@@ -44,7 +48,9 @@
 			}
 			
 			var keepInMemory:String = '';
-			if(getVar("doOnce").toLowerCase()=='true')keepInMemory=peg;
+			var check:String = getVar("doOnce").toLowerCase();
+			if(check!='')keepInMemory=check;
+			
 
 			switch(getVar("how").toLowerCase()){
 				case "flipped":
@@ -60,9 +66,7 @@
 					break;
 	
 			}
-			
-			
-			
+
 			for(i=0;i<behavObjects.length;i++){
 
 				behavObjects[i].x=newPos[i].x-behavObjects[i].myWidth*.5-behavObjects[i].myX+behavObjects[i].x;
@@ -74,7 +78,7 @@
 				behavObjects[i].myX = newPos[i].origX;
 				behavObjects[i].myY = newPos[i].origY;
 
-				trace(behavObjects[i].myX , behavObjects[i].myY,7)
+				//trace(behavObjects[i].myX , behavObjects[i].myY,7)
 
 				positions[behavObjects[i].peg]="x:"+behavObjects[i].myX+" y:"+behavObjects[i].myY;
 			}

@@ -1,8 +1,6 @@
 ﻿package com.xperiment.behaviour{
 
-
 	import com.xperiment.uberSprite;
-	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
 	import com.xperiment.events.StimulusEvent;
 	import com.xperiment.stimuli.object_baseClass;
 	
@@ -15,28 +13,18 @@
 		private var notYetRun:Boolean=true;
 		private var storeRandomDecision:Boolean;
 
-		protected function nextStepONCE():void{
+		private var randomlyRun:Boolean = true;
 
-			if(notYetRun || OnScreenElements.doMany){
-				notYetRun=false;
+		
+	
+	
+		override public function stimEvent(what:String):void{	
+	
+			if(randomlyRun==false) return;
 			
-				//first check there are no doBefore behaviours
-				//trace("here",this.behav ,this.behav.hasOwnProperty("doBefore"));
-				var occured:Boolean=doRun();
-				
-				//trace(occured,this);
-			
-				//AW JAN FIX
-				pic.dispatchEvent(new StimulusEvent(StimulusEvent.DO_BEFORE));
-				//trace("dispatched doBefore");
-				//if(occured && this.actions && this.actions.hasOwnProperty("doBefore"))if(behavObjects)manageBehaviours.doBehaviourFirst(this);
-
-				if(occured){
-					ran=true;
-					nextStep();
-				}
-				//if(occured && pic && !theStage.contains(pic))manageBehaviours.actionHappened(this,"onShow"); //some behaviours have nothing added to stage.  This fakes that :-)
-			}
+			if(what == StimulusEvent.DO_AFTER_APPEARED && randomlyRun)	nextStep();
+					
+			super.stimEvent(what);
 		}
 		
 		
@@ -44,10 +32,10 @@
 		}
 		
 		
-		private function doRun():Boolean
+		private function computeRandomRun():void
 		{
-			//trace(134, peg, this,getVar("random"),2);
-			if(getVar("random")=='') return true
+
+			if(getVar("random")=='') randomlyRun = true
 			else{
 					
 				var rand:String = getVar("random");
@@ -55,21 +43,18 @@
 				rand = rand.split("%").join('');
 
 				var prob:int=Math.random()*100;
-				//if(logger)logger.log("behaviour "+getVar("peg") +" was given a "+rand+"% chance of occurring.  The generated random % was "+prob+"%.");
 
 				if (prob>=Number(rand)){
 					if(storeRandomDecision)storeDecision(true);
-					return true;
+					randomlyRun = true;
 					
 				}
 				else{
 					if(storeRandomDecision)storeDecision(false);
-					return false;
+					randomlyRun = false;
 				}
 
 			}
-			throw new Error();
-			return false;
 		}
 		
 		private function storeDecision(occured:Boolean):void
@@ -86,7 +71,7 @@
 		}
 		
 		public function behaviourFinished():void{
-			this.dispatchEvent(new StimulusEvent(StimulusEvent.ON_FINISH));
+			stimEvent(StimulusEvent.ON_FINISH);
 		}
 
 		override public function setVariables(list:XMLList):void {
@@ -134,19 +119,11 @@
 
 		override public function RunMe():uberSprite {
 			
-			if(pic!=null && peg!=null && ((getVar("peg") as String)==""  || (getVar("timeStart") as Number)!=-1)){
-
-				pic.addEventListener(Event.ADDED_TO_STAGE, behavAddedToStageNO_peg);
-				//trace('behav listener added:',peg);
-			}
+			computeRandomRun();
+			
 			return pic;//note empty as nothing on stage :)
 		}
 		
-		protected function behavAddedToStageNO_peg(e:Event):void
-		{	
-			if(pic.hasEventListener(Event.ADDED_TO_STAGE))pic.removeEventListener(Event.ADDED_TO_STAGE, behavAddedToStageNO_peg);
-			nextStepONCE();
-		}
 		
 		/*public function errorMessage():void{
 			if(logger)logger.log("Problem: afraid you have not given your behaviour a peg (e.g. peg='myBehav1') so there is no way it can identify objects to which to apply itself too.");
@@ -169,7 +146,6 @@
 					behavObjects[i]=null;
 				}
 			}		
-			if(pic.hasEventListener(Event.ADDED_TO_STAGE))pic.removeEventListener(Event.ADDED_TO_STAGE, behavAddedToStageNO_peg);
 			
 			driveEvent=null;
 			behavObjects=null;

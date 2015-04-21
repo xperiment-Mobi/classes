@@ -2,7 +2,6 @@
 	
 	import com.dgrigg.minimalcomps.graphics.Shape;
 	import com.xperiment.uberSprite;
-	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
 	import com.xperiment.events.StimulusEvent;
 	import com.xperiment.preloader.IPreloadStimuli;
 	
@@ -36,6 +35,7 @@
 		private var vidObj:*;
 		private var shown:Boolean = false;
 		private var lengthOfVideo:int;
+		private var started:Boolean = false;
 		
 		override public function kill():void{
 			videoLoadedTimer.stop();
@@ -75,8 +75,8 @@
 		override public function myUniqueActions(action:String):Function{
 			if(!uniqueActions){
 				uniqueActions = new Dictionary;
+				//uniqueActions.restart=function():void{restart();}; 
 				uniqueActions.play=function():void{beginVideo();} ; 		
-				uniqueActions.start=uniqueActions.play	
 				uniqueActions.togglePause=function():void{MyNS.togglePause();
 				}; 
 			}
@@ -84,6 +84,14 @@
 			
 			return null;
 		}
+		
+/*		private function restart():void{
+		//NB BROKEN
+			if(started){
+				MyNS.seek(0)
+				MyNS.play(null)
+			}
+		}*/
 		
 		override public function returnsDataQuery():Boolean {
 			return getVar("save");
@@ -94,6 +102,12 @@
 			return objectData;
 		}
 
+		
+		override public function appearedOnScreen(e:Event):void{
+			started=true;
+			super.appearedOnScreen(e);
+		}
+		
 		
 		//public function Trial_imageCollage(genAttrib:XMLList, specAttrib:XMLList) {
 		override public function setVariables(list:XMLList):void {
@@ -106,10 +120,12 @@
 			setVar("string","onFinish","hide","can equal hide,restart,repeatx2,repeatx3 etc");  
 			setVar("string","save",'',"set to whatever value you want (will be saved in the results) if you want to save the filename if the video is run");
 			setVar("boolean","exactSize",true);
+			setVar("string","filenamePrefix","","");
+			setVar("string","filenameSuffix","","");
 			super.setVariables(list);
-			if(getVar("filename")=="" && OnScreenElements.filename!="")OnScreenElements.filename=list.@filename;
+			setVariables_loadingSpecific();
 			
-			
+			if(getVar("filename").indexOf(".mp4")!=-1)throw new Error("cannot use mp4!! https://forums.adobe.com/message/4008099");
 			
 			videoLoadedTimer.addEventListener(TimerEvent.TIMER,timerF);
 			
@@ -145,6 +161,19 @@
 			//trace(peg,2)
 		}
 		
+		public function setVariables_loadingSpecific():void{
+			
+			setVar("boolean","destroyStimulusAfter",false);
+			
+			if(OnScreenElements.hasOwnProperty("extension")==false)	setVar("string","extension","",'do not use a dot here, e.g. jpg, nb this is optional');
+			
+			if(getVar("extension")!="" && getVar("filename").indexOf(".")==-1)	{
+				
+				OnScreenElements.filename=OnScreenElements.filename+"."+getVar("extension");
+			}
+			OnScreenElements.filename = OnScreenElements.filenamePrefix + OnScreenElements.filename + OnScreenElements.filenameSuffix;
+		}
+		
 		protected function timerF(event:TimerEvent):void
 		{	
 			if(delayRun)beginVideo();
@@ -161,6 +190,8 @@
 		}
 		
 		override public function RunMe():uberSprite {
+			pic.graphics.beginFill(0x000000,0);
+			pic.graphics.drawRect(0,0,1,1);
 			if(myVideo)commence();
 			return (pic);
 		}
@@ -174,7 +205,7 @@
 		}		
 		
 		private function beginVideo():void{
-			MyNS.resume();
+			if(started==true)	MyNS.resume();
 		}
 		
 		private function Listeners(ON:Boolean):void{
@@ -222,6 +253,8 @@
 			
 			if(preloader)vidObj = preloader.give(getVar("filename"))
 
+	
+				
 			//annoying race condition in the stimulus loader
 			if(vidObj == null){			
 				var raceCondTimer:Timer = new Timer(50);
@@ -256,9 +289,6 @@
 				if(getVar("exactSize") || getVar("height")=="0"){pic.height = myVideo.height = infoObject.height;setVar("string","height",pic.height);}
 				duration = int(infoObject.duration) * 1000 +1;
 				setUniversalVariables();
-				
-				//pic.visible=true;
-				//MyNS.resume();
 			}
 			
 			MyNS.client = videoClient;
@@ -267,19 +297,14 @@
 			
 			MyNS.play(null)
 			
-			
+	
 			if(isLoaded == true){
 				MyNS.appendBytes(vidObj);
 				videoLoadedTimer.start();
 				MyNS.pause();
 			}
 			
-			
-			
-			
-			localStorageLocation= ExptWideSpecs.IS("stimuliFolder");
-			if (localStorageLocation!="" && localStorageLocation!="assets/")localStorageLocation=localStorageLocation+"/";
-			
+		
 			
 			if(getVar("volume") as Number!=1) volume(getVar("volume") as Number);
 			

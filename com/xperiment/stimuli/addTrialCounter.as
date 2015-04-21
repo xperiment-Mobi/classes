@@ -32,6 +32,7 @@ package  com.xperiment.stimuli{
 			setVar("number","trials",1);
 			setVar("int","fontSize",15);
 			setVar("int","fontColour",Style.LABEL_TEXT);
+			setVar("string","label","trial");
 			super.setVariables(list);
 			
 			
@@ -123,7 +124,7 @@ package  com.xperiment.stimuli{
 		
 		
 		private function getText():String{
-			return "trial " + trials_i.toString() + '/' + getVar("trials").toString();
+			return getVar("label") + " " + trials_i.toString() + '/' + getVar("trials").toString();
 		}
 		
 

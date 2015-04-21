@@ -29,7 +29,7 @@ package com.xperiment.script
 		public function sortOutMultiExperiment(parentScript:XML,urlParam_Cond:String):void{
 			this.script=parentScript;
 			
-			//trace(11111,parentScript)
+			//trace(11111,urlParam_Cond)
 			if(script.hasOwnProperty('MULTISETUP')){
 			
 				var multisetup:XMLList=script.MULTISETUP;
@@ -38,7 +38,7 @@ package com.xperiment.script
 				if(forceCondition=="" && multisetup.hasOwnProperty('@forceCondition')){	
 					forceCondition=script.MULTISETUP.@forceCondition;
 				}
-				
+				//trace(23,script.MULTISETUP.toXMLString())
 				delete script.MULTISETUP;
 				if(forceCondition!='')forceConditionF(forceCondition);
 					

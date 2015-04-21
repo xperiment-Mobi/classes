@@ -75,10 +75,10 @@
 		
 		override public function propWrapper(stim:object_baseClass, prop:String):Function
 		{
-			//trace("33333:",prop,stim.OnScreenElements.hasOwnProperty(prop),["timeStart","timeEnd","duration"].indexOf(prop)!=-1);			
+			//trace("33333:",stim.peg,prop,stim.OnScreenElements.hasOwnProperty(prop),["timeStart","timeEnd","duration"].indexOf(prop)!=-1);			
 			
 			if(["timeStart","timeEnd","duration"].indexOf(prop)!=-1)return timeSetter(stim,prop);
-			else if(["x","y"].indexOf(prop)!=-1)return codeRecycleFunctions.posSetterGetter(stim,prop);
+			else if(["x","y"].indexOf(prop.toLowerCase())!=-1)return codeRecycleFunctions.posSetterGetter(stim,prop);
 
 			else if(stim.OnScreenElements.hasOwnProperty(prop)){
 				
@@ -138,7 +138,10 @@
 			var functional:Function = setF(prop);
 			
 			return function(what:* =null,to:* =null):Number{
+				
 				if(what){
+					
+					trace(111,stim.peg,to)
 					if(!isNaN(Number(to)))functional(what,to);
 					else throw new Error("Problem in changing timing value '"+what+"': you must provide a number, not this: '"+to+"'"); 
 				}

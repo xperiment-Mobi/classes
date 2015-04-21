@@ -24,6 +24,7 @@
 	import com.xperiment.trial.Scroll.IScroll;
 	import com.xperiment.trial.Scroll.ScrollTrial;
 	import com.xperiment.trial.helpers.EndOfTrial_feedbackBoss;
+	import com.xperiment.trial.helpers.OverStimMutations;
 	import com.xperiment.trial.helpers.RequiredStimuli;
 	
 	import flash.display.Sprite;
@@ -53,7 +54,7 @@
 		public var ITItimer:Timer;
 		public var fixedLocation:String="999";
 		public var OnScreenElements:Vector.<object_baseClass>;	
-		public var trialData:XML=new XML  ;
+		private var trialData:XML=new XML  ;
 		public var CurrentDisplay:OnScreenBoss;
 		public var Order:uint=new uint  ;
 		public var trialLabel:String=new String;
@@ -107,6 +108,8 @@
 		public function elementSetup(stim:XML,inContainer:container):void {
 
 			var stimParams:XML;
+			
+			OverStimMutations.DO(stim);
 	
 			for each(var kinder:XML in stim.*) {
 				//HERE, add if objectType="con"
@@ -116,6 +119,7 @@
 				// prob will need newfunction(a,b,c,etc,)
 				var isSuitableToCheckForChildren:Boolean=false;
 				var lowerLevelContainer:container;
+
 				var kinderNam:String=kinder.name().toString();
 
 
@@ -132,15 +136,17 @@
 						break;
 					default:
 						iterations=1;	
-						var howMany:String =howMany=codeRecycleFunctions.multipleTrialCorrection(kinder.attribute("howMany"),";",trialBlockPositionStart);
+						var howMany:String = howMany=codeRecycleFunctions.multipleTrialCorrection(kinder.attribute("howMany"),";",trialBlockPositionStart);
 						if (howMany.length!=0) iterations=int(howMany);
 						
 						stimParams=kinder.copy();
 						
-						StimModify.process(XMLList(stimParams));
 						
-
+						
+						
+						StimModify.process(XMLList(stimParams),null);
 						for (var i:int=1;i<=iterations;i++){
+							//StimModify.process(XMLList(stimParams),{iteration:i,trial:trialBlockPositionStart});
 							composeObject(stimParams, i-1,inContainer,false,stimParams.text());
 						}
 
@@ -194,7 +200,7 @@
 			var makeStimulus:Boolean=["0","false"].indexOf(present)==-1;
 			
 			var freshStim:IStimulus = stimulusFactory(kinder.name());
-		
+
 			if(makeStimulus && freshStim){
 				{
 					(freshStim as object_baseClass).xmlVal=xmlVal;
@@ -318,9 +324,10 @@
 			
 			for each(var stimulus:object_baseClass in OnScreenElements) {
 
+
 				if(stimulus.getVar("hideResults")!='true' && stimulus.ran==true ){ 
 
-	
+
 					if(stimulus.returnsDataQuery()){
 						
 						stimulusData=stimulus.storedData();					
@@ -340,7 +347,7 @@
 								}
 								eventName=temp_EventName;
 								
-								//trace(eventName,2)
+
 								if(!isNaN(Number(eventName.charAt(0))))eventName="_"+eventName;
 								trialData[eventName]=cleanData(result.data);
 							}
@@ -392,7 +399,13 @@
 			OnScreenElements=new Vector.<object_baseClass>;
 		}
 		
-
+		private function checkAndSet(what:String,trial:XML, IS:Boolean=true):void{	
+			if(trial.hasOwnProperty('@'+what) && trial.@[what].toString()==IS.toString()){
+				this[what]=IS;
+			}
+		}
+		
+		
 		public function prepare(Ord:uint,trial:XML,params:Object=null):void {
 	
 			pic ||= new Sprite;
@@ -406,19 +419,14 @@
 				}
 			}
 			
-			function checkAndSet(what:String,IS:Boolean=true,variable:String=''):void{
-				if(variable=='')variable=what;
-				if(trial.hasOwnProperty('@'+what) && trial.@[what].toString()==IS.toString())	this[variable]=true;
-			}
+			
 			
 			if(trial.hasOwnProperty('@ITI'))				ITI=int(trial.@ITI);
 			if(trial.hasOwnProperty('@background'))			sortbackground(trial.@background);
 			if(trial.hasOwnProperty('@trialOrderScheme'))	trialOrderScheme=trial.@trialOrderScheme;
 			
-			checkAndSet('hideResults');
-			checkAndSet('reportOrder');
-			checkAndSet('trickleToCloud');
-			checkAndSet('run',true);
+			checkAndSet('hideResults',trial);
+			checkAndSet('run',trial,true);
 			
 			var con_b:container;
 			instantiateVars();
@@ -540,19 +548,27 @@
 		}
 		
 		protected function gotoTrial(e:GotoTrialEvent):void
-		{			
-			if(pic)pic.removeEventListener(GotoTrialEvent.RUNNER_PING_FROM_TRIAL,gotoTrial);
-			if(!endOfTrialStim) nextEvent(e.action);
-			else{
-				CurrentDisplay.stopAll();
-				EndOfTrial_feedbackBoss.DO(endOfTrialStim,CurrentDisplay, 
-						function():void{
-							nextEvent(e.action); //small wrapper as need to pass e.action
-						}
-				);
+		{				
+			if(pic)pic.removeEventListener(GotoTrialEvent.RUNNER_PING_FROM_TRIAL,gotoTrial);		
 				
+				
+			if(!endOfTrialStim) EndOfTrialDelay();
+			else{
+				if(CurrentDisplay) CurrentDisplay.stopAll();
+				EndOfTrial_feedbackBoss.DO(endOfTrialStim,CurrentDisplay,EndOfTrialDelay);
+			}
+			
+			function EndOfTrialDelay():void{
+				pic.visible=false;
+				codeRecycleFunctions.delay(nextTrial,ExptWideSpecs.IS('EndOfTrialDelay'));
+			}
+			
+			function nextTrial():void{
+				nextEvent(e.action);
 			}
 		}
+		
+
 
 		
 		private function nextEvent(action:String):void{
@@ -580,7 +596,7 @@
 
 			if(scroll)scroll.kill();
 			
-			pic.removeEventListener(GotoTrialEvent.TRIAL_PING_FROM_OBJECT,gotoTrial);
+			if(pic && pic.hasEventListener(GotoTrialEvent.TRIAL_PING_FROM_OBJECT))	pic.removeEventListener(GotoTrialEvent.TRIAL_PING_FROM_OBJECT,gotoTrial);
 			
 			if(requiredStim){
 				requiredStim.kill();
@@ -628,8 +644,10 @@
 			
 			var strayChildren:Array = [];;
 			
-			for(i=0;i<pic.numChildren;i++){
-				strayChildren.push(pic.getChildAt(i));
+			if(pic){
+				for(i=0;i<pic.numChildren;i++){
+					strayChildren.push(pic.getChildAt(i));
+				}
 			}
 			
 			if(strayChildren.length>0) throw new Error("devel error, memory leak, strays found: "+strayChildren.concat(","));

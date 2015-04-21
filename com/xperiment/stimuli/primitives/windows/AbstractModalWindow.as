@@ -22,7 +22,7 @@ package com.xperiment.stimuli.primitives.windows
 			var myStageWidth:int = Trial.ACTUAL_STAGE_WIDTH;
 			var myStageHeight:int = Trial.ACTUAL_STAGE_HEIGHT
 			
-			
+	
 			grayBG.graphics.drawRect(0,0,myStageWidth,myStageHeight);
 			theStage.addChild(grayBG);
 			

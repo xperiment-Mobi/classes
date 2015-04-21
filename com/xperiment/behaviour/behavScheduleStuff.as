@@ -14,8 +14,6 @@
 		private var setup:Boolean = false;
 		private var currentGroup:int = 0;
 		private var currentDisplay:OnScreenBoss;
-		
-		private var doAfter:object_baseClass;
 		private var groups:Array;
 		
 		public function passOnScreenBoss(CurrentDisplay:OnScreenBoss):void{
@@ -24,7 +22,8 @@
 		
 		override public function setVariables(list:XMLList):void {			
 			setVar("string","doAfter","","run this after");//vertical, horizontal
-			setVar("string","schedule","","","the schedule to use. use []s to have groups start at the same time. comma seperated.")
+			setVar("string","schedule","","","the schedule to use. use []s to have groups start at the same time. comma seperated.");
+			setVar("boolean","randomOrder",true);
 			super.setVariables(list);
 			
 		}
@@ -68,7 +67,14 @@
 		
 		private function doAtEnd():void
 		{
-			if(doAfter)	currentDisplay.runDrivenEvent(doAfter.peg, doAfter.getVar("delay"),doAfter.getVar("duration"));
+			var doAfter:String = getVar("doAfter");
+			
+			if(doAfter!=''){
+				for each(var stimNam:String in doAfter.split(",")){
+					var stim:object_baseClass = getStim(stimNam);
+					if(stim)	currentDisplay.runDrivenEvent(stim.peg, stim.getVar("delay"),stim.getVar("duration"));
+				}
+			}
 		}
 		
 		private function stop():void
@@ -96,8 +102,7 @@
 				}
 			}
 			else{
-				stim = getStim(getVar("doAfter"));
-				if(stim)	currentDisplay.runDrivenEvent(stim.peg, stim.getVar("delay"),stim.getVar("duration"));
+				doAtEnd();
 			}
 		}
 		
@@ -114,7 +119,9 @@
 		{
 			setup=true;
 			setupGroups(getVar("schedule"));
-			codeRecycleFunctions.arrayShuffle(groups);
+			if(getVar("randomOrder"))	{
+				codeRecycleFunctions.arrayShuffle(groups);
+			}
 		}		
 		
 		private function setupGroups(schedule:String):void

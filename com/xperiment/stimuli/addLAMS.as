@@ -22,6 +22,9 @@
 			return true;
 		}
 
+		override protected function _getScore():Number{
+			return 100 - super._getScore();
+		}
 
 	}
 }

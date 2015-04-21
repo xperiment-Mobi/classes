@@ -118,7 +118,7 @@
 		protected function mouseL(e:MouseEvent):void
 		{
 			var tri:Sprite = e.currentTarget as Sprite;
-			trace(tri.name)
+			//trace(tri.name)
 			var col:int;
 			switch(e.type){
 				case MouseEvent.MOUSE_DOWN:

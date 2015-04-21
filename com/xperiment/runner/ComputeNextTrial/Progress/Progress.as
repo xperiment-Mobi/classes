@@ -12,7 +12,7 @@ package com.xperiment.runner.ComputeNextTrial.Progress
 		
 		public function getNextTrial(prevTrial:Trial,prevTrialNum:int):int{
 	
-			var ans:String = prevTrial.trialData.answer.toString();
+			var ans:String = prevTrial.giveTrialData().answer.toString();
 			if(ans.length==0)throw new Error("there is a problem in a trialOrderScheme ("+type+"). One of its trials does not give an answer.");
 			
 

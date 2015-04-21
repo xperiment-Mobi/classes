@@ -29,11 +29,25 @@ package com.xperiment.stimuli.primitives
 			var returnable:Array = [];
 			
 			for(var i:uint=0;i<buttons.length;i++){
+
 				if((buttons[i] as BasicButton).selected){
 					returnable.push( (buttons[i] as BasicButton).name);
 				}
-			}
+			}	
 			return returnable.join(",");;
+		}
+		
+		
+		public function getWhichSelected():int
+		{
+			var returnable:Array = [];
+			for(var i:uint=0;i<buttons.length;i++){
+				if((buttons[i] as BasicButton).selected){
+					return i;
+				}
+			}
+			
+			return -1;
 		}
 		
 		public function mock():void

@@ -22,6 +22,15 @@ package com.xperiment.stimuli.primitives
 		{
 			this.theStage=theStage;
 			//trace(1121,(buttonParent as object_baseClass).peg,keyStr)
+			setKey(keyStr);
+			
+			this.buttonParent=buttonParent;
+			this.button =button;
+			
+		}
+		
+		private function setKey(keyStr:String):void
+		{
 			if(keyStr.charAt(0).toUpperCase()=="C"){
 				this.key=int(keyStr.substr(1,keyStr.length-1));
 			}
@@ -44,10 +53,6 @@ package com.xperiment.stimuli.primitives
 			else{
 				this.key=keyStr.toUpperCase().charCodeAt(0);
 			}
-			
-			this.buttonParent=buttonParent;
-			this.button =button;
-			
 		}
 		
 		public function init():void{
@@ -59,8 +64,7 @@ package com.xperiment.stimuli.primitives
 		protected function keyPressedDOWN(e:KeyboardEvent):void
 		{
 
-			if(button && e.keyCode==key as int) {
-				
+			if(button && button.stage && button.visible && e.keyCode==key as int) {
 				buttonParent.__logButtonPress()
 				if(button)button.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 				if(button)button.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_DOWN));
@@ -70,7 +74,8 @@ package com.xperiment.stimuli.primitives
 		
 		protected function keyPressedUP(e:KeyboardEvent):void
 		{
-			if(e.keyCode==key) {		
+
+			if(button && button.stage && button.visible && e.keyCode==key as int) {	
 				button.dispatchEvent(new MouseEvent(MouseEvent.MOUSE_UP));
 				
 			}
@@ -86,5 +91,15 @@ package com.xperiment.stimuli.primitives
 		}
 		
 
+		public function change(val:String):String
+		{
+			setKey(val);
+			return value();
+		}
+		
+		public function value():String
+		{
+			return String.fromCharCode(key);;
+		}
 	}
 }

@@ -77,7 +77,7 @@ package com.xperiment.trialOrder.components.BlockOrder
 		
 		
 		public function doOrdering():void{
-			
+
 			if(order=='' || order=='RANDOM')trials = codeRecycleFunctions.arrayShuffle(trials);
 			else if(order=="FIXED"){
 				//do nothing}

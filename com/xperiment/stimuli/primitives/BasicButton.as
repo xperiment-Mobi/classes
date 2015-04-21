@@ -200,7 +200,9 @@ package com.xperiment.stimuli.primitives
 			drawFace();
 		}
 		
-		public function get selected():Boolean{return _selected;}
+		public function get selected():Boolean{
+			return _selected;
+		}
 		public function set toggle(value:Boolean):void{_toggle = value;}
 		public function get toggle():Boolean
 		{return _toggle;}

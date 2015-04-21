@@ -12,12 +12,12 @@ package com.xperiment.stimuli.primitives
 		
 		public function kill():void{
 			this.removeEventListener(MouseEvent.CLICK,buttonClickedL);
-			while (this.numChildren>0){
-				this.removeChildAt(0);
-			}
+			
 			for(var i:int=0;i<buttons;i++){
 				buttons[i].kill();
 			}
+			
+
 		}
 		
 		public function reset():void{
@@ -66,9 +66,11 @@ package com.xperiment.stimuli.primitives
 				stim = this.getChildAt(i);
 				if(stim.hitTestPoint(e.stageX,e.stageY)){
 					pressed.push(stim.name);
+				
 					break;
 				}
 			}
+			trace(pressed)
 			
 		}
 	}

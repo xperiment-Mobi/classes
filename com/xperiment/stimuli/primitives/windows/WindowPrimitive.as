@@ -4,6 +4,8 @@ package com.xperiment.stimuli.primitives.windows
 	import com.bit101.components.Style;
 	import com.bit101.components.TextArea;
 	import com.bit101.components.Window;
+	import com.xperiment.ExptWideSpecs.ExptWideSpecs;
+	
 	import flash.display.Sprite;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
@@ -110,7 +112,7 @@ package com.xperiment.stimuli.primitives.windows
 		
 		protected function setupButtons():void
 		{
-			if(params.hasOwnProperty('closButtonText')==false)params.closButtonText = "close when ready";
+			if(params.hasOwnProperty('closButtonText')==false)params.closButtonText = ExptWideSpecs.IS("saveClose");
 			closeButton = new PushButton(myWindow,0,0,params.closButtonText);
 			closeButton.addEventListener(MouseEvent.CLICK,close ,false,0,true);
 			closeButton.width=200;

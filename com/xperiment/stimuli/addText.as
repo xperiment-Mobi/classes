@@ -25,7 +25,6 @@
 
 			this.OnScreenElements=basicText.OnScreenElements;
 
-			addAdditionalParams();
 
 			super.setVariables(list);
 			
@@ -69,11 +68,7 @@
 			return super.get_makerObj();
 		}
 		
-		public function addAdditionalParams():void
-		{
-			//used for addInputTextField
-		}
-		
+
 		override public function myUniqueProps(prop:String):Function{
 			
 			uniqueProps ||= new Dictionary;

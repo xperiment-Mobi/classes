@@ -1,5 +1,7 @@
 ﻿package com.xperiment{
 	
+	import com.xperiment.events.StimulusEvent;
+	
 	import flash.display.Sprite;
 	
 	public class uberSprite extends Sprite{
@@ -8,8 +10,8 @@
 		public var myHeight:int;
 		public var myWidth:int;
 		public var depth:int = 0;
-		public var startTime:int;
-		public var endTime:int;
+		public var startTime:Number;
+		public var endTime:Number;
 		//public var boxStuff:Array;
 		//public var info:String;
 		//public var behavID:String;
@@ -46,6 +48,13 @@
 		if(!boxStuff)boxStuff = new Array;
 			boxStuff.push(sha);
 		}*/
+		
+		public function stimEvent(what:String):void{
+			if(StimulusEvent.list.indexOf(what)==-1){
+				throw new Error("unknown stimulus event!:"+what+" (available include: "+StimulusEvent.list.join()+")");
+			}
+			this.dispatchEvent(	new StimulusEvent(what)	);
+		}
 				
 		public function kill():void{
 			//if(boxStuff)boxStuff=null;

@@ -21,18 +21,13 @@
 				
 			super.setVariables(list);
 			
-			
 			excludePegs = getVar("excludePegs").split(",");
 			if(excludePegs[0]=='' && excludePegs.length==1)excludePegs=[];
 
 			if(getVar("usePegs")!='' && excludePegs.length!=0)throw new Error("you cannot set 'usePegs' and 'excludePegs' at the same time");
-			
-
 		}
 		
-		
-
-		
+	
 		override public function returnsDataQuery():Boolean{
 			if(getVar("hideResults")!='true'){
 				return true;
@@ -59,7 +54,6 @@
 			else{
 				CurrentDisplay.PauseStim(behavObjects, true, duration);
 			}
-			
 		}
 		
 		private function getDuration():int

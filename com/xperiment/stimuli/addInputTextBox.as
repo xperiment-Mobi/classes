@@ -41,6 +41,7 @@ package  com.xperiment.stimuli{
 		override public function returnsDataQuery():Boolean {
 			return true;
 		}
+		
 
 		
 		override public function myUniqueProps(prop:String):Function{
@@ -78,33 +79,26 @@ package  com.xperiment.stimuli{
 		
 		
 		override public function setVariables(list:XMLList):void {
+			
+			if(!list.hasOwnProperty('@numLines'))list.@numLines=true;
 			if(!list.hasOwnProperty('@text'))list.@text='';
 			if(!list.hasOwnProperty('@border'))list.@border=1;
 			if(!list.hasOwnProperty('@background'))list.@background=Style.BACKGROUND
-			if(!list.hasOwnProperty('@wordWrap'))list.@wordWrap=false;
+			if(!list.hasOwnProperty('@wordWrap'))list.@wordWrap=true;
 			if(!list.hasOwnProperty('@multiLine'))list.@multiLine=false;
+		
 			list.@editable=setEditable();
 			list.@selectable=true;
 			
-			super.setVariables(list);
+			if(!list.hasOwnProperty('@maxChars'))list.@maxChars = 1000;
+			if(!list.hasOwnProperty('@password'))list.@password = false;
+			if(!list.hasOwnProperty('@restrict'))list.@restrict = "";
+			if(!list.hasOwnProperty('@hideResults'))list.@hideResults = false;
+			if(!list.hasOwnProperty('@emptyWhenClicked'))list.@emptyWhenClicked = true;
+			if(!list.hasOwnProperty('@editable'))list.@editable = true;
+			if(!list.hasOwnProperty('@correct'))list.@correct = "";
+			if(!list.hasOwnProperty('@replace'))list.@replace =  "";
 			
-		}
-		
-		
-		protected function setEditable():Boolean{
-			return true;
-		}
-	
-		override public function addAdditionalParams():void {
-			setVar("uint","maxChars", 1000);//maxChars
-			setVar("boolean","password", false);
-			setVar("string","restrict","","","any list of characters with no space, e.g. abc");
-			setVar("boolean","hideResults",false);
-			setVar("string","emptyWhenClicked",'true');
-			setVar("boolean","editable",true);
-			setVar("string", "correct","","comma seperated possible correct answers please");
-			setVar("string","replace", "");//e.g. 32-13 [space with enter] (charcodes); use codes from here: http://www.asciitable.com/
-
 			if(getVar("replace")!=""){
 				replaceOld=new Array;
 				replaceNew=new Array;
@@ -117,12 +111,21 @@ package  com.xperiment.stimuli{
 				}			
 			}
 			
-			if(OnScreenElements.emptyWhenClicked=='true'){
+			super.setVariables(list);
+
+			if(OnScreenElements.hasOwnProperty('emptyWhenClicked') && OnScreenElements.emptyWhenClicked=='true'){
 				pic.addEventListener(MouseEvent.MOUSE_DOWN,emptyL);
 			}
 			
 		}
 		
+		
+		
+		protected function setEditable():Boolean{
+			return true;
+		}
+	
+
 		protected function emptyL(event:MouseEvent):void
 		{
 			//trace(11)

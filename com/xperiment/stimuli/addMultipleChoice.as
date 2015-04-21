@@ -20,6 +20,7 @@
 			setVar("uint","fontSize",20);
 			setVar("boolean","hideText",false);
 			setVar("string","randomPositions","");
+			setVar("boolean","saveLabelNumber","","","if this is specified, returns the label number, not it's label");
 			setVar("boolean","selectMultiple",false);
 			setVar("string","grid","","",'the x by y grid; note you can have an incomplete grid');
 			setVar("string","useKeys",'',"comma seperated. Prefix c if you want to use an ascii key code.");
@@ -38,6 +39,7 @@
 				uniqueProps.result= function():String{
 					//AW Note that text is NOT set if what and to and null. 
 					//trace(123,"'"+multipleChoice.getData()+"'");
+					trace(111,multipleChoice.getData());
 					return "'"+multipleChoice.getData()+"'";
 				};
 				
@@ -51,7 +53,12 @@
 			tempData=new Array();
 			if(peg!="")tempData.event=peg;
 			else tempData.event=multipleChoice;
-			tempData.data=multipleChoice.getData();
+			
+			var data:String;
+			if(getVar("saveLabelNumber")=='')	data = multipleChoice.getData();
+			else								data = multipleChoice.getWhichSelected().toString();
+			
+			tempData.data= data;
 			super.objectData.push(tempData);
 			return objectData;
 		}

@@ -14,6 +14,7 @@ package com.xperiment.stimuli.primitives
 
 		private var myLoader:LoaderItem;
 		private var preloader:IPreloadStimuli;
+
 		
 		override public function kill():void {
 	
@@ -34,12 +35,26 @@ package com.xperiment.stimuli.primitives
 		
 			if (preloader && preloader.progress()==1){
 				
-				return preloader.give(getVar("filename"));
+				var ba:ByteArray = preloader.give(getVar("filename"));
+				if(!ba) return null;
+				
+				return ba;
 			}
 
 			return null;
 		}
 
+		override public function setVariables(list:XMLList):void {
+			
+			setVar("string","filenamePrefix","","");
+			setVar("string","filenameSuffix","","");
+			setVar("string","filename","","");
+			super.setVariables(list);
+			setVariables_loadingSpecific();
+		
+			//trace(getVar("filename"),22)
+		}
+		
 		public function setVariables_loadingSpecific():void{
 			
 			setVar("boolean","destroyStimulusAfter",false);
@@ -47,9 +62,10 @@ package com.xperiment.stimuli.primitives
 			if(OnScreenElements.hasOwnProperty("extension")==false)	setVar("string","extension","",'do not use a dot here, e.g. jpg, nb this is optional');
 
 			if(getVar("extension")!="" && getVar("filename").indexOf(".")==-1)	{
+	
 				OnScreenElements.filename=OnScreenElements.filename+"."+getVar("extension");
 			}
-
+			OnScreenElements.filename = OnScreenElements.filenamePrefix + OnScreenElements.filename + OnScreenElements.filenameSuffix;
 		}
 		
 		public function setupPreloader():void{

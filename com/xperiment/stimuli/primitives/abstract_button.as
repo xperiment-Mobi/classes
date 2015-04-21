@@ -91,7 +91,7 @@ package com.xperiment.stimuli.primitives
 		}
 		
 		public function composeDataArray():Array{
-			if(buttonGroupDataSaved[getVar("buttonGroup")]==false){
+			if(buttonGroupDataSaved && buttonGroupDataSaved[getVar("buttonGroup")]==false){
 			buttonGroupDataSaved[getVar("buttonGroup")]=true;
 			var clicked:Array=[];
 			for each(var b:abstract_button in buttonGroup[getVar("buttonGroup")]){

@@ -72,7 +72,8 @@
 		
 
 
-		override public function myUniqueProps(prop:String):Function{			
+		override public function myUniqueProps(prop:String):Function{	
+
 			if(!uniqueProps){
 				uniqueProps=new Dictionary;
 				uniqueProps.text= function(what:String=null,to:String=null):String{
@@ -83,7 +84,11 @@
 				uniqueProps.enabled=function(what:String=null,to:String=null):String{
 										if(what) button.enabled=Boolean(to);
 										return button.enabled.toString();
-									};	
+									};
+				uniqueProps.key=function(what:String=null,to:String=null):String{
+					if(what) return keyF(	'change',codeRecycleFunctions.removeQuots(to)	);
+					return keyF('value');;
+				};
 				uniqueProps.pressed=function(what:String=null,to:String=null):String{
 					if(what) buttonCount=int(to);
 					return buttonCount.toString();
@@ -120,10 +125,19 @@
 			setVar("boolean","enabled",true);
 			setVar("boolean","sticky",false);
 			setVar("string","whichPressed",'');
+			setVar("boolean","keyEnabled","","if not set, same as 'enabled'");
 			setVar("string","key","",'Prefix c if you want to use an ascii key code, which you can get from http://www.asciitable.com/. Else just enter the key. Or enter ← → ↑ ↓ for cursor keys.'); 	// use codes from here: http://www.asciitable.com/  
 										//or figure out codes by pressing from here http://www.kirupa.com/developer/as3/using_keyboard_as3.htm
 
+			if(list.hasOwnProperty("@keyEnabled")==false){ 
+				if(list.hasOwnProperty("@enabled")==true){
+					list.@keyEnabled = list.@enabled;	
+				}
+			}
+			
 			super.setVariables(list);
+			
+
 			
 			if(getVar("fontSize")==-1){
 				OnScreenElements.fontSize=Style.fontSize;
@@ -167,12 +181,41 @@
 			return (pic);
 		}
 		
+		
+		private function keyF(command:String,extra:String=''):String{
+
+			if(command=='setup'){
+				if(extra!="" && theStage){
+					key = new KeyPress(extra,theStage,this,button);			
+				}
+				return '';
+			}
+			
+			if(!key) return '';
+			
+			switch(command){
+				case 'begin':
+					key.init();
+					break;
+				
+				case 'kill':
+					key.kill();
+					break;
+				case 'change':
+					return key.change(extra);
+					break;
+				case 'value':
+					return key.value();
+					break;
+				default: throw new Error(command);
+			}
+			return '';
+		}
 
 		
 		override public function appearedOnScreen(e:Event):void{
-			if(key){
-				key.init();
-			}
+			keyF('begin');
+			
 			super.appearedOnScreen(e);
 		}
 		
@@ -181,7 +224,7 @@
 		
 		override public function kill():void {
 			
-			if(key)key.kill();
+			keyF('kill');
 			mouseDown4BehavBoss=null;
 			removeEvents();
 			if(button && pic.contains(button))pic.removeChild(button);
@@ -208,14 +251,15 @@
 			
 			if(!(getVar("disableMouse") as Boolean))button.addEventListener(MouseEvent.MOUSE_DOWN, MouseDown,false,0,true);
 			
-			if(getVar("key")!="" && theStage){
-				key = new KeyPress(getVar("key"),theStage,this,button);			
-			}
+			keyF('setup',getVar("key"));
+		
 		}
 		
 		public function MouseDown(e:MouseEvent):void {
 			//needed for key presses
-			if(button && button.enabled){
+			
+			
+			if((button && button.enabled) || (key && getVar("keyEnabled"))){
 				if(mouseDown4BehavBoss!=null)mouseDown4BehavBoss();
 				
 				e.stopPropagation();

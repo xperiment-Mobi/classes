@@ -29,6 +29,7 @@
  
 package com.bit101.components
 {
+	import com.xperiment.codeRecycleFunctions;
 
 	public class Style
 	{
@@ -60,6 +61,25 @@ package com.bit101.components
 		/**
 		 * Applies a preset style as a list of color values. Should be called before creating any components.
 		 */
+		public static function sortStyle(styles:XMLList):void
+		{
+			
+			var nam:String;
+			for each(var style:XML in styles.attributes()){
+				nam = style.name().toString();
+				if(Style[nam] != undefined){
+
+					Style[nam]=codeRecycleFunctions.getColour(	style.toString()	);
+
+				}
+				else if (style.name()=="__BIND"){}
+				else throw new Error("you tried to set an unknown global style '"+style.name().toString()+"'.");
+				
+			}
+			
+		}
+		
+		
 		public static function setStyle(style:String):void
 		{
 			switch(style)

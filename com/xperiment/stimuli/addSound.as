@@ -1,5 +1,6 @@
 package com.xperiment.stimuli
 {
+	import com.xperiment.uberSprite;
 	import com.xperiment.preloader.PreloadStimuli;
 	import com.xperiment.stimuli.Controls.Controls;
 	import com.xperiment.stimuli.Controls.Panel;
@@ -16,7 +17,7 @@ package com.xperiment.stimuli
 		private var preloader:PreloadStimuli;
 		private var sound:Sound;
 		private var soundChannel:SoundChannel;
-		
+		public var isLoaded:Boolean = false;
 		public var pausePoint:Number = 0.00;
 		private var isPlaying:Boolean = false;
 		private var panel:Panel;
@@ -27,30 +28,34 @@ package com.xperiment.stimuli
 		override public function setVariables(list:XMLList):void {
 
 			setVariables_loadingSpecific();
-			
+
 			setVar("string","repeat",'false');
 			setVar("string","controls",'',"leave blank for none, play or mini");
 			setVar("boolean","autostart",true);
 			setVar("boolean","hasPlayed",true);
 			setVar("boolean","onePlayOnly",true);
 			super.setVariables(list);
-			
-			if(getVar("controls")!="")	makePanel(getVar("controls"));	
-			
-			setUniversalVariables();
-			setVariables_loadingSpecific();
-			
-			if(theStage){
-				var byteArray:ByteArray;
-				if 	((byteArray=givePreloaded())!=null){		
-					doAfterLoaded(byteArray);	
-				}
-				else{
-					setupPreloader();
-				}
-			}
-
 		}
+		
+		override public function RunMe():uberSprite {
+			if(getVar("controls")!="")	makePanel(getVar("controls"));	
+			else{
+				pic.visible=false;
+			}
+			if(theStage){
+			
+				var ba:ByteArray=givePreloaded();
+				
+				if (ba != null) {
+					setUniversalVariables();
+					doAfterLoaded(ba);
+				}
+					
+				else setupPreloader();	
+			}
+			return pic;
+		}
+		
 		
 		public function makePanel(controls:String):void
 		{
@@ -93,7 +98,7 @@ package com.xperiment.stimuli
 		}
 		
 		private function repeatListener(e:Event):void{
-			
+			if(panel)panel.ON(false);
 			var doWhat:String= getVar("repeat").toLowerCase();
 			if(soundChannel && soundChannel.hasEventListener(Event.SOUND_COMPLETE))soundChannel.removeEventListener(Event.SOUND_COMPLETE, repeatListener);
 			soundChannel=null;
@@ -124,6 +129,7 @@ package com.xperiment.stimuli
 				soundChannel=null;
 			}
 			isPlaying = false;
+
 			if(panel)panel.ON(false);
 			if(onePlayOnly){
 				onePlayOnlyF(false);
@@ -165,6 +171,7 @@ package com.xperiment.stimuli
 		
 		public function play():void
 		{	
+			
 			hasSounded=true;
 			if(isPlaying){
 				stop();
@@ -187,6 +194,7 @@ package com.xperiment.stimuli
 			sound.loadCompressedDataFromByteArray(content,content.length);
 			setUniversalVariables();
 			if(requestedToPlay)play();
+			isLoaded = true;
 		}	
 		
 	

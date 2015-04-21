@@ -22,13 +22,11 @@ package com.xperiment.runner {
 	import com.xperiment.preloader.PreloadStimuli;
 	import com.xperiment.preloader.Preloader_P2P;
 	import com.xperiment.runner.ComputeNextTrial.NextTrialBoss;
-	import com.xperiment.runner.utils.CheckTurk;
 	import com.xperiment.runner.utils.ListTools;
 	import com.xperiment.script.BetweenSJs;
 	import com.xperiment.script.ProcessScript;
 	import com.xperiment.trial.Trial;
 	import com.xperiment.trialOrder.trialOrderFunctions;
-	
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.display.StageScaleMode;
@@ -40,34 +38,22 @@ package com.xperiment.runner {
 	
 	public class runner extends Sprite {
 		
-		//- PUBLIC & INTERNAL VARIABLES ---------------------------------------------------------------------------
 		public var trialList:Vector.<Trial> = new Vector.<Trial>;;
-		
-
 		public var trialProtocolList:XML;
 		public var theStage:Stage;
 		public var exptResults:Results;
-		//private var propValDict:PropValDict;
 		public var dataSave:ISaveResults;
 		public var myScript:ImportExptScript;
-		public  var P2PgiveF:Function;
-		public var preloader:IPreloadStimuli;
-		
-		public var runningTrial:Trial;
-		
+		public var P2PgiveF:Function;
+		public var preloader:IPreloadStimuli;	
+		public var runningTrial:Trial;	
 		public var isBuilder:Boolean = false;
+		public var __nextTrialBoss:NextTrialBoss;	
 
-		
+		private var orig_script:XML;
 		private var __needsDoing:Vector.<String>;
-		//- CONSTRUCTOR -------------------------------------------------------------------------------------------
 		private var startupTimer:Timer;
 		private var killed:Boolean;
-		public var __nextTrialBoss:NextTrialBoss;
-		
-/*		public function maker():void{
-		
-		}*/
-		private var orig_script:XML;
 		
 		protected function initComms():void{
 			Communicator.commandF = commandF;
@@ -119,7 +105,6 @@ package com.xperiment.runner {
 			Style.embedFonts=false;
 			Trial.theStage=theStage;
 			setNeedsDoing();
-			
 		}	
 		
 
@@ -135,7 +120,6 @@ package com.xperiment.runner {
 		
 		public function initDeviceSpecificStuff():void{
 			ExptWideSpecs_WebParams.SET();
-			//below removed for runnBuilder
 			scaleMode();
 			if(!Trial.RETURN_STAGE_HEIGHT){//needed in case the experiment is restarted and is in fullscreen mode (else goes bananas);
 				setDimensions();
@@ -160,12 +144,12 @@ package com.xperiment.runner {
 			startStudyQuery('processScript');
 			trialList = new Vector.<Trial>;
 			orig_script = scr.copy();
+			scr = BetweenSJ.process(scr, theStage.loaderInfo.parameters);
 
 			var processScript:ProcessScript = giveProcessScript();
 
-			//Hack.DO();
-
 			processScript.addEventListener(Event.COMPLETE, function(e:Event):void{
+
 				e.target.removeEventListener(e.type,arguments.callee);
 				//trace(123,processScript.script)
 				trialProtocolList=processScript.script;
@@ -174,13 +158,16 @@ package com.xperiment.runner {
 				processScript=null;
 				ExptWideSpecs.setup(trialProtocolList);
 
+				if(!params) params = {}
+				
 				for(var key:String in theStage.loaderInfo.parameters){
 					if(params.hasOwnProperty(key)==false)	params[key]= theStage.loaderInfo.parameters[key];
 				}
+			
 				if(params.hasOwnProperty('url')==false)	params.url = theStage.loaderInfo.url;
 				ExptWideSpecs.URLVariables(params);
 				
-
+		
 				if(remote_url)ExptWideSpecs.remote_url(remote_url);
 				if(ExptWideSpecs.IS("mock") == true)	MockResults.sortExptWideSpecs();
 
@@ -199,8 +186,6 @@ package com.xperiment.runner {
 			},false,0,false); 
 			
 			processScript.process(scr);
-			
-			
 
 		}
 		
@@ -376,8 +361,6 @@ package com.xperiment.runner {
 				generatePreloader();
 				Trial.preloader=preloader;
 			}
-
-			
 		}
 		
 		public function generatePreloader():void
@@ -388,7 +371,6 @@ package com.xperiment.runner {
 			}
 		}		
 
-		
 		public function runningExptNow():void{	
 			ListTools.extract(trialProtocolList,exptResults);
 			myScript=null;
@@ -412,7 +394,6 @@ package com.xperiment.runner {
 			else			__nextTrialBoss.trialOrder = trialOrder;	
 		}
 		
-		
 		public function __composeTrial(info:Object):void {	
 			var tempTrial:Trial=newTrial();
 			tempTrial.setup(info);
@@ -421,7 +402,7 @@ package com.xperiment.runner {
 		 
 		//nb restart other stuff used for Maker
 		public function runningExptNow_II():void{
-			if(CheckTurk.DO(trialProtocolList,theStage))commenceWithTrial();//starts the trial sequence 
+			commenceWithTrial();//starts the trial sequence 
 		}
 		
 		public function newTrial():Trial{
@@ -439,7 +420,7 @@ package com.xperiment.runner {
 		
 		
 		public function commenceWithTrial(params:Object=null):void {
-			//setBackgroundColour(trialProtocolList.TRIAL[runningTrial.TRIAL_ID].@backgroundColour.toString());
+
 			if(!runningTrial){
 				XperimentMessage.message(theStage,"!End of the study. You should provide an 'end of study' screen and not rely on this message!");
 				var t:Timer= new Timer(1500,1);
@@ -455,7 +436,6 @@ package com.xperiment.runner {
 				t.start();	
 			}
 			else{	
-
 				runningTrial.prepare(__nextTrialBoss.currentTrial,trialProtocolList.TRIAL[runningTrial.TRIAL_ID],params);	
 				//trace(11,__nextTrialBoss.currentTrial)
 			}
@@ -467,7 +447,7 @@ package com.xperiment.runner {
 			if(runningTrial.runTrial == true && isBuilder==false){
 				trialData=runningTrial.giveTrialData();	
 				//XptMemory.updateExptProps(PropValDict.exptProps);
-				if(exptResults && trialData)exptResults.give(trialData);	
+				if(exptResults && trialData)	exptResults.give(trialData);	
 			}
 			
 			if(P2PgiveF)	P2PgiveF(trialData,__nextTrialBoss.currentTrial);
@@ -552,7 +532,6 @@ package com.xperiment.runner {
 			preloader.kill();
 			trialList = null;
 			if(runningTrial)destroy();
-			//if(trialDataBar && theStage.contains(trialDataBar))theStage.removeChild(trialDataBar);
 			if(exptResults)exptResults.kill();
 			//ExptWideSpecs.kill();
 			codeRecycleFunctions.kill();
@@ -561,16 +540,7 @@ package com.xperiment.runner {
 			theStage.removeEventListener(GlobalFunctionsEvent.COMMAND,runCommand);
 			theStage.removeEventListener(TrialEvent.CHANGE, changeTrialInfo);
 			this.killed=true;
-			//if(theStage.contains(acrossExperimentTrial))theStage.removeChild(acrossExperimentTrial);
 		}
-		
-		/*public function extractStudyData():void {
-			//if(acrossExperimentTrial && acrossExperimentTrial.hideResults==false)exptResults.give(acrossExperimentTrial.trialData);		
-		}	
-		*/
-		
-		
-	
 		
 		public function setBackgroundColour(colour:String=''):void {	
 			if(colour=='')	colour = ExptWideSpecs.IS("BGcolour");

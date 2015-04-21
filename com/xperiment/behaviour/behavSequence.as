@@ -1,6 +1,7 @@
 package com.xperiment.behaviour {
 	import com.xperiment.stimuli.Imockable;
 	import com.xperiment.stimuli.object_baseClass;
+	
 	import flash.utils.Dictionary;
 
 
@@ -46,7 +47,6 @@ package com.xperiment.behaviour {
 		
 		private function showFromPercent(to:String):int
 		{
-
 			var fromPer:uint = Number(to)*.01 * (behavObjects.length-1);
 			show_i(fromPer);
 			return pos;
@@ -55,7 +55,7 @@ package com.xperiment.behaviour {
 		override public function setVariables(list:XMLList):void {
 			setVar("string","sortBy",'peg','this must be numeric. You can define whatever variable you want in the stimuli for this.  eg. mySortOn="1"');
 			setVar("string","how","random, flipped");
-			setVar("int","initial","","the first stimuli to show");
+			setVar("string","show","","the first stimuli to show");
 			super.setVariables(list);
 		}
 		
@@ -82,8 +82,13 @@ package com.xperiment.behaviour {
 		
 		private function show(toShow:String):int
 		{
-			if(toShow=='random') show_i((behavObjects.length-1)*Math.random());
-			if(toShow!='')	actionStim[toShow].visible = true;
+			if(toShow=='random' || toShow=='') show_i((behavObjects.length-1)*Math.random());
+			if(toShow!=''){
+				if(toShow.toLowerCase()=='max')show_i((behavObjects.length-1));
+				else if(toShow.toLowerCase()=='min')show_i(0);
+				else show_i(int(toShow));
+			}
+			
 			for(var i:int=0;i<behavObjects.length;i++){
 				if(behavObjects[i]==actionStim[toShow]){
 					pos=i;
@@ -140,6 +145,8 @@ package com.xperiment.behaviour {
 			for(var i:int=0;i<behavObjects.length;i++){
 				actionStim[behavObjects[i].getVar(sortByProp)] = behavObjects[i];
 			}
+			this.OnScreenElements.x=(behavObjects[0] as object_baseClass).OnScreenElements.x;
+			this.OnScreenElements.y=(behavObjects[0] as object_baseClass).OnScreenElements.y;
 		}	
 		
 		

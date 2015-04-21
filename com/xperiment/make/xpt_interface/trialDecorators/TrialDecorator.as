@@ -409,7 +409,7 @@ import avmplus.getQualifiedClassName;
 class TransparentLayer{
 	
 	
-	[Embed(source="/assets/wand.png")]
+	//[Embed(source="/assets/wand.png")]
 	private static var Picture:Class;
 	
 	

@@ -136,7 +136,7 @@ package com.xperiment.behaviour
 					//do nothing as this is just a number with decimels
 				}
 				else if(len==2){
-			
+					
 					objsArr=behavObjectsDict[pegProp.split(".")[0]]; //returns the list of objects with this peg.
 					prop = pegProp.split(".")[1];
 					
@@ -146,7 +146,7 @@ package com.xperiment.behaviour
 							{	
 								
 								if(pegProp.indexOf("()")==-1 && pegProp.split(".").length==2){
-									
+							
 									if(		__linkTOPSListeners(objsArr[i],prop,propValDict.incrementPerTrial,pegProp)==false)
 									{
 										
@@ -156,14 +156,16 @@ package com.xperiment.behaviour
 											throw 	new Error("Problem, '"+pegProp+"' never ever can happen!  You've specified an unknown event or unsettable object property.");
 										}
 									
-									}	
+									}
+									else{
+										//trace(2222,pegProp)
+									}
 							
 								}
 									
 								
 								else if(pegProp.indexOf("()")!=-1)
 								{
-									
 									linkTOPSActions(objsArr[i],prop,propValDict.bind,pegProp);
 								}
 								else throw new Error("badly formed action [should end in () ] or listener [should have ONE . ]:"+pegProp);
@@ -210,11 +212,12 @@ package com.xperiment.behaviour
 			unversal & special: timeStart, end, position, transparency, 
 			think about: shadow?? Perhaps goes in linkTOPSActions 
 			*/
-			//trace(prop,pegProp)
-
+			//trace(34,prop,pegProp)
+			
 			if(!(stim.disallowedProps && stim.disallowedProps.indexOf(prop)==-1)){
 				//trace(123,stim,prop);
 				////If BehaviourBoss finds the approp named function, passes it a function to call when the given behaviour occurs.
+				
 				
 				var settingF:Function = stim.myUniqueProps(prop);
 				//trace(prop,pegProp,22,settingF)
@@ -238,14 +241,14 @@ package com.xperiment.behaviour
 		
 		private function linkTOPSActions(stim:object_baseClass, action:String, bind:Function,prop:String):Boolean
 		{
+			
+			
 			if(!(stim.disallowedActions && stim.disallowedActions.indexOf(action)==-1)){
-
 
 				////If BehaviourBoss finds the approp named function, passes it a function to call when the given behaviour occurs.
 				var actionF:Function;
 				action=action.replace("()","");
 				actionF = 	stim.myUniqueActions(action);
-	
 				if(actionF==null) 	actionF = 	actionWrapper(stim, action);
 				
 				
@@ -270,8 +273,9 @@ package com.xperiment.behaviour
 			
 			//need to provide a custom event ability for individual stimuli, as done for actions (myUniqueactions)
 			//trace(12345,stim, stim.pic, listenFor, incrementPerTrial,prop, stim.peg)
-
-			if(availEvents.indexOf(listenFor)!=-1 || (stim.uniqueEvents && stim.uniqueEvents.hasOwnProperty(listenFor)!=-1)){
+			var listenForBool:Boolean;
+			
+			if((listenForBool = (availEvents.indexOf(listenFor)!=-1)) || (stim.uniqueEvents && stim.uniqueEvents.hasOwnProperty(listenFor)!=-1)){
 				
 				if(!(stim.disallowedEvents && stim.disallowedEvents.indexOf(listenFor)==-1)){
 					
@@ -281,12 +285,21 @@ package com.xperiment.behaviour
 						
 						listener.anonyF= function(e:Event):void{
 							//trace(2222222,listenFor,stim.pic,e.currentTarget,prop);
-
 							incrementPerTrial(prop);}//this function is called when the action happens
 	
-						if(stim is addButton && StimulusEvent.getList().indexOf(listenFor)==-1)	(stim as addButton).button.addEventListener(listenFor,listener.anonyF);
+						if(stim is addButton && StimulusEvent.list.indexOf(listenFor)==-1){
+							(stim as addButton).button.addEventListener(listenFor,listener.anonyF);
+						}
 						//DEDICATED StimBehav
-						else					stim.pic.addEventListener(listenFor,listener.anonyF);
+						else{
+							
+							if(!listenForBool && stim.uniqueEvents && stim.uniqueEvents.hasOwnProperty(listenFor)==false){
+								//trace(11)
+								return false; //added Feb 2015
+							}
+
+							stim.pic.addEventListener(listenFor,listener.anonyF);
+						}
 						//}
 				
 						//this function returning a function allows variables from above to be passed 'in the future'
@@ -301,6 +314,7 @@ package com.xperiment.behaviour
 						}};
 						if(!listenerKillList)listenerKillList = new Vector.<Listener>;
 						listenerKillList.push(listener);
+						
 						
 					}
 					else{

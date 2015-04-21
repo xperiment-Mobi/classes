@@ -98,6 +98,7 @@ package com.xperiment.stimuli.primitives{
 			setVar("string","suffix","");
 			setVar("string","prefix","");
 			setVar("uint","multiplySpaces",1);
+			setVar("boolean","boundText",false);
 			setVar("int","lineSpace",1);
 			setVar("boolean","mouseEnabled",false);
 			setVar("string","verticalAlign",'middle')//middle,top,bottom
@@ -120,6 +121,7 @@ package com.xperiment.stimuli.primitives{
 			
 			myText.width=obj.width;
 			myText.height=obj.height;
+			
 	
 			text(getVar("text"));
 			pic.addChild(myText);
@@ -141,6 +143,14 @@ package com.xperiment.stimuli.primitives{
 			setupText()
 			return pic;
 		}
+		
+		private function sortLines(DO:Boolean):void
+		{
+			if(DO){
+				myText.autoSize = TextFieldAutoSize.NONE;
+			}
+		}
+		
 		
 		public function createStimulus():Sprite{
 						
@@ -276,13 +286,14 @@ package com.xperiment.stimuli.primitives{
 			
 			//myText.background=true;
 			//myText.backgroundColor=0x881122;
+			sortLines(Boolean(	getVar("numLines")	))	;
 			
 		}
 		
 		protected function activateTextField(event:MouseEvent):void
 		{
 			myText.stage.focus = myText;
-			myText.setSelection(myText.text.length, myText.text.length);
+			//myText.setSelection(myText.text.length, myText.text.length);
 			
 		}
 		

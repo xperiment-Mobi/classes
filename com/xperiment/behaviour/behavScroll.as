@@ -21,6 +21,7 @@ package com.xperiment.behaviour
 		private var accel:int;
 		private var mouseDown:Boolean = false;
 		
+		
 		public function behavScroll()
 		{
 			uniqueEvents = new Dictionary;
@@ -57,7 +58,7 @@ package com.xperiment.behaviour
 			}
 			
 			else if(e.type == MouseEvent.MOUSE_DOWN)	mouseDown=true;
-			else if(e.type == MouseEvent.MOUSE_UP) mouseDown=false;
+			else if(e.type == MouseEvent.MOUSE_UP) 		mouseDown=false;
 		}
 		
 
@@ -65,8 +66,8 @@ package com.xperiment.behaviour
 
 			var change:int=0;
 			if(orientation=="y"){
-				if(e.keyCode==40)change=1; //up
-				else if(e.keyCode==38) change =-1; //down
+				if(e.keyCode==40)change=-1; //up
+				else if(e.keyCode==38) change =1; //down
 			}
 			else if(orientation=="x"){
 				if(e.keyCode==39)change=1; //right
@@ -95,7 +96,6 @@ package com.xperiment.behaviour
 		
 		override public function myUniqueProps(prop:String):Function{
 			uniqueProps ||= new Dictionary;
-			
 			if(uniqueProps.hasOwnProperty('result')==false){
 				uniqueProps.result= function(what:String=null,to:String=null):String{
 					//AW Note that text is NOT set if what and to and null. 
@@ -103,10 +103,9 @@ package com.xperiment.behaviour
 						setPercent(Number(to));
 					}
 					if(position<0){
-
 						return 'not set';
 					}
-					
+
 					return position.toString();
 				}; 	
 			}

@@ -135,11 +135,9 @@ package com.xperiment.behaviour{
 		
 		private function action():void{
 			
-			
 			if(rotateWithMouseDown){
 				rotateWithMouseDown.start(behavObjects, getVar("rotateAtStart"));
 			}
-
 			rotateAll();
 		}
 		
@@ -183,7 +181,7 @@ package com.xperiment.behaviour{
 		
 		public function rotateAroundCenter(us:uberSprite, rotation:Number):void
 		{
-	
+
 			angle=rotation.toString();
 			// get the bounded rectangle of objects
 			var bound:Rectangle = bounds[us.peg];

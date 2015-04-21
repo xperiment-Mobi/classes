@@ -6,12 +6,12 @@ package com.xperiment.onScreenBoss{
 	
 	
 	public class TrueTimer extends Sprite {
-		public var delay:int;
+		public var delay:Number;
 		public var repeatCount:int = 2147483647;
 		public var initTime:Date;
 		public var currentTime:Date;
 		private var pauseOffset:Number;
-		public var currentCount:int=-1;
+		public var currentMS:int=-1;
 		public var __offset:int=0;
 		public var running:Boolean=false;
 		public var timeFromStart:int=0;
@@ -39,38 +39,11 @@ package com.xperiment.onScreenBoss{
 			
 			if (running) {
 				now = new Date();
-				msDiff=now.valueOf()-currentTime.valueOf();
-				__offset+=msDiff;
+				currentMS=now.valueOf()-initTime.valueOf();
 				currentTime=now;
-				if (__offset > delay) {
-					while (__offset > delay) {
-						currentCount++;
-						__offset -= delay;
-						if (repeatCount != 0) {
-							if (currentCount == repeatCount) {
-								timeFromStart=now.valueOf()-initTime.valueOf();
-								timeShouldBe=(repeatCount*delay);
-								callF();
-								//dispatchEvent(new Event(TimerEvent.TIMER));
-								//dispatchEvent(new Event(TimerEvent.TIMER_COMPLETE));
-								stop();
-							}
-							else if (currentCount < repeatCount) {
-								timeFromStart=now.valueOf()-initTime.valueOf();
-								timeShouldBe=(repeatCount*delay);
-								callF();
-								//dispatchEvent(new Event(TimerEvent.TIMER));
-							}
-						}
-						else {
-							timeFromStart=now.valueOf()-initTime.valueOf();
-							timeShouldBe=(repeatCount*delay);
-							callF();
-							//dispatchEvent(new Event(TimerEvent.TIMER));
-						}
-					}
-				}
+				callF();
 			}
+			
 		}
 		
 		public function timeFromEnd():Number{
@@ -104,7 +77,7 @@ package com.xperiment.onScreenBoss{
 		}
 		
 		public function reset():void {
-			currentCount=0;
+			currentMS=0;
 			__offset=0;
 			running=false;
 			listen(false);

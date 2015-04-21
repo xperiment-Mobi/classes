@@ -148,6 +148,8 @@
 		
 		static public  function makeShape(type:String, lineThickness:Number, lineColour:Number, transparency:Number, colour:Number, width:int,height:int,line:Boolean=true,gradient:Object=null,fill:Boolean=true):Shape {
 
+			if(type.toLowerCase()=="arrow") fill=false;
+			
 			var sha:Shape=new Shape  ;
 			if(line){
 				sha.graphics.lineStyle(lineThickness,lineColour,transparency);
@@ -192,9 +194,10 @@
 				case "arrow":
 					sha.graphics.moveTo(0,height*.5)
 					sha.graphics.lineTo(width,height*.5);
-					sha.graphics.lineTo(width*.95,0);
+					sha.graphics.lineTo(width*.9,0);
 					sha.graphics.moveTo(width,height*.5);
-					sha.graphics.lineTo(width*.95,height);
+					sha.graphics.lineTo(width*.9,height);
+					
 					
 					break;
 				case "stopsign":

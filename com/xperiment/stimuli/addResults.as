@@ -6,6 +6,7 @@ package com.xperiment.stimuli
 	{		
 		public var __mID:String = "Results";
 		private var copyOver:Boolean = false;
+		private var forbidden:Array = ['if', 'behaviours','peg','timeStart','depth','copyOverID']
 		
 		public function addResults(){
 			this.peg=__mID.toLowerCase();
@@ -17,6 +18,7 @@ package com.xperiment.stimuli
 			uniqueProps ||= new Dictionary;
 	
 			return function(what:String=null,to:String=null):String{
+
 					if(what){
 						if(to && to.charAt(0)=="'" && to.charAt(to.length-1)=="'")to=to.substr(1,to.length-2);
 						var value:String=getValue(to);
@@ -31,7 +33,7 @@ package com.xperiment.stimuli
 		
 		private function safeStore(param:String, value:String):void
 		{
-			
+			if(forbidden.indexOf(param)!=-1) param= (param.charAt(0) as String).toUpperCase() + param.substr(1);
 			
 			if(!OnScreenElements.hasOwnProperty(param) || copyOver==true){
 				OnScreenElements[param]=value;
@@ -62,7 +64,8 @@ package com.xperiment.stimuli
 			pic=this;
 			this.ran=true;
 			if(list.@timeStart.toString().length==0 && list.@peg.toString().length!=0){
-				throw new Error("you have an 'add"+__mID+"' stimulus but you must specify timeStart for this");
+				list.@timeStart = '0';
+				//throw new Error("you have an 'add"+__mID+"' stimulus but you must specify timeStart for this");
 			}
 			
 			XMLListObjectPropertyAssigner(list);
@@ -83,7 +86,7 @@ package com.xperiment.stimuli
 			var tempData:Array
 				
 			for(var result:String in OnScreenElements){
-				if(['if', 'behaviours','peg','timeStart'].indexOf(result)==-1){
+				if(forbidden.indexOf(result)==-1){
 					tempData = new Array();
 					tempData.event=result; 
 					tempData.data=OnScreenElements[result];

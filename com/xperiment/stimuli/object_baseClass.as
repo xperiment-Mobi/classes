@@ -16,6 +16,10 @@
 	import flash.display.Sprite;
 	import flash.display.Stage;
 	import flash.events.Event;
+	import flash.events.MouseEvent;
+	import flash.external.ExternalInterface;
+	import flash.net.URLRequest;
+	import flash.net.navigateToURL;
 	import flash.utils.Dictionary;
 	import flash.utils.getQualifiedClassName;
 	
@@ -82,9 +86,7 @@
 			this.graphics.drawRect(0,0,1,1);
 			this.graphics.endFill();
 		}
-		
-		
-		
+			
 		
 		override public function myUniqueProps(prop:String):Function{
 			
@@ -92,9 +94,10 @@
 			if(uniqueProps.hasOwnProperty('angle')==false){
 				uniqueProps.rotate= function(what:String=null,to:String=null):String{
 					//AW Note that text is NOT set if what and to and null. 
-					
+					//trace(511331111,OnScreenElements.rotate)
 					if(what){
 						OnScreenElements.rotate=Number(to);
+						//trace(5111111,OnScreenElements.rotate)
 						setRotation();
 					}	
 					return codeRecycleFunctions.roundToPrecision(OnScreenElements.rotate,2).toString();	 
@@ -124,8 +127,7 @@
 		}
 		
 		override public function myUniqueActions(action:String):Function{
-		
-		return null
+			return null
 		}	
 		
 		public function events(active:Boolean):void{};
@@ -322,6 +324,7 @@
 			setVarBase("string","if","");			
 			setVarBase("string","deepID","");//needed for 'xperimentMaker'
 			setVarBase("number","outline", 0);
+			setVarBase("string","hyperlink", "");
 			setVarBase("string",'depth','',"","stimuli are normally presented on screen in the order they have been placed in your script (stimuli placed at the bottom of the script being on top of the stimuli are at the bottom of the script). If you want a stimulus to 'jump' up a place, set it's value to ^1, if you want it to 'jump down' two places, set it's value to v2.  If you do not use ^ and v signs, you exactly specify the depth the stimulus is placed at.  Do note that there can only exist ONE stimulus at each depth. A blank value or a space is the same as the objects default depth.");
 			//setVarBase("string","modify","");
 			setVarBase("string",'shuffle_something','',"used to randomise a stimulus paramater trial wide (that is, done once per trial).  Eg. timeStart='100;200;300' && shuffle_something='timeStart,;' where the list of options in timeStart is split by ; (MUST be either ; or , BTW) and a random element is selected")
@@ -362,8 +365,29 @@
 			//stimEvents=new StimEvents(peg,getQualifiedClassName(this),true);
 			
 			wrongPropertyHelper();
+			
+			hyperlink(true,	getVar("hyperlink")	);
 		}
 		
+		private function hyperlink(ON:Boolean,url:String):void
+		{
+			if(url.length!=0){
+				function hiddenListener(e:Event):void{
+					navigateToURL(new URLRequest(url), "_blank");
+				}
+				
+				
+				if(ON){
+					this.useHandCursor = true;
+					this.buttonMode = true;
+					this.mouseChildren = false;
+					this.addEventListener(MouseEvent.CLICK,hiddenListener);
+				}
+				else{
+					this.removeEventListener(MouseEvent.CLICK,hiddenListener);
+				}
+			}
+		}		
 		
 		private function wrongPropertyHelper():void
 		{
@@ -466,7 +490,7 @@
 
 			}
 
-			__appendMultiples(OnScreenElements);
+			codeRecycleFunctions.appendMultiples(OnScreenElements);
 
 		}
 		
@@ -484,58 +508,7 @@
 			return str;
 		}
 		
-		//unit test me
-		/*var arr:Array = [];
-		arr.a=1;
-		arr.a1=2;
-		arr.a2=3;
-		__appendMultiples(arr);
-		trace(arr.a=='123', arr.a1==undefined, arr.a2==undefined)
-		arr.b=1;
-		arr.b2=2;
-		trace(arr.b=='1', arr.b2=='2')*/
-		
-		public function __appendMultiples(arr:Array):void
-		{
-			
-			//concatenates up properties
-			//below, searches for attribs appended with 0 or 1.  These are special you see as they imply an 'appendUp' attribute.
-			var appendUpAttribs:Array;
-			
-			for (var prop:String in arr) {	
-				
-				if("1"== prop.charAt(prop.length-1) && isNaN(Number(prop.charAt(prop.length-2) ))){
-					appendUpAttribs ||= [];
-					if(appendUpAttribs.indexOf(prop)==-1){
-						appendUpAttribs.push(prop.substr(0,prop.length-1));
-					}
-				}
-			}
-			
 
-			
-			if(appendUpAttribs){
-				var i:int;
-				var appendUpProp:String;
-				var appendUpVal:String = '';
-				for each (prop in appendUpAttribs){
-					
-					i=0;
-					while(true){
-						appendUpProp=prop;
-						
-						if(i!=0)appendUpProp+=i.toString();
-						if(arr.hasOwnProperty(appendUpProp)==true){
-							appendUpVal+=arr[appendUpProp];
-							//if(i!=0) arr[appendUpProp] = null;
-							i++;
-						}
-						else break;	
-					}		
-					arr[prop]=appendUpVal;
-				}
-			}			
-		}
 		
 		
 		//removed as mucked up Text when there was a percentage sign in it.
@@ -578,7 +551,7 @@
 					return String(value);
 				case "int" :
 					if(value.toLowerCase().indexOf("rand")!=-1)return codeRecycleFunctions.getRand(value);
-					return int(value);
+					return codeRecycleFunctions.roundToPrecision(Number(value),0);
 				case "number" :
 					if(value.toLowerCase().indexOf("rand")!=-1)return Number(codeRecycleFunctions.getRand(value));
 					else return Number(value);
@@ -636,7 +609,7 @@
 			pic.scaleX=scaleX; pic.scaleY=scaleY;
 		}
 		
-		private function sortOutWidthHeight():void{
+		protected function sortOutWidthHeight():void{
 			
 			var staWidth:uint=returnStageWidth;
 			var staHeight:uint=returnStageHeight;
@@ -741,6 +714,8 @@
 
 		
 		override public function kill():void {
+			
+			hyperlink(false,	getVar("hyperlink")	);
 			
 			if(parentPic)parentPic=null;
 			

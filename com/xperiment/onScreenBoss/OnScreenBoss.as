@@ -1,12 +1,8 @@
 ﻿package com.xperiment.onScreenBoss{
 	import com.xperiment.uberSprite;
 	import com.xperiment.events.StimulusEvent;
-	
 	import flash.display.Sprite;
-	import flash.events.Event;
-	
-	
-	
+
 	public class OnScreenBoss extends Sprite  {
 		
 		public static var BOTTOM:int=int.MAX_VALUE; 
@@ -24,6 +20,7 @@
 		//private var depthRecyc:int;
 		protected var _allStim:Array;
 		
+		private var _currentCount:int = -1;
 		
 		private var chromeBug:Boolean = true;
 		
@@ -47,7 +44,7 @@
 		
 		public function getMS():int{
 			
-			return _mainTimer.currentCount;
+			return _mainTimer.currentMS;
 		}
 		
 		public function getTrueTimer(interval:int, callBackF:Function):TrueTimer{
@@ -110,12 +107,15 @@
 		
 		public function __extendTime(stim:Object,dur:int):void{
 			
-			if(_mainTimer.currentCount<stim.startTime)stim.startTime+=dur;
-			if(_mainTimer.currentCount<stim.endTime){
+			if(_mainTimer.currentMS<stim.startTime){
+				stim.startTime+=dur;
+				//trace("startTime",stim.peg,stim.startTime,22)
 				
+			}
+			if(_mainTimer.currentMS<stim.endTime && stim.endTime !=FOREVER){
+				//trace("endTime",stim.peg,stim.endTime,11,dur)
 				stim.endTime+=dur;
-				
-				//if(stim.peg=="vibration")trace(stim.peg,_mainTimer.currentCount,stim.startTime,stim.endTime,dur)
+				//trace("endTime",stim.peg,stim.endTime,22)
 			}
 		}
 		
@@ -155,14 +155,14 @@
 		
 		//this function needs testing.
 		public function setTimes(stim:uberSprite, startTime:Number, endTime:Number,duration:Number):Boolean{
-			
+
 			if(startTime!=-1)	stim.startTime=startTime;
 			if(endTime!=-1)		stim.endTime=endTime;
 			if(duration!=-1)	stim.endTime=stim.startTime+duration;;
 			
 			sortSpritesTIME();
 			
-			if(startTime<_mainTimer.currentCount || endTime >_mainTimer.currentCount){
+			if(startTime<_mainTimer.currentMS || endTime >_mainTimer.currentMS){
 				stopObj(stim);
 			}
 				//if object NOW on screen, add it
@@ -180,46 +180,39 @@
 		 elappsedTime - this method returns the elapsed time of the master timer
 		 */
 		public function elapsedTime():String {
-			return String(_mainTimer.currentCount);
+			return String(_mainTimer.currentMS);
 		}
 		/**
 		 checkForEvent - this method checks for the event on every clock ticks
 		 @param   evet  Event
 		 */
-		
+
 		public function checkForEvent():void {
-			
 			
 			if(running){
 				
-				
-				//evt=new Event("ElapsedTime");
-				//dispatchEvent(evt);
-				
-				/*		function f():String{
-				var arr:Array = [];
-				for(var i:int=0;i<_endTimeSorted.length;i++){
-				arr.push(_endTimeSorted[i].endTime);
-				}
-				return arr.join(",");
-				}
-				
-				trace(f());*/
-				//trace(_mainTimer.currentCount)
-				if (running  && _startTimeSorted.length!=0 && _startTimeSorted[0].startTime == _mainTimer.currentCount) {
+				if(_mainTimer.currentMS == _currentCount){
 					
-					do __addToScreen(_startTimeSorted[0] as uberSprite);
-					while (running && _startTimeSorted.length != 0 && _startTimeSorted[0].startTime == _mainTimer.currentCount);		
+					return;
+				}
+				_currentCount = _mainTimer.currentMS;
+
+				if (running  && _startTimeSorted.length!=0 && _startTimeSorted[0].startTime <= _currentCount) {
+					//banana
+					
+					do {
+						__addToScreen(_startTimeSorted[0] as uberSprite);
+					}
+					while (running && _startTimeSorted.length != 0 && _startTimeSorted[0].startTime <= _currentCount);		
 				}
 				
-				//trace(123, _endTimeSorted.length,_endTimeSorted[0].endTime,_mainTimer.currentCount)
-				if (running && _endTimeSorted.length!=0 &&_endTimeSorted[0].endTime==_mainTimer.currentCount) {
+
+				if (running && _endTimeSorted.length!=0 && _endTimeSorted[0].endTime<=_currentCount) {
 					
 					do {
 						stopObj(_endTimeSorted[0]);
-						
 					}
-					while (running && _endTimeSorted.length != 0 && _endTimeSorted[0].endTime == _mainTimer.currentCount);
+					while (running && _endTimeSorted.length != 0 && _endTimeSorted[0].endTime <= _currentCount);
 				}
 			}
 		}
@@ -264,15 +257,30 @@
 		
 		
 		public function killPeg(peg:String):void {
-			if(stopPeg(peg)){
-				var obj:Object;
-				for (var i:int=0; i < _allStim.length; i++) {
-					if (_allStim[i].peg==peg) {
-						_allStim.slice(i,1);
-						break;
-					}
+			stopPeg(peg)
+			
+			for (var i:int=0; i < _startTimeSorted.length; i++) {
+				if (_startTimeSorted[i].peg==peg) {
+					_startTimeSorted.splice(i,1);	
+					break;
 				}
 			}
+			
+			
+			for (i=0; i < _endTimeSorted.length; i++) {
+				if (_endTimeSorted[i].peg==peg) {
+					_endTimeSorted.splice(i,1);
+					break;
+				}
+			}
+			
+			for (i=0; i < _allStim.length; i++) {
+				if (_allStim[i].peg==peg) {
+					_allStim.splice(i,1);
+					break;
+				}
+			}
+			
 		}
 		
 		
@@ -281,7 +289,7 @@
 			var index:int;
 			var stopped:Boolean=false;
 			
-			if(this.contains(stim)){
+			if(stim && this.contains(stim)){
 				
 				__removeFromScreen(stim);
 				if(running){
@@ -310,7 +318,6 @@
 		{
 			for (var i:int=0; i < __objsOnScreen.length; i++) {
 				if(__objsOnScreen[i].peg==peg){
-					
 					return stopObj(__objsOnScreen[i]);
 				}
 			}	
@@ -319,7 +326,6 @@
 		
 		
 		public function runDrivenEvent(peg:String,delay:String="",dur:String=""):uberSprite {
-			
 			var stim:uberSprite;
 			for (var i:int=0; i < _allStim.length; i++) {
 				if (_allStim[i].peg==peg) {
@@ -330,11 +336,11 @@
 			
 			if (stim!=null && __objsOnScreen.indexOf(stim)==-1) {
 				
-				stim.endTime+=_mainTimer.currentCount;
+				stim.endTime+=_mainTimer.currentMS;
 				
-				if(dur!="" && !isNaN(Number(dur)))stim.endTime+=Number(dur);
+				if(dur!="" && !isNaN(Number(dur)))stim.endTime=Number(dur) + _mainTimer.currentMS;
 				
-				stim.startTime+=_mainTimer.currentCount;	
+				stim.startTime+=_mainTimer.currentMS;	
 				
 				if(delay!="" && !isNaN(Number(delay)))stim.startTime+=Number(delay);
 				
@@ -352,15 +358,16 @@
 		
 		public function __removeFromScreen(stim:uberSprite):void{
 			
-			remove(stim);
-			stim.dispatchEvent(new StimulusEvent(StimulusEvent.ON_FINISH));
+			stim.stimEvent(StimulusEvent.ON_FINISH);
 			if(running){
 				removeFromOnScreenList(stim);
 			}
+			remove(stim);
 		}
 		
 		private function removeFromOnScreenList(stim:uberSprite):void
 		{
+			
 			var index:int= __objsOnScreen.indexOf(stim);
 			if(index!=-1)__objsOnScreen.splice(index,1);
 		}		
@@ -368,42 +375,17 @@
 		
 		public function __addToScreen(stim:uberSprite,doEvents=true):void{
 			
-			if(doEvents)stim.dispatchEvent(new Event(StimulusEvent.DO_BEFORE));
-			
+			if(doEvents)stim.stimEvent(StimulusEvent.DO_BEFORE);
+	
 			depthManager(stim);
-			/*if(__objsOnScreen){
-			
-			if(__objsOnScreen.indexOf(stim)==-1)	__objsOnScreen.push(stim);
-			depthRecyc=stim.depth;
-			
-			if(depthRecyc==TOP || depthRecyc==0){
-			
-			add(stim);
-			}
-			
-			else if(depthRecyc==BOTTOM){
-			addAt(stim,0);
-			}
-			
-			else if(this.numChildren==0){
-			addAt(stim,0);
-			}
-			
-			else {
-			var d:int = __getDepth(stim)
-			//trace("in here",stim.peg,d)
-			addAt(stim,d);
-			}		
-			}
-			else add(stim);*/
 			
 			if(running){
 				var index:int=_startTimeSorted.indexOf(stim);
 				if(index!=-1)_startTimeSorted.splice(index,1);
 			}
-			
+
 			stim.ran = true;
-			if(doEvents)	stim.dispatchEvent(new Event(StimulusEvent.DO_AFTER_APPEARED));
+			if(doEvents)	stim.stimEvent(StimulusEvent.DO_AFTER_APPEARED);
 		}
 		
 		private function depthManager(stim:uberSprite=null):void
@@ -411,13 +393,15 @@
 			
 			if(stim)__objsOnScreen.push(stim);
 			
-			//__objsOnScreen.sortOn("depth",Array.NUMERIC);
+
 			__objsOnScreen.sortOn("depth", Array.DESCENDING | Array.NUMERIC);
-			
+
+
 			for(var i:int=0;i<__objsOnScreen.length;i++){
-				if(!__objsOnScreen[i])trace(11111)
-				if(__objsOnScreen[i])this.addChild(__objsOnScreen[i] as uberSprite);
+
+				if(__objsOnScreen[i])	this.addChild(__objsOnScreen[i] as uberSprite);
 			}
+
 			
 		}		
 		
@@ -432,48 +416,15 @@
 		}*/
 		
 		protected function remove(stim:uberSprite):void{
-			if(this.contains(stim))	this.removeChild(stim);
+			if(this.contains(stim)){
+				this.removeChild(stim);
+			}
 		}
 		
-		/*protected function __getDepth(stimulus:uberSprite):int{
 		
-		var minDepthGap:int = MAX_CHILDREN;
-		var atVal:int=0;
-		var depthDif:int;
-		
-		var stimDepth:int = stimulus.depth;
-		
-		loop: for(var i:int=0;i<_sortedDepths.length;i++){
-		//trace(2222,_sortedDepths[i].uSprite.peg,_sortedDepths[i].uSprite.depth)
-		if(_sortedDepths[i].stage){
-		
-		depthDif = stimDepth - _sortedDepths[i].depth;
-		
-		if(depthDif>=0){	
-		minDepthGap=depthDif;
-		atVal=this.getChildIndex(_sortedDepths[i]);
-		}
-		else{
-		break loop;
-		}
-		}
-		}
-		
-		if(minDepthGap==MAX_CHILDREN){
-		return 0;
-		}
-		else{
-		//trace("2345",atVal+1)
-		return atVal+1;
-		}
-		
-		throw new Error();
-		return null;;
-		}	
-		*/
 		public function time():int
 		{
-			return _mainTimer.currentCount;
+			return _mainTimer.currentMS;
 		}
 		
 		
@@ -491,24 +442,7 @@
 			return null;
 		}
 		
-		/*
-		public function updateDepths(newOrder:Array):void
-		{
-			
-			var stimObj:Object;
-			for(var depth:int=0;depth<newOrder.length;depth++){
-				stimObj=getObjFromPeg(newOrder[depth]);
-				
-				if(stimObj && stimObj.depth!=TOP && stimObj.depth!=BOTTOM){
-					stimObj.depth=depth;
-				}
-			}
-			
-			
-			depthManager();
-			
-		}*/
-		
+
 		public function updateStimTimesFromObj(changed:Object):uberSprite
 		{
 			//trace("-");
@@ -528,7 +462,6 @@
 			}
 			return stim;
 		}
-		
 		
 		
 		

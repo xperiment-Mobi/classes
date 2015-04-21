@@ -7,13 +7,13 @@
 	import com.xperiment.stimuli.primitives.IResult;
 	
 	import flash.display.Sprite;
+	import flash.events.Event;
 	import flash.events.MouseEvent;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.utils.Dictionary;
-	import flash.events.Event;
 	
 	public class addSlider extends object_baseClass implements Imockable, IResult {
 		
@@ -127,6 +127,7 @@
 			setVar("uint","fontSize",20);
 			setVar("uint","titleSize",20);
 			setVar("uint","textColour",Style.LABEL_TEXT);
+			setVar("int","sf",2);
 			//setVar("string","alignment","LEFT");
 			setVar("uint","tagLength",5,"","the length of the dashes on the line scale");
 			setVar("number","verticalJiggerTextPos",-12,"","allows you to shift the text position up and down");
@@ -142,8 +143,10 @@
 			setVar("boolean","lockToLabels",false,"","forces your participants to select a value - no intermediary values");
 			setVar("Number","unselectedValue",-100000);
 
-			super.setVariables(list);		
-
+			super.setVariables(list);	
+			
+			if(OnScreenElements.hasOwnProperty("labels")) 	OnScreenElements.labelList=OnScreenElements.labels;
+			if(OnScreenElements.labelList=="")				OnScreenElements.labelList=" , ";
 		}
 		
 		override public function returnsDataQuery():Boolean {
@@ -155,12 +158,12 @@
 			uniqueProps ||= new Dictionary;
 			if(uniqueProps.hasOwnProperty('result')==false){
 				uniqueProps.result= function():String{
-										if(disabled) throw new Error("not allowed to request 'result' on a linescale when you had a dragTolineScale behaviour on it. peg="+peg+".");
-										//AW Note that text is NOT set if what and to and null. 
-										var score:String = myScore();
-										if(score==getVar("unselectedValue").toString())return "''";
-										return myScore();
-									}; 	
+						if(disabled) throw new Error("not allowed to request 'result' on a linescale when you had a dragTolineScale behaviour on it. peg="+peg+".");
+						//AW Note that text is NOT set if what and to and null. 
+						var score:String = myScore();
+						if(score==getVar("unselectedValue").toString())return "''";
+						return myScore();
+					}; 	
 			}
 			
 			if(uniqueProps.hasOwnProperty(prop)) return uniqueProps[prop]
@@ -171,20 +174,33 @@
 		private function myScore():String {
 			var dat:Number;
 
-			if (sliderMoved) {
+			if (sliderMoved) {	
 
-				var currentVal:Number=Math.abs(slider[sliderAxis]-(track[sliderAxis]/track[changeProp]));
-				dat=Math.round(10000*currentVal/getVar("length"))/100;
+				dat=_getVal();
 				if (getVar("lockToLabels")) {
-					currentVal=nearestLabel(currentVal);
+					var currentVal:Number=nearestLabel(_getVal());
 					dat=_labelList[_labelLocation.indexOf(currentVal)];
 				}
 			}
 			else {
+				
 				dat = getVar("unselectedValue");
 			}
 			return String(dat);
 		}
+		
+		protected function _getScore():Number{
+			
+			return Math.round(10000*_getVal()/getVar("length"))/100;
+		}
+		
+		protected function _getVal():Number{
+			var sf:int = getVar("sf");
+			var score:Number = Math.abs(slider[sliderAxis]-(track[sliderAxis]/track[changeProp])) / highVal * 100;
+			return codeRecycleFunctions.roundToPrecision(score, sf);
+		}
+		
+		
 		
 		override public function storedData():Array {
 			if(overrideResults){
@@ -222,13 +238,13 @@
 			pic.scaleX=1;
 			pic.scaleY=1;
 			pic.addChild(overlay);
-			overlay.y=pic.myHeight*.5-overlay.height*.5;
-
-			
-			//overlay.x=pic.width*.5-overlay.width*.5;
-			//overlay.y=pic.height*.5-overlay.height*.5;
-			
-			
+			if(sliderAxis=="x"){
+				overlay.y=pic.myHeight*.5-overlay.height*.5;
+			}
+			else{
+				overlay.x=pic.myWidth*.5;
+				overlay.y-=triangleHeight;
+			}
 			return pic;
 		}
 		
@@ -240,28 +256,43 @@
 		}
 		
 		
-		public function assignVariables():void {
-			
-			
-			_labelList=(getVar("labelList") as String).split(",");
-			
+		protected function sortList():Array{
+			return (getVar("labelList") as String).split(",");
+		}
+		
+		protected function sortLocations():Array{
 			var str:String=getVar("labelLocation");
+			var arr:Array;
 			
 			if(str==''){
-				_labelLocation=[];
+				arr=[];
+
 				for(var i:int=0;i<_labelList.length;i++){
-					_labelLocation.push(i/(_labelList.length-1)*100)
+					arr.push(i/(arr.length-1)*100)
+					if(arr[arr.length-1]==Infinity)arr[arr.length-1]=100;
 				}
 				
 			}
 			else{
 				str=str.split("%").join('');
-				_labelLocation=str.split(",");
+				arr=str.split(",");
 			}
+
+			return arr;
+		}
+		
+		public function assignVariables():void {
 			
-			//for (var i:uint=0;i<_labelLocation.length
-			OnScreenElements.length=pic.width;
-			sliderAxis=getVar("sliderAxis");
+			
+			_labelList=sortList();
+			_labelLocation = sortLocations();
+			
+
+			
+			sliderAxis=(getVar("sliderAxis") as String).toLowerCase();
+			
+			if(sliderAxis == 'x') OnScreenElements.length=pic.width;
+			else OnScreenElements.length=pic.height;
 			highVal=getVar("length");
 			startVal=getVar("startVal");
 			triangleTLD=getVar("triangleToLineDistance");
@@ -349,6 +380,7 @@
 			overlay.addChild(slider);
 			overlay.addChild(scale);
 			
+			
 			if(theStage)theStage.addEventListener(MouseEvent.MOUSE_UP,handleMouseUp);
 		}
 		
@@ -395,6 +427,9 @@
 		 */
 		private function handleMouseUp(e:MouseEvent):void {
 			if(mouseDown){
+				
+				
+				
 				this.dispatchEvent(new Event("updated"));
 				if (getVar("lockToLabels")) lockToL();
 				slider.stopDrag();
@@ -446,6 +481,7 @@
 			}
 			for (i=0; i<_labelList.length; i++) {
 				var tempTextField:TextField=scaleLabel(_labelList[i]);
+
 				tempTextField.mouseEnabled=false;
 				
 				
@@ -454,6 +490,7 @@
 					tempTextField.y=getVar("distBetweenLabelsAndScale")+getVar("pointerSize");
 				}
 				else {
+					tempTextField.autoSize = TextFieldAutoSize.LEFT
 					tempTextField.y=_labelLocation[i]+getVar("verticalJiggerTextPos")+getVar("pointerSize");
 					tempTextField.x=getVar("distBetweenLabelsAndScale");
 				}
@@ -505,35 +542,3 @@
 
 }
 
-
-/*
-import flash.display.Stage;
-import flash.events.MouseEvent;
-
-
-class Scroll{
-	private var stage:Stage;
-	private var f:Function;
-	private var mult:int;
-
-	
-	function Scroll(stage:Stage, f:Function,mult:int){
-		this.stage = stage;
-		this.f= f;
-		this.mult=mult;
-		stage.addEventListener(MouseEvent.MOUSE_WHEEL,listenF);		
-	}
-
-	
-	protected function listenF(e:MouseEvent):void
-	{
-		if(e.delta>0)f(mult);
-		else f(-mult);
-	}
-	
-	public function kill():void
-	{
-		stage.removeEventListener(MouseEvent.MOUSE_WHEEL,listenF);		
-		f=null;
-	}
-}*/
