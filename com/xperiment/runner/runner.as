@@ -239,7 +239,9 @@ package com.xperiment.runner {
 		{
 			//if(XptMemory.sessionAlreadyExisted==false){
 				var attribs:XMLList = trialProtocolList.SETUP.variables.attributes();
+			
 				for (var i:int = 0; i < attribs.length(); i++){
+					
 					PropValDict.addExptProps(String(attribs[i].name()), attribs[i].toXMLString());
 				}
 				var urlVariables:Array = ExptWideSpecs.IS("urlParams");

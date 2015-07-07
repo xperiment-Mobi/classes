@@ -44,9 +44,13 @@ package com.xperiment.BehavLogicAction
 		
 		private function updateExptProps():void
 		{	
-			for(var prop:String in exptProps){
+		//trace(exptProps,22)
+		
+			for(var prop:String in exptProps){	
+			//	trace(12223344)
 				if(propDict.hasOwnProperty(prop)){
 					exptProps[prop]=propDict[prop];
+					//trace(111,prop,propDict[prop])
 				}	
 			}
 		}	

@@ -86,7 +86,7 @@
 		public function setup(info:Object):void {		
 			trialInfo=info;
 			info.storageFolder=ExptWideSpecs.IS("saveToPortableDevice");		
-			this.ITI=ExptWideSpecs.IS("ITI");
+			this.ITI=sortITI(	ExptWideSpecs.IS("ITI")	);
 			
 			trialNumber=info.order;
 			runTrial=info.runTrial;
@@ -102,7 +102,22 @@
 			trialLabel=info.trialNames;
 	
 		}
+		
+		private function sortITI(str:String):int
+		{
+			if(str.indexOf("-")!=-1){
+				var arr:Array = [];
+					str.split("-");
+				for each(var s:String in str.split("-")){
+					arr.push(	int(s)	);
+				}
+				arr.sort(Array.DESCENDING);
 
+				return int( 	Math.random()*(arr[1]-arr[0])+arr[0]	);
+			}
+			return int(str);
+		}
+		
 		///////////////////////////////////////////////
 		
 		public function elementSetup(stim:XML,inContainer:container):void {
@@ -143,8 +158,7 @@
 						
 						
 						
-						
-						StimModify.process(XMLList(stimParams),null);
+						StimModify.process(XMLList(stimParams),null,trialBlockPositionStart);
 						for (var i:int=1;i<=iterations;i++){
 							//StimModify.process(XMLList(stimParams),{iteration:i,trial:trialBlockPositionStart});
 							composeObject(stimParams, i-1,inContainer,false,stimParams.text());
@@ -194,7 +208,7 @@
 		
 		public function composeObject(kinder:XML, iteration:uint,inContainer:container, saveParams:Boolean=false,xmlVal:String='',isBuilder:Boolean=false):container {
 			
-			
+			//trace(kinder.toXMLString())
 			//using the 'present' attribute (where 0 means 'do not show');
 			var present:String = codeRecycleFunctions.multipleTrialCorrection(kinder.@present,";",trialBlockPositionStart);
 			var makeStimulus:Boolean=["0","false"].indexOf(present)==-1;

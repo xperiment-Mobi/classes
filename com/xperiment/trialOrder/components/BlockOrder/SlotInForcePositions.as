@@ -13,6 +13,7 @@ package com.xperiment.trialOrder.components.BlockOrder
 			var position:int;
 			for(var i:int=0;i<forcePositions.length;i++){
 				forcePosition=forcePositions[i];	
+				if(!forcePosition) throw new Error("this error arises as you have specified a forceBlockDepthPositions for a trial that is the only trial in a given block");
 				position=getPosition(forcePosition.forcePosition,trials.length);
 				forcePositions[i].position = position;
 			}

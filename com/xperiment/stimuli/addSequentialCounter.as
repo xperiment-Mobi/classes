@@ -2,6 +2,7 @@
 package  com.xperiment.stimuli{
 
 
+	import com.bit101.components.Style;
 	import com.xperiment.uberSprite;
 	import com.xperiment.events.StimulusEvent;
 	import com.xperiment.stimuli.object_baseClass;
@@ -33,7 +34,7 @@ package  com.xperiment.stimuli{
 		override public function setVariables(list:XMLList):void {
 
 			setVar("string","text","");
-			setVar("number","colour",0x000000);
+			setVar("number","colour",Style.LABEL_TEXT);
 			setVar("uint","size",40);
 			//setVar("string","alignment","LEFT","");
 			setVar("number","backgroundColor","");
@@ -45,8 +46,8 @@ package  com.xperiment.stimuli{
 			setVar("uint","widthTextBox",0);
 			setVar("uint","heightTextBox",0);
 			setVar("number","steps",10);
-			setVar("number","startValue",0);
-			setVar("number","endValue",10000);
+			setVar("number","startVal",0);
+			setVar("number","endVal",10000);
 			setVar("number","divideNumberBy",1000);
 			setVar("string","endMessage","fin!");
 			super.setVariables(list);
@@ -79,16 +80,16 @@ package  com.xperiment.stimuli{
 
 			myText.defaultTextFormat=myTextFormat;
 			
-			myText.htmlText=String((getVar("startValue")/getVar("divideNumberBy")));
-			rootSquareTimePeriod=Math.sqrt(Math.pow((getVar("endValue")-getVar("startValue")),2));
+			myText.htmlText=String((getVar("startVal")/getVar("divideNumberBy")));
+			rootSquareTimePeriod=Math.sqrt(Math.pow((getVar("endVal")-getVar("startVal")),2));
 			myText.autoSize=TextFieldAutoSize.CENTER;
 
-			if ((getVar("startValue")>getVar("endValue"))) {
+			if ((getVar("startVal")>getVar("endVal"))) {
 				countDown=true;
-				currentVal=getVar("startValue");
+				currentVal=getVar("startVal");
 			}
 			else {
-				currentVal=getVar("startValue");
+				currentVal=getVar("startVal");
 			}
 			
 			pic.width=myText.width;

@@ -131,6 +131,7 @@ package com.xperiment.stimuli
 			isPlaying = false;
 
 			if(panel)panel.ON(false);
+			
 			if(onePlayOnly){
 				onePlayOnlyF(false);
 			}
@@ -211,7 +212,7 @@ package com.xperiment.stimuli
 		
 		override public function kill():void{
 			if(panel){
-				pic.removeChild(panel);
+				if(panel && pic.contains(panel)) pic.removeChild(panel);
 				panel.kill();
 				panel=null;
 			}

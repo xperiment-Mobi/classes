@@ -12,8 +12,8 @@
 		private var sticky:Object;
 		
 		override public function setVariables(list:XMLList):void {
-			setVar("string","doOnce",'false');
-			setVar("string","how","random, flipped");
+			setVar("string","doOnce",'',"provide an id");
+			setVar("string","how","random","random or flipped");
 			super.setVariables(list);
 		}
 		

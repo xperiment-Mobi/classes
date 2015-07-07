@@ -36,15 +36,9 @@
 		public var overlay:Sprite;
 		private var txtFields:Vector.<TextField> = new Vector.<TextField>;
 		public var overrideResults:Function;
-		private var backgroundClick:Shape;
-		
-		/*	<addSlider x="50%" y="45%" width="50%" height="10%"  
-		sliderTitle="How intense is this odour?" percentageScreenSizeFrom="horizontal"  hidePointerAtStart="false" 
-		labelList="not detectable&&very strong---completely unknown&&very familar---disgusting&&extremely pleasant" startVal="50" 
-		labelLocation="0&&100"distBetweenLabelsAndScale="2" length="85%" pointerSize="5%" resultFileName="intensity---familiarity---pleasantness" />  */
+		private var backgroundClick:Shape;	
 		private var mouseDown:Boolean;
 		private var disabled:Boolean = false;
-		//private var scroll:Scroll;
 
 		
 		public function addSlider():void{
@@ -138,13 +132,13 @@
 			//setVar("int","scroll",0,"if this value is not zero, the scroll button will move the slider too. Each movement is multiplied by the value set here.");
 			setVar("uint","backgroundClickBoxSize",30,"","the blank region around the scale where you can interact with the scale");
 			setVar("string","lineColour",Style.BUTTON_FACE);
-			setVar("string","sliderTitle","");
+			setVar("string","title","");
 			setVar("uint","distBetweenScaleAndTitle",20);
 			setVar("boolean","lockToLabels",false,"","forces your participants to select a value - no intermediary values");
 			setVar("Number","unselectedValue",-100000);
 
 			super.setVariables(list);	
-			
+
 			if(OnScreenElements.hasOwnProperty("labels")) 	OnScreenElements.labelList=OnScreenElements.labels;
 			if(OnScreenElements.labelList=="")				OnScreenElements.labelList=" , ";
 		}
@@ -505,10 +499,10 @@
 				
 			}
 			
-			if (getVar("sliderTitle")!="") {
+			if (getVar("title")!="") {
 				tempTextField= new TextField;
 				tempTextField.textColor=getVar("textColour");
-				tempTextField=scaleLabel(getVar("sliderTitle"));
+				tempTextField=scaleLabel(getVar("title"));
 				tempTextField.mouseEnabled=false;
 				myTextFormat.size=getVar("titleSize");
 				tempTextField.setTextFormat(myTextFormat);

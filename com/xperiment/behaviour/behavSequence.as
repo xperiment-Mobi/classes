@@ -1,4 +1,5 @@
 package com.xperiment.behaviour {
+	import com.xperiment.uberSprite;
 	import com.xperiment.stimuli.Imockable;
 	import com.xperiment.stimuli.object_baseClass;
 	
@@ -8,6 +9,7 @@ package com.xperiment.behaviour {
 	public class behavSequence extends behav_baseClass implements Imockable{
 		private var pos:int = -1;
 		private var actionStim:Dictionary;
+		private var myVis:Boolean;
 		
 		override public function kill():void{
 			actionStim=null;
@@ -76,13 +78,15 @@ package com.xperiment.behaviour {
 		
 		override public function nextStep(id:String=""):void{
 			sort();
-			hideAll();
+			myVis = hideAll();
 			show(getVar("show"));
 		}
 		
 		private function show(toShow:String):int
 		{
-			if(toShow=='random' || toShow=='') show_i((behavObjects.length-1)*Math.random());
+			if(toShow=='random' || toShow==''){
+				show_i((behavObjects.length-1)*Math.random());
+			}
 			if(toShow!=''){
 				if(toShow.toLowerCase()=='max')show_i((behavObjects.length-1));
 				else if(toShow.toLowerCase()=='min')show_i(0);
@@ -103,16 +107,20 @@ package com.xperiment.behaviour {
 			if(behavObjects[toShow]==undefined) throw new Error("you have asked to show a non existing stimulus in a behavSequence: "+toShow);
 			if(pos!=-1)behavObjects[pos].visible=false;
 	
-			behavObjects[toShow].visible=true;
+			if(myVis)	behavObjects[toShow].visible=true;
 			pos=toShow;
 			return pos;
 		}
 		
-		private function hideAll():void
+		private function hideAll():Boolean
 		{
+			var show:Boolean;
+			
 			for(var i:int=0;i<behavObjects.length;i++){
+				if(i==0)show=(behavObjects[i] as uberSprite).visible;
 				behavObjects[i].visible = false;
 			}
+			return show;
 		}
 		
 		private function sort():void

@@ -43,7 +43,6 @@
 		
 		override public function actionWrapper(stim:object_baseClass, action:String):Function
 		{
-			
 			if(permittedActions.indexOf(action)!=-1){
 			
 				switch(action){
@@ -79,13 +78,21 @@
 			
 			if(["timeStart","timeEnd","duration"].indexOf(prop)!=-1)return timeSetter(stim,prop);
 			else if(["x","y"].indexOf(prop.toLowerCase())!=-1)return codeRecycleFunctions.posSetterGetter(stim,prop);
-
+			else if(prop.toLowerCase()=="filename"){
+				return getValue(stim, prop);
+			}
 			else if(stim.OnScreenElements.hasOwnProperty(prop)){
-				
 				return setValue(stim, prop);			
 			}
 			super.propWrapper(stim,prop); //if this happens, Error
 			return null;
+		}
+		
+		private function getValue(stim:object_baseClass, prop:String):Function
+		{
+			return function(what:String=null,to:String=null):String{
+				return codeRecycleFunctions.addQuots(stim.OnScreenElements[correctForDotNotation(prop)]);
+			}
 		}
 		
 		private function setValue(stim:object_baseClass, prop:String):Function{

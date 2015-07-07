@@ -28,7 +28,6 @@ package com.xperiment.stimuli.Controls
 					elements[i].ON(yes);
 					break;
 				}
-				
 			}
 		}
 		

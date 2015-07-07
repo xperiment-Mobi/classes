@@ -69,7 +69,7 @@ package com.xperiment.trialOrder.components.DepthNode
 		
 		private function clean(value:String):String
 		{
-			if([TrialBlock.FIXED,TrialBlock.RANDOM,TrialBlock.REVERSE].indexOf(value)!=-1) return value;
+			if([TrialBlock.FIXED,TrialBlock.RANDOM,TrialBlock.REVERSE, TrialBlock.PSEUDO,TrialBlock.PREDETERMINED].indexOf(value)!=-1) return value;
 			else{
 				var split:Array=value.split(",");
 				for(var i:int=0;i<split.length;i++){

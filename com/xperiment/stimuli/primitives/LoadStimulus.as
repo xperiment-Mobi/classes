@@ -66,17 +66,20 @@ package com.xperiment.stimuli.primitives
 				OnScreenElements.filename=OnScreenElements.filename+"."+getVar("extension");
 			}
 			OnScreenElements.filename = OnScreenElements.filenamePrefix + OnScreenElements.filename + OnScreenElements.filenameSuffix;
+
 		}
 		
 		public function setupPreloader():void{
 
 			if(preloader)	{
+
 				preloader.listenFileLoad(loaded,null,null,getVar("filename"));
 			}
 		}
 		
-	
+
 		public function loaded():void{
+
 			doAfterLoaded(preloader.give(getVar("filename")));
 		}
 		

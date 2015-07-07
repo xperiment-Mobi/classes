@@ -106,7 +106,7 @@
 			
 			var colour:Number = codeRecycleFunctions.getColour(getVar("colour"));
 			
-			var shape:Shape = makeShape(getVar("shape"),getVar("lineThickness"),getVar("lineColour"),getVar("transparency"),colour,_width,_height,getVar("border"),myGradient,getVar("fill"));
+			var shape:Shape = makeShape(getVar("shape"),getVar("lineThickness"),getVar("lineColour"),getVar("transparency"),colour,_width,_height,getVar("line"),myGradient,getVar("fill"),getVar("radius"));
 			
 			return shape;
 		}
@@ -146,7 +146,7 @@
 			return temp;
 		}
 		
-		static public  function makeShape(type:String, lineThickness:Number, lineColour:Number, transparency:Number, colour:Number, width:int,height:int,line:Boolean=true,gradient:Object=null,fill:Boolean=true):Shape {
+		static public  function makeShape(type:String, lineThickness:Number, lineColour:Number, transparency:Number, colour:Number, width:int,height:int,line:Boolean=true,gradient:Object=null,fill:Boolean=true,other:int=0):Shape {
 
 			if(type.toLowerCase()=="arrow") fill=false;
 			
@@ -175,7 +175,8 @@
 					sha.graphics.drawRect(0,0,width,height);
 					break;
 				case "roundedrectangle":
-					sha.graphics.drawRoundRect(0,0,width,height,width,0);
+					sha.graphics.drawRoundRect(0,0,width,height,other,other);
+					break;
 				case "square":
 					sha.graphics.drawRect(0,0,width,height);
 					break;

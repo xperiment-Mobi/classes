@@ -1,5 +1,6 @@
 package  com.xperiment.stimuli{
 	
+	import com.xperiment.codeRecycleFunctions;
 	import com.xperiment.uberSprite;
 	import com.xperiment.stimuli.primitives.LoadStimulus;
 	
@@ -12,6 +13,7 @@ package  com.xperiment.stimuli{
 	
 	public class addJPG extends LoadStimulus  {
 		public var content:Bitmap;
+		private var overTrials:String;
 
 		override public function kill():void {
 			content=null;
@@ -26,19 +28,25 @@ package  com.xperiment.stimuli{
 			//If width and height not specified, just use the graphics file's dimensions
 			if(list.@width.toString().length==0)OnScreenElements.width="0";
 			if(list.@height.toString().length==0)OnScreenElements.height="0";	
-			if(list.@exactSize.toString().length==0)OnScreenElements.exactSize="true";	
+			if(list.@exactSize.toString().length==0)OnScreenElements.exactSize="false";	
 			////////////////////////////////////////////////////////////////////////////
 			setVar("boolean","exactSize",true);
+			setVar("boolean", "keepBoxSize",false,"","keeps the size of your width and height setting, irrespective of you using eg exactSize. Good for adding a specific sized background");
 			setVar("boolean","smoothing",false);
 			setVar("boolean","showOutlineBeforeLoaded",false);
+			setVar("string","overTrials","","","keeps the image on screen. Until the next image with the same value is shown (then previous image is removed)");
+			setVar("string","background","");
+			super.setVariables(list);	
 			
-			super.setVariables(list);			
+			overTrials = getVar("overTrials");
+			if(overTrials=="remove")	OverTrials.REMOVE();
+
 		}
 		
 		override public function RunMe():uberSprite {
 	
 			if(theStage){
-				
+
 				var ba:ByteArray=givePreloaded();
 				
 				
@@ -50,6 +58,7 @@ package  com.xperiment.stimuli{
 					
 				else setupPreloader();	
 			}
+			
 			return pic;
 		}
 		
@@ -63,13 +72,31 @@ package  com.xperiment.stimuli{
 			pic.scaleY=1;
 			
 			if(getVar("smoothing"))content.smoothing = true;
+			
+			
+	
+			
 			pic.addChild(content);
 			pic.name=peg;
+			
+			if(overTrials!="") OverTrials.DO((content as Bitmap),overTrials);
+			
+			function centreContent():void{
+				content.x=(pic.myWidth-content.width)*.5;
+				content.y=(pic.myHeight-content.height)*.5;
+			}
+			
+			function resize():void{
+				if(getVar("keepBoxSize")==false){
+					pic.myWidth=content.width;
+					pic.myHeight=content.height;
+				}
+			}
 
 			//trace(111,getVar("width").toLowerCase(),getVar("height").toLowerCase());
-			//if(getVar("exactSize")==false){
+			if(getVar("exactSize")==false){
 
-				if(getVar("width").toLowerCase()=="aspectratio" || getVar("height").toLowerCase()=="aspectratio"){
+				//if(getVar("width").toLowerCase()=="aspectratio" || getVar("height").toLowerCase()=="aspectratio"){
 
 					var maxRatio1:Number = content.width/pic.myWidth;
 					var maxRatio2:Number = content.height/pic.myHeight;
@@ -78,21 +105,31 @@ package  com.xperiment.stimuli{
 					
 					content.width=content.width/maxRatio1;
 					content.height=content.height/maxRatio1;
+					resize();
+					centreContent();
+					setPosPercent();
+				//}
+
+	
+				/*else{
+					resize();
+					setPosPercent();
 					
-					content.x=(pic.myWidth-content.width)*.5;
-					content.y=(pic.myHeight-content.height)*.5;
-				}
-
-
+				}*/
+			}
 			else{
-				
-				pic.myWidth=content.width;
-				pic.myHeight=content.height;			
-
+				resize();
+				centreContent();
 				setPosPercent();
-			}	
-
+			}
 			
+			var bg:String = getVar("background");
+			if(bg.length!=0){
+				var col:int = codeRecycleFunctions.getColour(bg);
+				pic.graphics.beginFill(col,1);
+				pic.graphics.drawRect(0,0,pic.myWidth,pic.myHeight);
+			}
+
 			pic.dispatchEvent(new Event(Event.COMPLETE));
 		}
 		
@@ -119,3 +156,83 @@ package  com.xperiment.stimuli{
 
 	}
 }
+
+
+import flash.display.Bitmap;
+import flash.display.Sprite;
+import flash.display.Stage;
+import flash.events.Event;
+import flash.geom.Rectangle;
+
+class OverTrials{
+	
+	private static var prevGenBitmap:Bitmap;
+	private static var bitmap:Bitmap;
+	private static var stage:Stage;
+	private static var rect:Rectangle;
+	
+
+	public static function DO(b:Bitmap, id:String):void{
+		prevGenBitmap = bitmap;
+		bitmap = b;
+		
+		bitmap.addEventListener(Event.ADDED_TO_STAGE,listeners);
+		bitmap.addEventListener(Event.REMOVED_FROM_STAGE, listeners);
+	}
+	
+	protected static function listeners(e:Event):void
+	{
+		e.currentTarget.removeEventListener(e.type,listeners);
+		
+		
+		if(e.type == Event.REMOVED_FROM_STAGE){
+			stage.addEventListener(Event.ADDED,listeners);
+			STAGE("add",bitmap);
+			bitmap.x=rect.x;
+			bitmap.y=rect.y;
+			bitmap.width = rect.width;
+			bitmap.height = rect.height;
+		}
+		
+		else if(e.type == Event.ADDED_TO_STAGE){
+			
+			STAGE("remove",prevGenBitmap);	
+			
+			rect = bitmap.getBounds(stage);
+			stage = bitmap.stage;
+		}
+		
+		else if(e.type == Event.ADDED){
+			if(bitmap) stage.addChild(bitmap);	
+		}
+	}
+	
+	private static function STAGE(action:String, what:Bitmap):void{
+		if(action=="add"){
+		
+			if(what.parent.parent){
+				var parent:Sprite = what.parent.parent.parent as Sprite;
+				var index = stage.getChildIndex(parent);
+				stage.addChild(what);
+				stage.addChild(parent);
+			}
+			else{ 
+				stage.addChild(what);
+			}
+			
+		}
+		else if(action=="remove"){
+			if(what)	stage.removeChild(what);		
+		}
+	}
+	
+
+	public static function REMOVE():void
+	{
+		STAGE("remove", prevGenBitmap);		
+		prevGenBitmap=null;
+		
+	}
+}
+	
+

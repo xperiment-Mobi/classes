@@ -38,6 +38,7 @@
 			setVar("number","barColour",0x0738f2);
 			setVar("boolean","showText",false);
 			setVar("number","MBs",0);
+			setVar("string","success","loaded all stimuli");
 			setVar("string","errorMessage","Unfortunately there has been an error loading the stimuli.  The server may be down, in which case, could you try again later?  If this repeatedly happens, could you let us know by visiting www.xperiment.mobi?  Many apologies for this inconvenience.");
 			super.setVariables(list);
 			
@@ -61,7 +62,7 @@
 		
 		private function finish(e:Event=null):void{
 			if(pic.hasEventListener(Event.ADDED_TO_STAGE))pic.removeEventListener(Event.ADDED_TO_STAGE,finish);
-			updateInfo("loaded all stimuli");
+			updateInfo(	getVar("success")	);
 			this.dispatchEvent(new Event("onFinish",true));
 		}
 

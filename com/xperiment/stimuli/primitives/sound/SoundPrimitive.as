@@ -68,8 +68,12 @@ package com.xperiment.stimuli.primitives.sound
 		
 		
 		public function freq(val:String):String{
-			if(val && val!="-100000")play(Number(val)*.01*rangePitch+minPitch,1)
-			return val;
+			if(val && val!="-100000"){
+				frequency=Number(val)*.01*rangePitch+minPitch;
+				play(frequency,1)
+				return val;
+			}
+			return frequency.toString();
 		}
 		
 		

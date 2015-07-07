@@ -155,7 +155,7 @@
 		
 		//this function needs testing.
 		public function setTimes(stim:uberSprite, startTime:Number, endTime:Number,duration:Number):Boolean{
-
+			
 			if(startTime!=-1)	stim.startTime=startTime;
 			if(endTime!=-1)		stim.endTime=endTime;
 			if(duration!=-1)	stim.endTime=stim.startTime+duration;;
@@ -240,6 +240,7 @@
 		
 		public function addtoTimeLine(stim:uberSprite):void {
 			
+			
 			_allStim.push(stim);
 			
 			if(stim.startTime!=-1){
@@ -257,6 +258,7 @@
 		
 		
 		public function killPeg(peg:String):void {
+
 			stopPeg(peg)
 			
 			for (var i:int=0; i < _startTimeSorted.length; i++) {
@@ -285,7 +287,7 @@
 		
 		
 		public function stopObj(stim:uberSprite):Boolean {
-			
+
 			var index:int;
 			var stopped:Boolean=false;
 			
@@ -330,39 +332,43 @@
 			for (var i:int=0; i < _allStim.length; i++) {
 				if (_allStim[i].peg==peg) {
 					stim=_allStim[i];
-					break;
+					
+					
+					if (stim!=null && __objsOnScreen.indexOf(stim)==-1) {
+						
+						stim.endTime+=_mainTimer.currentMS;
+						
+						if(dur!="" && !isNaN(Number(dur)))stim.endTime=Number(dur) + _mainTimer.currentMS;
+						
+						stim.startTime+=_mainTimer.currentMS;	
+						
+						if(delay!="" && !isNaN(Number(delay)))stim.startTime+=Number(delay);
+						
+						_endTimeSorted.push(stim);
+						_startTimeSorted.push(stim);
+						
+						sortSpritesTIME();
+						
+						if (delay==""){
+							__addToScreen(stim);		
+						}
+					}
 				}
 			}
 			
-			if (stim!=null && __objsOnScreen.indexOf(stim)==-1) {
-				
-				stim.endTime+=_mainTimer.currentMS;
-				
-				if(dur!="" && !isNaN(Number(dur)))stim.endTime=Number(dur) + _mainTimer.currentMS;
-				
-				stim.startTime+=_mainTimer.currentMS;	
-				
-				if(delay!="" && !isNaN(Number(delay)))stim.startTime+=Number(delay);
-				
-				_endTimeSorted.push(stim);
-				_startTimeSorted.push(stim);
-				
-				sortSpritesTIME();
-				
-				if (delay==""){
-					__addToScreen(stim);		
-				}
-			}
-			return stim;
+		return stim;
+		
 		}
 		
 		public function __removeFromScreen(stim:uberSprite):void{
 			
-			stim.stimEvent(StimulusEvent.ON_FINISH);
-			if(running){
-				removeFromOnScreenList(stim);
+			if(stim){
+				stim.stimEvent(StimulusEvent.ON_FINISH);
+				if(running){
+					removeFromOnScreenList(stim);
+				}
+				remove(stim);
 			}
-			remove(stim);
 		}
 		
 		private function removeFromOnScreenList(stim:uberSprite):void
@@ -374,6 +380,7 @@
 		
 		
 		public function __addToScreen(stim:uberSprite,doEvents=true):void{
+			
 			
 			if(doEvents)stim.stimEvent(StimulusEvent.DO_BEFORE);
 	
@@ -398,7 +405,7 @@
 
 
 			for(var i:int=0;i<__objsOnScreen.length;i++){
-
+			
 				if(__objsOnScreen[i])	this.addChild(__objsOnScreen[i] as uberSprite);
 			}
 

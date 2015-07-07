@@ -129,6 +129,8 @@
 			setVar("string","key","",'Prefix c if you want to use an ascii key code, which you can get from http://www.asciitable.com/. Else just enter the key. Or enter ← → ↑ ↓ for cursor keys.'); 	// use codes from here: http://www.asciitable.com/  
 										//or figure out codes by pressing from here http://www.kirupa.com/developer/as3/using_keyboard_as3.htm
 
+			
+			
 			if(list.hasOwnProperty("@keyEnabled")==false){ 
 				if(list.hasOwnProperty("@enabled")==true){
 					list.@keyEnabled = list.@enabled;	
@@ -260,6 +262,7 @@
 			
 			
 			if((button && button.enabled) || (key && getVar("keyEnabled"))){
+
 				if(mouseDown4BehavBoss!=null)mouseDown4BehavBoss();
 				
 				e.stopPropagation();

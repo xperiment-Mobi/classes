@@ -19,6 +19,7 @@ package  com.xperiment.stimuli{
 		private var combined:Sprite;
 		private var bckground:Shape;
 		private var text:TextField;
+		private var onlyText:Boolean;
 		
 
 		private static var trials_i:int = 0;
@@ -29,13 +30,14 @@ package  com.xperiment.stimuli{
 			setVar("number","backBarLineColour",0xc5c5c7);
 			setVar("number","backBarLineThickness",6);
 			setVar("number","barColour",0x0738f2);
+			setVar("boolean","onlyText",false);
 			setVar("number","trials",1);
 			setVar("int","fontSize",15);
 			setVar("int","fontColour",Style.LABEL_TEXT);
 			setVar("string","label","trial");
 			super.setVariables(list);
 			
-			
+			onlyText = getVar("onlyText");
 
 		}
 		
@@ -58,25 +60,27 @@ package  com.xperiment.stimuli{
 			trials_i++;
 			
 			combined= new Sprite;
-			myBackground=new Shape  ;
-			myBackground.graphics.beginFill(getVar("backBarColour"));
-			myBackground.graphics.lineStyle(getVar("backBarLineThickness"),getVar("backBarLineColour"));
-			myBackground.graphics.drawRect(0,0,this.myWidth,this.myHeight);
-			myBackground.graphics.endFill();
-			combined.addChild(myBackground);
 			
-			myBar=new Shape  ;
-			myBar.graphics.beginFill(getVar("barColour"));
-
-			//myBar.graphics.drawRoundRect(2,2,this.myWidth/getVar("trials")*trials_i-getVar("backBarLineThickness"),this.myHeight-getVar("backBarLineThickness"),15,15);
-
-			myBar.graphics.drawRoundRect(2,2,(this.myWidth-getVar("backBarLineThickness")+1)/getVar("trials")*trials_i,this.myHeight-getVar("backBarLineThickness")+1,15,15);
-
-
-			combined.addChild(myBar);
+			if(onlyText==false){
+				myBackground=new Shape  ;
+				myBackground.graphics.beginFill(getVar("backBarColour"));
+				myBackground.graphics.lineStyle(getVar("backBarLineThickness"),getVar("backBarLineColour"));
+				myBackground.graphics.drawRect(0,0,this.myWidth,this.myHeight);
+				myBackground.graphics.endFill();
+				combined.addChild(myBackground);
+				
+				myBar=new Shape  ;
+				myBar.graphics.beginFill(getVar("barColour"));
+	
+				//myBar.graphics.drawRoundRect(2,2,this.myWidth/getVar("trials")*trials_i-getVar("backBarLineThickness"),this.myHeight-getVar("backBarLineThickness"),15,15);
+	
+				myBar.graphics.drawRoundRect(2,2,(this.myWidth-getVar("backBarLineThickness")+1)/getVar("trials")*trials_i,this.myHeight-getVar("backBarLineThickness")+1,15,15);
+	
+	
+				combined.addChild(myBar);
 			
 
-			
+			}
 			
 			createInfo();
 			
@@ -95,14 +99,16 @@ package  com.xperiment.stimuli{
 			text.text = getText();
 			text.autoSize=TextFieldAutoSize.CENTER
 			
+			if(onlyText==false){
+				bckground =new Shape  ;
+				bckground.graphics.beginFill(getVar("backBarColour"));
+				bckground.graphics.endFill();
+				bckground.alpha=.5;
+	
+				
+				combined.addChild(bckground);
+			}
 			
-			bckground =new Shape  ;
-			bckground.graphics.beginFill(getVar("backBarColour"));
-			bckground.graphics.endFill();
-			bckground.alpha=.5;
-
-			
-			combined.addChild(bckground);
 			combined.addChild(text);
 			
 			text.x=combined.width*.5 - text.width*.5;

@@ -28,6 +28,7 @@ package com.xperiment.trialOrder.components.BlockOrder
 		static public var FIXED:String = 'FIXED';
 		static public var REVERSE:String='REVERSE';
 		static public var PREDETERMINED:String='PREDETERMINED';
+		static public var PSEUDO:String='PSEUDO';
 		public static var DEFAULT_DEPTH_ORDER:String = FIXED;
 		
 		public var forceBlockPositions:Array;

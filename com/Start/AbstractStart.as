@@ -1,8 +1,6 @@
 package com.Start
 {
 
-	import com.Start.MobilePlayerStart.utils.ParseMobileScript;
-	import com.Start.WebStart.utils.StimuliUrl;
 	import com.greensock.events.LoaderEvent;
 	import com.greensock.loading.DataLoader;
 	import com.xperiment.messages.XperimentMessage;

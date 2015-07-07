@@ -19,6 +19,7 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavGradientFill;
 	import com.xperiment.behaviour.behavHide;
 	import com.xperiment.behaviour.behavLanguage;
+	import com.xperiment.behaviour.behavMoveToArea;
 	import com.xperiment.behaviour.behavNextTrial;
 	import com.xperiment.behaviour.behavOcclude;
 	import com.xperiment.behaviour.behavOpacity;
@@ -34,11 +35,14 @@ package com.xperiment.stimuli
 	import com.xperiment.behaviour.behavSave;
 	import com.xperiment.behaviour.behavSaveData;
 	import com.xperiment.behaviour.behavSaveImage;
+	import com.xperiment.behaviour.behavScale;
 	import com.xperiment.behaviour.behavScheduleStuff;
 	import com.xperiment.behaviour.behavScroll;
+	import com.xperiment.behaviour.behavSelect;
 	import com.xperiment.behaviour.behavSequence;
 	import com.xperiment.behaviour.behavShadow;
 	import com.xperiment.behaviour.behavShake;
+	import com.xperiment.behaviour.behavShapePattern;
 	import com.xperiment.behaviour.behavShufflePropertiesOfObjects;
 	import com.xperiment.behaviour.behavSize;
 	import com.xperiment.behaviour.behavSwap;
@@ -93,11 +97,13 @@ package com.xperiment.stimuli
 		
 		public static function Stimulus(stimName:String):IStimulus
 		{
-
+			
 			if(!stimuli)setupDict();
 			
 			stimName=processStimName(stimName);
-			if(stimuli.hasOwnProperty(stimName)) return new stimuli[stimName];
+			if(stimuli.hasOwnProperty(stimName)){
+				return new stimuli[stimName];
+			}
 			if(stimName=='') return new behav_baseClass;
 			
 			return null;
@@ -107,6 +113,7 @@ package com.xperiment.stimuli
 			var nam:String = origNam;
 			if(!stimuli)setupDict();
 			nam=processStimName(nam);
+			
 			if(stimuli.hasOwnProperty(nam)){
 				nam=stimuli[nam].toString();
 				nam=nam.substr(7,nam.length-8);
@@ -174,9 +181,12 @@ package com.xperiment.stimuli
 			stimuli['motionpatch'] = addMotionPath	;
 			stimuli['fixationcross'] = addFixationCross	;
 			stimuli['draw'] = addDraw;
+			
+
 			//stimuli['draw'] = behavDraw;
 			//stimuli['colourselector'] = behavColourSelector;
 			//stimuli['colorselector'] = stimuli['colourselector']
+			
 			stimuli['trialorder'] = behavTrialOrder;
 			stimuli['backgroundimage'] = behavBackgroundImage;
 			stimuli['bevel'] = behavBevel;
@@ -187,6 +197,7 @@ package com.xperiment.stimuli
 			stimuli['cursor']= behavCursor;
 			stimuli['drag'] = behavDrag;
 			stimuli['dragtoshiftingarea'] = behavDragToShiftingArea;
+			stimuli['movetoarea'] = behavMoveToArea;
 			stimuli['dragtolinescale'] = behavDragTolineScale;
 			stimuli['gototrial'] = behavGotoTrial;
 			stimuli['gradientfill'] = behavGradientFill;
@@ -229,6 +240,11 @@ package com.xperiment.stimuli
 			stimuli['occlude'] = behavOcclude;
 			stimuli['audiopassword'] = behavAudioPassword;
 			stimuli['eat'] = behavEat;
+			stimuli['shapepattern'] = behavShapePattern;
+			stimuli['select'] = behavSelect;		
+			stimuli['scale'] = behavScale;
+			stimuli['score'] = behavScore;
+			
 
 		}
 	}

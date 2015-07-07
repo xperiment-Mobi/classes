@@ -221,7 +221,7 @@
 			
 			var trialList:XMLList = script..TRIAL.*.(hasOwnProperty("@filename"));
 			for each(var attrib:XML in trialList){
-			
+			//trace(attrib.toXMLString())
 				mult = checkMult(attrib, 0, mult);					
 				fileExtension 	= attrib.@extension;
 				filenamePrefix	= attrib.@filenamePrefix;

@@ -39,7 +39,7 @@
 				uniqueProps.result= function():String{
 					//AW Note that text is NOT set if what and to and null. 
 					//trace(123,"'"+multipleChoice.getData()+"'");
-					trace(111,multipleChoice.getData());
+					//trace(111,multipleChoice.getData());
 					return "'"+multipleChoice.getData()+"'";
 				};
 				

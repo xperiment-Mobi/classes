@@ -278,21 +278,39 @@ package com.xperiment.script{
 		private function sortOutTemplates(script:XML):XML {
 			var buriedTrial:XML;
 			var TrialSnapShot:XML;
-			var templateName:String;
+			
 			var listToDelete:Array=new Array;
 			var templateList:Array=new Array;
+			
 			for each (var Trial:XML in script..*.(hasOwnProperty("@template"))) {
 				templateList=Trial.@template.toString().split(",");
-				for each(templateName in templateList){
+				
+				applyTemplate(templateList);
+				
+			}
+			for each(var templateName:String in listToDelete){delete(script[templateName]);}
+			//trace(script)
+			
+			
+			function applyTemplate(myTemplates:Array):void{
+				
+				
+				for each(var templateName:String in myTemplates){
+					
 					if(listToDelete.indexOf(listToDelete)==-1)listToDelete.push(templateName);
+					
+					
 					var templates:XMLList=script[templateName];
 					for each(var template:XML in templates){
 						giveTraits(Trial,template.copy());
 					}	
+					
+					
+					
 				}
 			}
-			for each(templateName in listToDelete){delete(script[templateName]);}
-			//trace(script)
+			
+			
 		return script;
 	}
 		

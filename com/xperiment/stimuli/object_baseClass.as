@@ -17,7 +17,6 @@
 	import flash.display.Stage;
 	import flash.events.Event;
 	import flash.events.MouseEvent;
-	import flash.external.ExternalInterface;
 	import flash.net.URLRequest;
 	import flash.net.navigateToURL;
 	import flash.utils.Dictionary;
@@ -232,6 +231,8 @@
 			
 			myObj.width=obj.myWidth;
 			myObj.height=obj.myHeight;
+			
+			
 			
 			
 			var showBox:Shape=Box.myBox(myObj);
@@ -470,6 +471,9 @@
 			var attNamesList:XMLList=textinfo.@*;
 			var tag:String
 			var tagValue:String;
+			
+			
+			if(iteration==0) codeRecycleFunctions.append_OVER_EXPT_Multiples(attNamesList);
 
 			for (var i:int=0; i<attNamesList.length(); i++) {
 				tag=attNamesList[i].name();// id and color
@@ -616,7 +620,7 @@
 			
 			var hor:Number; var ver:Number;
 			var tempStr:String = getVar("width");
-	
+
 			if (tempStr!="0" && tempStr!="aspectRatio"){
 				if(tempStr.indexOf("%")!=-1) hor=staWidth*Number(tempStr.replace("%",""))/100;
 				else hor=Number(tempStr);

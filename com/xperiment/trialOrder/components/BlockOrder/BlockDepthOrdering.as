@@ -118,7 +118,12 @@ package com.xperiment.trialOrder.components.BlockOrder
 				
 				case TrialBlock.REVERSE:
 					atDepth_trialBlocks=atDepth_trialBlocks.reverse();
-					break;			
+					break;
+				case TrialBlock.PSEUDO:
+					//atDepth_trialBlocks=Pseudo.DO(atDepth_trialBlocks);
+					//codeRecycleFunctions.arrayShuffle(atDepth_trialBlocks);
+					throw new Error("not implemented");
+					break;
 				
 				default: 
 					
@@ -141,6 +146,8 @@ package com.xperiment.trialOrder.components.BlockOrder
 			
 			__flatten(atDepth_trialBlocks);
 		}		
+		
+
 		
 		public static function __flatten(atDepth_trialBlocks:Array):void
 		{
@@ -218,4 +225,147 @@ package com.xperiment.trialOrder.components.BlockOrder
 		}
 	}
 }
+/*
+import com.xperiment.codeRecycleFunctions;
+import com.xperiment.trialOrder.components.BlockOrder.TrialBlock;
 
+class Pseudo{
+	
+	
+	public static function DO(atDepth_trialBlocks:Array):Array
+	{
+		var levels:Array = [];
+		var level:PseudoLevel;
+		
+		
+		var longestTrials:int = 0;
+
+		
+		for(var i:int = 0;i<atDepth_trialBlocks.length;i++){	
+			level = new PseudoLevel(atDepth_trialBlocks[i] as TrialBlock);
+			level.compute();
+			levels.push(level);
+			
+			if(level.trials.length > longestTrials){
+				longestTrials = level.trials.length;
+			}
+		}
+		
+		
+		for(i=0;i<longestTrials;i++){
+			checkIfSame(i,levels);
+		}
+		
+		trace("---");
+		var str:String = '';
+		for each(level in levels){
+			str += ",,,"+level.getPure().join(",");
+		}
+		trace(str);
+		
+		return atDepth_trialBlocks;
+	}
+	
+	private static function checkIfSame(i:int, levels:Array, attempt:int=0):Boolean
+	{
+		var str:String;
+		var matching:Object = {};
+		var matched:Boolean = false;
+
+		for each(var level:PseudoLevel in levels){
+			str = level.get_i(i).toString();
+			if(matching.hasOwnProperty(str)){
+				matching[str].push(level);
+				matched=true;
+			}
+			else matching[str] = [level];
+		}
+		
+		if(matched==false) return true;
+		
+		var val:int;
+		for each(level in levels){
+			val = level.take_i(i);
+			level.randomlyPop(i,val);
+		}
+		
+		
+		if(attempt>10){
+			i = 0;
+			attempt=0;
+		}
+		attempt++;
+
+		for each(var levelsArr:Array in matching){
+			if(levelsArr.length>1){
+				return checkIfSame(i,levelsArr,attempt);
+			}
+		}
+			
+		return true;
+	}
+}
+
+class PseudoLevel{
+	
+	public var trialBlock:TrialBlock
+	public var trials:Array;
+	private var start:int;
+	
+	public function PseudoLevel(t:TrialBlock){
+		this.trialBlock = t;
+		this.trials = trialBlock.getTrials();
+		//test();
+	}
+	
+	public function get_i(i:int):int{
+		if(trials.length<i) return null;
+		return trials[i]-start;
+	}
+	
+	public function take_i(i:int):int{
+		if(trials.length<i) return null;
+		return trials.splice(i,1);
+	}
+	
+	public function getPure():Array{
+		var arr:Array = [];
+		for(var i:int=0;i<trials.length;i++){
+			arr.push(trials[i]-start);
+		}
+		
+		return arr;
+	}
+	
+	private function test():void
+	{
+		
+		//trials =[1,2,3,4];
+		//trace(111, take_i(1),"           ",trials);
+		//for(var i:int=0;i<20;i++){
+			//trace(	randomlyPop([1,3,4,5],1,2)	);
+		//}
+	}
+	
+	public function compute():void
+	{
+		orderTrials();
+		
+	}
+	
+	private function orderTrials():void
+	{
+		start = Math.min.apply(null, trials);
+	}
+	
+	public function randomlyPop(position:int,val:int):void{
+		//position ++;
+		var range:int = trials.length-position;
+		trials.splice(	position + randVal(range) , 0, val);
+	}
+	
+	private function randVal(range:int):int
+	{
+		//returns 1 to range
+		return Math.random()*range + 1;
+	}}*/

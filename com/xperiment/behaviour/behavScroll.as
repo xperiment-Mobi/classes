@@ -1,5 +1,6 @@
 package com.xperiment.behaviour
 {
+	import com.xperiment.codeRecycleFunctions;
 	import com.xperiment.stimuli.Imockable;
 	import com.xperiment.stimuli.primitives.IResult;
 	import com.xperiment.trial.Trial;
@@ -131,10 +132,19 @@ package com.xperiment.behaviour
 		}
 		
 		
+		override public function appearedOnScreen(e:Event):void{
+			super.appearedOnScreen(e);
+			setPercent(	startingVal()	);
+			
+		}
+		
+		
 		override public function setVariables(list:XMLList):void {
 			setVar("string","orientation",'x','must be either x or y');
 			setVar("string","listenFor","keys,scroll,mouse","either keys or scroll or mouse or keys,scroll, or...");
 			setVar("string","startingVal","random","either random or enter a single value here in %");
+			setVar("string","startValMin","");
+			setVar("string",",startValMax","");
 			setVar("int","acceleration","1");
 			super.setVariables(list);
 		}
@@ -164,7 +174,23 @@ package com.xperiment.behaviour
 		
 		private function startingVal():int
 		{
-			if(getVar("startingVal")=='random') return Math.random()*100;
+			if(getVar("startingVal")=='random'){
+				var minStr:String = getVar("startValMin");
+				var maxStr:String = getVar("startValMax");
+
+				if(minStr=="" || maxStr==""){
+					var val:Number = Math.random()*100;
+					OnScreenElements.startingVal=codeRecycleFunctions.roundToPrecision(val,2);
+					return val;
+				}
+				else{
+					
+					var min:Number = Number(minStr);
+					var range:Number = Number(maxStr) - min;
+					val = ((Math.random() * range)+min ) *100;
+					return val;
+				}
+			}
 			return int(getVar("startingVal"));
 		}		
 		

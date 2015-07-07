@@ -52,12 +52,7 @@ package com.bit101.components
 		protected var _buttonWidth:int;
 		protected var  myMouseY:int;
 		
-		private var prevY:Number = mouseY;
-		private var velY:Number = 0;
-		private var DoCountDown:Boolean = false;
-		private var old_myMouseY:Number;
-		private var prev_time:Number;
-		private var now_time:Number;
+		
 		
 		/**
 		 * Constructor
@@ -99,11 +94,9 @@ package com.bit101.components
 		{
 			if(IS){
 				addEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-				addEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
 			}
 			else{
 				removeEventListener(MouseEvent.MOUSE_WHEEL, onMouseWheel);
-				removeEventListener(MouseEvent.MOUSE_DOWN,onMouseDown);
 			}
 			
 		}
@@ -345,55 +338,7 @@ package com.bit101.components
 			_scrollbar.value -= event.delta;
             fillItems();
 		}
-		
-		protected function onMouseDown(e:MouseEvent):void
-		{
-			if(false==_scrollbar.hitTestPoint(e.stageX,e.stageY,true)){
 
-				this.stage.addEventListener(MouseEvent.MOUSE_UP,mouseUp);
-				prev_time=getTimer();
-				prevY = this.stage.mouseY;
-				this.stage.addEventListener(Event.ENTER_FRAME, onLoop);
-				myMouseY= e.stageY;
-				DoCountDown=false;
-			}
-			
-		}	
-		
-		protected function mouseUp(event:MouseEvent):void
-		{
-
-			this.stage.removeEventListener(MouseEvent.MOUSE_UP,mouseUp);
-			DoCountDown=true;
-			old_myMouseY=mouseY;
-			
-		}
-		
-		protected function onLoop(e:Event):void {	
-			
-			
-			if(DoCountDown){
-				velY*=.8;
-				if(Math.abs(velY)<1){
-					if(this.stage && this.stage.hasEventListener(Event.ENTER_FRAME))this.stage.removeEventListener(Event.ENTER_FRAME, onLoop);
-					DoCountDown=false;
-				}
-				_scrollbar.value +=velY;
-			}
-			else{
-				now_time = getTimer();
-				if(this.stage){
-					velY = this.stage.mouseY - prevY;
-					velY *= (now_time-prev_time)/33;
-					prevY = this.stage.mouseY;
-					prev_time = now_time;
-					_scrollbar.value +=10*velY/_listItemHeight;
-				}
-			}
-			
-			fillItems();
-		}
-		
 
 
         protected function onResize(event:Event):void

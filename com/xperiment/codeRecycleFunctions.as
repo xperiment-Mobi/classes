@@ -30,6 +30,96 @@ import flash.utils.getDefinitionByName;
 			return av/arr.length;
 		}
 		
+		private static function removeNum(str:String):String{
+			var regEx:RegExp =	/[0-9]/g; 
+			return str.replace(regEx, "");
+		}
+		
+		
+		public static function append_OVER_EXPT_Multiples(attNamesList:XMLList):void
+		{
+			var tag:String
+			
+			var found:Object = {};
+			var unique:Array;
+			var uniqueLookup:Object;
+
+			for (var i:int=0; i<attNamesList.length(); i++) {
+				tag=attNamesList[i].name();// id and color
+
+				if(tag.toUpperCase() == tag && isNum(tag.charAt(tag.length-1))){
+					
+					found[tag.toUpperCase()] = attNamesList[i].toString();	
+					unique ||=[];
+					
+					tag = removeNum(tag).toLowerCase();
+
+					if(unique.indexOf(tag)==-1){
+						unique.push(tag.toUpperCase());
+						
+					}
+				}
+			}
+			
+			if(!unique) return;
+			
+			var index:int;
+			uniqueLookup = {};
+			
+			for (i=0; i<attNamesList.length(); i++) {
+				
+				tag = 	attNamesList[i].name();
+
+				index = unique.indexOf(tag.toUpperCase());
+
+				if(index!=-1){
+					
+					found[tag.toUpperCase()] = attNamesList[i].toString();
+					uniqueLookup[tag.toUpperCase()] = i;
+					//unique.splice(index,1);
+				}
+				
+			}
+
+					
+			multiplyUp(found);
+
+		
+			for(var key:String in uniqueLookup){
+				i = uniqueLookup[key];
+				attNamesList[i] = found[key];
+			}
+			
+			for (i=0; i<attNamesList.length(); i++) {
+				tag=attNamesList[i].name();// id and color
+			}
+			
+			
+			function multiplyUp(obj:Object):void{
+				var count:int;
+				var label:String;
+				
+				for each(var key:String in unique){
+					count=1;
+					label= key+count.toString();
+					while(found.hasOwnProperty(label)){
+						found[key]+=found[label];
+
+						count++;
+						label= key+count.toString();
+					}	
+				}
+			}
+
+		}
+		
+		private static function isNum(str:String):Boolean
+		{
+			return isNaN(Number(str)) == false;
+		}		
+		
+		
+		
 		//unit test me
 		/*var arr:Array = [];
 		arr.a=1;
@@ -59,19 +149,19 @@ import flash.utils.getDefinitionByName;
 			}
 			
 			
-			
 			if(appendUpAttribs){
 				var i:int;
 				var appendUpProp:String;
-				var appendUpVal:String = '';
+				var appendUpVal:String;
 				for each (prop in appendUpAttribs){
-					
+					appendUpVal = '';
 					i=0;
 					while(true){
 						appendUpProp=prop;
 						
 						if(i!=0)appendUpProp+=i.toString();
 						if(arr.hasOwnProperty(appendUpProp)==true){
+							
 							appendUpVal+=arr[appendUpProp];
 							//if(i!=0) arr[appendUpProp] = null;
 							i++;
@@ -79,6 +169,7 @@ import flash.utils.getDefinitionByName;
 						else break;	
 					}		
 					arr[prop]=appendUpVal;
+					//trace(appendUpVal)
 				}
 			}			
 		}
@@ -117,6 +208,7 @@ import flash.utils.getDefinitionByName;
 						}
 					}
 					stim.OnScreenElements[prop]=String(Number(to)+modifier);
+					
 					stim.setPosPercent();
 
 				}
@@ -144,7 +236,10 @@ import flash.utils.getDefinitionByName;
 				}
 				
 				if(propUpperCase){
-					return stim.getVar(prop);
+					var val:int = stim["my"+prop.toUpperCase()];
+					if(prop=="x")val+=stim.myWidth*.5;
+					else val+=stim.myHeight*.5;
+					return val.toString();
 				}
 
 
@@ -373,7 +468,7 @@ import flash.utils.getDefinitionByName;
 		
 		//Fisher-yates Shuffle, adapted from JS from here: http://bost.ocks.org/mike/shuffle/		
 		public static function arrayShuffle(arr:Array,id:String=''):Array{ 
-			
+
 			var randomList:Array;
 			var m:uint = arr.length, t:*, i:uint;
 			
@@ -666,16 +761,52 @@ import flash.utils.getDefinitionByName;
 		
 		public static function strToObj(jitterStr:String):Object
 		{
+			
+			
+			function joinTogetherArrays(arr:Array):Array{
+				var newArr:Array = [];
+				
+				for(var i:int=0;i<arr.length;i++){
+					var current:String = arr[i];
+					if(current.indexOf(":")==-1 && newArr.length>0){
+						newArr[newArr.length-1] += "," + current;
+					}
+					else{
+						newArr.push(current);
+					}
+				}
+				
+				return newArr;
+			}
+			
 			var obj:Object = {};
-			var propVals:Array = jitterStr.split(",");
-			var arr:Array;
+			
+			jitterStr = jitterStr.substr(1,jitterStr.length-2);
+			
+			var propVals:Array = joinTogetherArrays(	jitterStr.split(",")	);
+			
+
+			
+			function makeArray(str:String):Array{
+				var makeArr:Array = str.split(",");
+
+				for(var bit:int=0;bit<makeArr.length;bit++){
+					makeArr[bit] = sortType(makeArr[bit]);
+				}
+
+				return makeArr
+			}
 			
 			function sortType(str:String):*{
 				if(str.toLowerCase()=='false') return false;
 				if(str.toLowerCase()=='true') return true;
 				if(!isNaN(Number(str))) return Number(str);
+				if(str.charAt(0)=="[" && str.charAt(str.length-1)=="]") return makeArray(	str.substr(1,str.length-2)	);
+				if(str.charAt(0)=="'" && str.charAt(str.length-1)=="'")	return str.substr(1,str.length-2);
 				return str;
 			}
+			
+			var arr:Array;
 			
 			for each(var propVal:String in propVals){
 				arr = propVal.split(":");
@@ -686,5 +817,19 @@ import flash.utils.getDefinitionByName;
 
 			return obj;
 		}
+		
+		public static function get_first_x_from_arr(a:Array,x:int):Array
+		{
+			while(a.length>x && a.length!=0){
+				a.pop();
+			}
+			
+
+			return a;
+			
+		}
+		
+
+
 	}
 }

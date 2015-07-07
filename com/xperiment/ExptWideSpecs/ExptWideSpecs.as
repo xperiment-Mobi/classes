@@ -108,7 +108,7 @@ package com.xperiment.ExptWideSpecs
 			__ExptWideSpecs.results.trialTime = false;
 			
 			__ExptWideSpecs.defaults = new Array;
-			__ExptWideSpecs.defaults.ITI=500 as uint;
+			__ExptWideSpecs.defaults.ITI='500';
 			__ExptWideSpecs.defaults.EndOfTrialDelay=50 as uint;
 			__ExptWideSpecs.defaults.restart='false' ;	
 			__ExptWideSpecs.defaults.quitOnFinish='false' ;

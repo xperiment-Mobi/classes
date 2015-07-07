@@ -7,7 +7,7 @@ package com.xperiment.stimuli.helpers
 	{
 		
 		private static var splitChar:String = " ";
-		private static var listActions:Array = ['choice_task','toOverTrials','toWithinTrial','jitter','shuffle_somethings','shuffle_something','randomly_swap','pick_ones','prune_somethings','add_somethings','shuffle_somethings_unique','shuffle_somethings_super_unique','flip_something'];
+		private static var listActions:Array = ['choice_task','toOverTrials','toWithinTrial','jitter','shuffle_somethings','super_shuffle_something','shuffle_something','randomly_swap','pick_ones','prune_somethings','add_somethings','shuffle_somethings_unique','shuffle_somethings_super_unique','flip_something'];
 		
 		
 		
@@ -24,7 +24,10 @@ package com.xperiment.stimuli.helpers
 				for each(xml in script..*.(hasOwnProperty("@"+uppercaseAction)==true)){
 				//trace(xml.@[uppercaseAction].toString(),22)
 					if(!StimModify[action])throw new Error("unknown action in StimModify:"+action);
-					StimModify[action](xml.@[uppercaseAction].toString(),XMLList(xml));
+					
+					var instructions:String = xml.@[uppercaseAction].toString();
+					
+					StimModify[action](instructions,XMLList(xml));
 				
 				}
 				
@@ -34,18 +37,22 @@ package com.xperiment.stimuli.helpers
 			return script;
 		}
 		
-		public static function process(list:XMLList, params:Object):void{
+		public static function process(list:XMLList, params:Object, trialBlockPositionStart:int):void{
 				
-			var found:Array = [];
+			//var found:Array = [];
 			var actionStr:String;
 			//test_sortMultiples();
+			//trace(list.toXMLString())
 			for each(var action:String in listActions){
-
 				if(list.@[action].toString().length!=0){
+
 					if(!StimModify[action])throw new Error("unknown action in StimModify:"+action);
+					//trace(222, JSON.stringify(params))
 					actionStr = _sortMultiples(list, action, params);
+					list.@trialBlockPositionStart = trialBlockPositionStart;
 					StimModify[action](actionStr,list);
-					found.push(action);
+
+					//found.push(action);
 				}
 			}
 			/*for each(action in found){
@@ -88,10 +95,12 @@ package com.xperiment.stimuli.helpers
 			
 			function processIterationsTrials(str:String):String{
 				if(!params) return str;
-				//trace(111,params)
+				
 				
 				var symbol:String = object_baseClass.multTriCorSym;	
+
 				if (str.indexOf(symbol)!=-1)	str=codeRecycleFunctions.multipleTrialCorrection(str,symbol,params.trial);
+				
 				
 				symbol= object_baseClass.multObjCorSym;
 				if (str.indexOf(symbol)!=-1)	str=codeRecycleFunctions.multipleTrialCorrection(str,symbol,params.iteration);
@@ -281,49 +290,92 @@ package com.xperiment.stimuli.helpers
 		
 		private static function getParams(str:String,list:XMLList,action:String):void{
 		
+			
+			str = combineSplitAction(str, list, action);
 
 			var defined:Array=str.split(splitChar);
-			trace(222,defined)
+
 			//below necessary if Prune
 			if(!isNaN(Number(defined[defined.length-1]))){
 				var count:int = defined.pop();
 				if(defined.length>=count)err(action,"your 'count' is bigger than the list of stuff you want pruned");
 			}
+
 			var split:String = defined.pop();
 
+			
+			var trials:int = -1;
+			if(split=="---"){
+				trials = int(list.@trialBlockPositionStart.toString());
+			}
 			
 			var params:Array = []; 
 			var len:int = 0;
 			var raw:String;
+			var additionalParams:Object;
+			
+			var removeArr:Array;
+			
 			
 			for each(var param:String in defined){
-				raw=list.@[param].toString()
-	
-				if(raw.length>0){
-					
-					params[param]=raw.split(split);
-					if(len==0)	len=params[param].length;
-					if(params[param].length!=len)err(action,"all of your 'joined' properties must be the same length. This one is not: "+param);
+
+				if(param.charAt(0)=="{" && param.charAt(param.length-1)=="}"){
+					additionalParams = codeRecycleFunctions.strToObj(param);
+					removeArr ||= [];
+					removeArr.push(param);
 				}
-				else err(action,"This 'what' does not exist: "+param)
+				else{
+					raw=list.@[param].toString();
+					
+					if(trials!=-1){
+						raw = codeRecycleFunctions.multipleTrialCorrection(raw,";",trials);
+					}
+		
+					if(raw.length>0){
+	
+						params[param]=raw.split(split);
+						if(len==0)	len=params[param].length;
+						//trace(222,params[param],raw,split)
+						if(params[param].length!=len)err(action,"all of your 'joined' properties must be the same length. This one is not: "+param);
+						
+	
+					}
+					else err(action,"This 'what' does not exist: "+param)
+				}
 			}
 			
+			if(removeArr){
+				for each(param in removeArr){
+					var i:int = defined.indexOf(param);
+					if(i!=-1)	defined.splice(i,1);
+					else throw new Error();
+				}
+			}
+				
 
 			switch(action){
 				case 'shuffle':
 					var shuffArr:Array = [];
-					for(var i:int=0;i<len;i++) shuffArr.push(i);
+					for(i=0;i<len;i++) shuffArr.push(i);
 					
 					codeRecycleFunctions.arrayShuffle(shuffArr);
 					
 					var updated:Array;
+
+					//trace(111,shuffArr)
+					
 					for each(param in defined){
-					updated=[];
-					for(i=0;i<params[param].length;i++){
-						//trace(shuffArr[i])
-						updated.push( params[param][shuffArr[i]] );
-					}
-					list.@[param]=updated.join(split);
+
+						updated=[];
+						for(i=0;i<params[param].length;i++){
+							updated.push( params[param][shuffArr[i]] );
+						}
+						
+						if(additionalParams && additionalParams.hasOwnProperty('once')){
+							
+							list.@[param] = Memories.add(additionalParams.once, param, updated.join(split));
+						}
+						else list.@[param]=updated.join(split);
 					
 					}		
 					break;
@@ -361,6 +413,16 @@ package com.xperiment.stimuli.helpers
 			}
 		}
 		
+		private static function combineSplitAction(str:String, list:XMLList, action:String):String
+		{
+			var i:int=1;
+			
+			while( list.hasOwnProperty(    "@"+action+i.toString()    )){
+				str += list.@[action+i.toString()];
+				i++;
+			}
+			return str;
+		}		
 		
 		
 	
@@ -393,6 +455,57 @@ package com.xperiment.stimuli.helpers
 				list.@[param] = elements.join(";");
 			}
 		}
+		
+		public static function super_shuffle_something(str:String, list:XMLList):void
+		{
+
+			StimModify_superShuffle.DO(str,list);
+			
+		}
+		
 	}
 	
+}
+
+
+class Memories{
+	
+	
+	private static var memories:Object;
+
+	public static function add(id:String, prop:String, val:String):String{
+		memories ||= {};
+		if(memories.hasOwnProperty(id)){
+			 var listMemories:Array = memories[id].filter(function(item:Memory, index:int, array:Array):Boolean{
+				return item.prop == prop;
+			});
+			if(listMemories.length>0){
+				
+				trace(1134343,(listMemories[0] as Memory).prop)
+				val = (listMemories[0] as Memory).val;
+			}
+			else{
+				memories[id].push( new Memory(prop,val) );
+			}
+		}
+		else{
+			memories[id] = [];
+			memories[id].push( new Memory(prop,val) );
+		}
+		
+
+		return val;
+	}
+	
+	
+}
+
+class Memory{
+	public var prop:String;
+	public var val:String;	
+	
+	public function Memory(prop:String, val:String){
+		this.prop = prop;
+		this.val = val;
+	}
 }
